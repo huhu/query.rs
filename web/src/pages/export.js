@@ -35,7 +35,7 @@ import settings from "../../settings.js";
             };
         }
         let date = Compat.normalizeDate(new Date());
-        saveToFile(JSON.stringify(data), `rust-search-extension-${date}.json`, 'text/plain');
+        saveToFile(JSON.stringify(data), `${date}.json`, 'text/plain');
     };
 
     function saveToFile(content, fileName, contentType) {
