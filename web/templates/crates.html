@@ -1,0 +1,20 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<div class="subtitle-text crate-list-filter">
+    <span>You have indexed <span id="crate-count">0</span> crate(s)</span>
+    <span>
+        Sort by:
+        <select name="crate-filter">
+            <option value="time">Indexed time</option>
+            <option value="alphanumeric">Alphanumeric</option>
+            <option value="searches">Searches</option>
+        </select>
+    </span>
+</div>
+<ul class="crate-list text"></ul>
+{% endblock %} 
+
+{% block js %}
+<script src="./js/crates.js" type="module"></script>
+{% endblock %}

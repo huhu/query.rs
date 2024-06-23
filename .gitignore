@@ -1,0 +1,7 @@
+.idea
+.DS_Store
+*.crx
+*.pem
+Cargo.lock
+node_modules
+target
