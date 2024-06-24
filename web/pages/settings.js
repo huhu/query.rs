@@ -3,11 +3,11 @@ import settings from "../lib/settings.js";
 // Get the information about the current platform os.
 // Possible os values: "mac", "win", "android", "cros", "linux", or "openbsd"
 function getPlatformOs() {
-    return new Promise(resolve => {
-        chrome.runtime.getPlatformInfo(platformInfo => {
-            resolve(platformInfo.os);
-        });
-    });
+    let os = "unknown";
+    if (navigator.userAgent.indexOf("Win") != -1) os = "win";
+    if (navigator.userAgent.indexOf("Mac") != -1) os = "mac";
+    if (navigator.userAgent.indexOf("Linux") != -1) os = "linux";
+    return os;
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
