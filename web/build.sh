@@ -5,9 +5,7 @@ set -e
 # ls templates directory then render html with minijinja
 TEMPLATES_DIR="templates"
 
-# List the files in the templates directory
 for file in "$TEMPLATES_DIR"/*; do
-    # Extract the filename without the directory and extension
     filename=$(basename -- "$file")
     name="${filename%.*}"
 

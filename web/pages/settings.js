@@ -1,4 +1,4 @@
-import settings from "../../settings.js";
+import settings from "../lib/settings.js";
 
 // Get the information about the current platform os.
 // Possible os values: "mac", "win", "android", "cros", "linux", or "openbsd"

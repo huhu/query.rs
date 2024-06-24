@@ -1,6 +1,6 @@
-import Statistics from "../../statistics.js";
-import Compat from "../../core/compat.js";
-import CrateDocManager from "../../crate-manager.js";
+import Statistics from "../lib/statistics.js";
+import Compat from "../core/compat.js";
+import CrateDocManager from "../lib/crate-manager.js";
 
 function buildRemoveButton(name) {
     let btn = document.createElement("span");

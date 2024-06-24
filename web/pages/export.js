@@ -1,8 +1,8 @@
-import Statistics from "../../statistics.js";
-import Compat from "../../core/compat.js";
-import storage from "../../core/storage.js";
-import CrateDocManager from "../../crate-manager.js";
-import settings from "../../settings.js";
+import Statistics from "../lib/statistics.js";
+import Compat from "../core/compat.js";
+import storage from "../core/storage.js";
+import CrateDocManager from "../lib/crate-manager.js";
+import settings from "../lib/settings.js";
 
 (async function () {
     // ============== export ==============
