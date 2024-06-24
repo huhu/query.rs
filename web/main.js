@@ -1,26 +1,27 @@
-import attributesIndex from "./lib/index/attributes.js";
-import IndexManager from "./lib/index-manager.js";
-import CrateSearch from "./lib/search/crate.js";
-import CaniuseSearch from "./lib/search/caniuse.js";
-import BookSearch from "./lib/search/book.js";
-import LintSearch from "./lib/search/lint.js";
-import AttributeSearch from "./lib/search/attribute.js";
-import DocSearch from "./lib/search/docs/base.js";
-import CrateDocSearch from "./lib/search/docs/crate-doc.js";
-import LabelCommand from "./lib/command/label.js";
-import RfcCommand from "./lib/command/rfc.js";
-import RustcCommand from "./lib/command/rustc.js";
-import TargetCommand from "./lib/command/target.js";
-import HelpCommand from "./lib/command/help.js";
-import StableCommand from "./lib/command/stable.js";
+import {
+    CrateDocSearch,
+    DocSearch,
+    AttributeSearch,
+    LintSearch,
+    BookSearch,
+    CaniuseSearch,
+    CrateSearch,
+} from "./lib/search/index.js";
+import {
+    LabelCommand,
+    RfcCommand,
+    RustcCommand,
+    TargetCommand,
+    StableCommand,
+    HelpCommand,
+} from "./lib/command/index.js";
 import {
     SimpleCommand,
     OpenCommand,
     HistoryCommand,
     CommandManager
 } from "./core/index.js";
-import DescShardManager from "./lib/search/docs/desc-shard.js";
-import { RustSearchOmnibox, getBaseUrl } from "./lib/index.js";
+import { IndexManager, RustSearchOmnibox, DescShardManager, getBaseUrl } from "./lib/index.js";
 
 
 export default async function start(omnibox) {
@@ -29,7 +30,7 @@ export default async function start(omnibox) {
     let bookSearcher = new BookSearch(await IndexManager.getBookIndex());
     let lintSearcher = new LintSearch(await IndexManager.getLintIndex());
 
-    const attributeSearcher = new AttributeSearch(attributesIndex);
+    const attributeSearcher = new AttributeSearch();
     const crateDocSearcher = new CrateDocSearch();
 
     const commandIndex = await IndexManager.getCommandIndex();

@@ -1,7 +1,17 @@
 import settings from "./settings.js";
 import Statistics from "./statistics.js";
+import IndexManager from "./index-manager.js";
 import CrateDocManager from "./crate-manager.js";
 import { Compat, HistoryCommand } from "../core/index.js";
+import DescShardManager from "./search/docs/desc-shard.js";
+
+export {
+    settings,
+    Statistics,
+    IndexManager,
+    CrateDocManager,
+    DescShardManager,
+}
 
 export async function getBaseUrl() {
     let isOfflineMode = await settings.isOfflineMode;

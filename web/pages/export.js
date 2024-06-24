@@ -1,7 +1,5 @@
-import Statistics from "../lib/statistics.js";
 import { Compat, storage } from "../core/index.js";
-import CrateDocManager from "../lib/crate-manager.js";
-import settings from "../lib/settings.js";
+import { settings, CrateDocManager, Statistics } from "../lib/index.js";
 
 (async function () {
     // ============== export ==============

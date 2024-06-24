@@ -1,7 +1,6 @@
 import { barChart, histogram, calendarHeatmap } from "./charts.js";
 import { STATS_PATTERNS } from "../lib/statistics.js";
-import Statistics from "../lib/statistics.js";
-import { Omnibox } from "../core/index.js";
+import { Statistics } from "../lib/index.js";
 
 const TYPE_OTHER = "other";
 const CHART_COLOR = "rgba(249, 188, 45, 0.5)";

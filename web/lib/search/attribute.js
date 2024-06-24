@@ -1,9 +1,11 @@
+import attributesIndex from "../index/attributes.js";
+
 const ATTRIBUTE_DOC_URL = "https://doc.rust-lang.org/nightly/reference/";
 
 export default class AttributeSearch {
-    constructor(index) {
-        this.attributesIndex = index;
-        this.attributes = Object.keys(index);
+    constructor() {
+        this.attributesIndex = attributesIndex;
+        this.attributes = Object.keys(attributesIndex);
         this.attributes.sort();
     }
 
