@@ -27,6 +27,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build website
         run: |
+          curl -sSfL https://github.com/mitsuhiko/minijinja/releases/latest/download/minijinja-cli-installer.sh | sh
+          make -f web/Makefile
           cd web && ./build.sh
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
