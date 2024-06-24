@@ -157,8 +157,12 @@ export class RustSearchOmnibox {
                 }
             },
             onAppend: () => {
+                let content = "/crates.html";
+                if (chrome && chrome.runtime) {
+                    content = chrome.runtime.getURL("manage/crates.html");
+                }
                 return [{
-                    content: chrome.runtime.getURL("manage/crates.html"),
+                    content,
                     description: `Remind: <dim>Select here to manage all your indexed crates</dim>`,
                 }];
             },
