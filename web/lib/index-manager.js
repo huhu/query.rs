@@ -9,7 +9,7 @@ import targetsIndex from "./index/targets.js";
 import searchIndex from "./index/std-docs.js";
 import stdDescShards from "./index/desc-shards/std.js";
 import { mapping, crateIndex } from "./index/crates.js";
-import storage from "../core/storage.js";
+import { storage } from "../core/index.js";
 import IndexSetter from "./index-setter.js";
 
 // Query all storage by this method:

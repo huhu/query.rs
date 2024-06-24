@@ -1,4 +1,4 @@
-import storage from "../core/storage.js";
+import { storage } from "../core/index.js";
 
 export const STATS_PATTERNS = [{
     name: "stable",

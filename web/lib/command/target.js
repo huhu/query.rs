@@ -1,5 +1,4 @@
-import { Compat } from "../../core/index.js";
-import Command from "../../core/command/base.js";
+import { Compat, Command } from "../../core/index.js";
 
 export default class TargetCommand extends Command {
     constructor(index) {

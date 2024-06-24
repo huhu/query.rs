@@ -13,10 +13,12 @@ import RustcCommand from "./lib/command/rustc.js";
 import TargetCommand from "./lib/command/target.js";
 import HelpCommand from "./lib/command/help.js";
 import StableCommand from "./lib/command/stable.js";
-import SimpleCommand from "./core/command/simple.js";
-import OpenCommand from "./core/command/open.js";
-import HistoryCommand from "./core/command/history.js";
-import CommandManager from "./core/command/manager.js";
+import {
+    SimpleCommand,
+    OpenCommand,
+    HistoryCommand,
+    CommandManager
+} from "./core/index.js";
 import {
     RUST_RELEASE_README_URL,
 } from "./lib/constants.js";

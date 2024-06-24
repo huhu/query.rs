@@ -1,6 +1,5 @@
 import Statistics from "../lib/statistics.js";
-import Compat from "../core/compat.js";
-import storage from "../core/storage.js";
+import { Compat, storage } from "../core/index.js";
 import CrateDocManager from "../lib/crate-manager.js";
 import settings from "../lib/settings.js";
 

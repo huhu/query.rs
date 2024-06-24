@@ -1,5 +1,5 @@
 import Statistics from "../lib/statistics.js";
-import Compat from "../core/compat.js";
+import { Compat } from "../core/index.js";
 import CrateDocManager from "../lib/crate-manager.js";
 
 function buildRemoveButton(name) {

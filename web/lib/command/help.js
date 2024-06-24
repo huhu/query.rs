@@ -1,4 +1,4 @@
-import Command from "../../core/command/base.js";
+import { Command } from "../../core/index.js";
 
 export default class HelpCommand extends Command {
     constructor() {
