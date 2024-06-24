@@ -1,5 +1,5 @@
 
-.PHONY: core
+.PHONY: web/core
 
 web/core: core/src
 	@rm -rf web/core

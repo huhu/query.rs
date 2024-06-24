@@ -19,9 +19,6 @@ import {
     HistoryCommand,
     CommandManager
 } from "./core/index.js";
-import {
-    RUST_RELEASE_README_URL,
-} from "./lib/constants.js";
 import DescShardManager from "./lib/search/docs/desc-shard.js";
 import { RustSearchOmnibox, getBaseUrl } from "./lib/index.js";
 
@@ -62,10 +59,11 @@ export default async function start(omnibox) {
         new StableCommand(),
         new HistoryCommand(),
         new OpenCommand('release', 'Open rust-lang repository release page.',
-            RUST_RELEASE_README_URL, {
-            content: ':release',
-            description: `Press <match>Enter</match> to open rust-lang repository release page.`,
-        }),
+            "https://doc.rust-lang.org/nightly/releases.html",
+            {
+                content: ':release',
+                description: `Press <match>Enter</match> to open rust-lang repository release page.`,
+            }),
     );
 
     const nightlyDescShards = await DescShardManager.create("std-nightly");

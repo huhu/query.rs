@@ -2,10 +2,6 @@ import settings from "./settings.js";
 import Statistics from "./statistics.js";
 import CrateDocManager from "./crate-manager.js";
 import { Compat, HistoryCommand } from "../core/index.js";
-import {
-    LINT_URL,
-    REDIRECT_URL,
-} from "./constants.js";
 
 export async function getBaseUrl() {
     let isOfflineMode = await settings.isOfflineMode;
@@ -214,26 +210,6 @@ export class RustSearchOmnibox {
             },
         });
 
-        omnibox.addPrefixQueryEvent("!!!", {
-            name: "Repository",
-            onSearch: (query) => {
-                return crateSearcher.search(query);
-            },
-            onFormat: (index, crate) => {
-                return {
-                    content: `${REDIRECT_URL}?crate=${crate.id}`,
-                    description: `${Compat.capitalize("repository")}: <match>${crate.id}</match> v${crate.version} - <dim>${Compat.escape(Compat.eliminateTags(crate.description))}</dim>`,
-                };
-            },
-            onAppend: (query) => {
-                let keyword = query.replace(/[!\s]/g, "");
-                return wrapCrateSearchAppendix({
-                    content: "https://github.com/search?q=" + encodeURIComponent(keyword),
-                    description: "Search Rust crates for " + `<match>${keyword}</match>` + " on https://github.com",
-                });
-            },
-        });
-
         omnibox.addPrefixQueryEvent("#", {
             name: "Attributes",
             isDefaultSearch: async () => {
@@ -319,7 +295,7 @@ export class RustSearchOmnibox {
             },
             onFormat: (_, lint) => {
                 return {
-                    content: `${LINT_URL}#${lint.name}`,
+                    content: `https://rust-lang.github.io/rust-clippy/master/#${lint.name}`,
                     description: `Clippy lint: [${lint.level}] <match>${lint.name}</match> - <dim>${Compat.escape(Compat.eliminateTags(lint.description))}</dim>`,
                 }
             },

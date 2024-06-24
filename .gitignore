@@ -7,3 +7,5 @@ node_modules
 target
 
 web/core
+web/*.html
+dist

@@ -10,6 +10,7 @@ for file in "$TEMPLATES_DIR"/*; do
     name="${filename%.*}"
 
     minijinja-cli $TEMPLATES_DIR/${filename} data.yaml -o ${name}.html
+    cp -r assets core css lib pages vendor main.js dist
 
     # Check if the command was successful
     if [ $? -ne 0 ]; then
