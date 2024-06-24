@@ -1,8 +1,8 @@
 import settings from "./settings.js";
 import Statistics from "./statistics.js";
-import HistoryCommand from "./core/command/history.js";
+import HistoryCommand from "../core/command/history.js";
 import CrateDocManager from "./crate-manager.js";
-import { Compat } from "./core/index.js";
+import { Compat } from "../core/index.js";
 import {
     LINT_URL,
     REDIRECT_URL,

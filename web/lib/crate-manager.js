@@ -1,4 +1,4 @@
-import storage from "./core/storage.js";
+import storage from "../core/storage.js";
 import IndexSetter from "./index-setter.js";
 
 export default class CrateDocManager {

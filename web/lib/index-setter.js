@@ -1,4 +1,4 @@
-import storage from "./core/storage.js";
+import storage from "../core/storage.js";
 
 export default class IndexSetter {
     static setStdStableIndex(index) {
