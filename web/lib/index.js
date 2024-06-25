@@ -1,6 +1,7 @@
 import settings from "./settings.js";
 import Statistics from "./statistics.js";
 import IndexManager from "./index-manager.js";
+import IndexSetter from "./index-setter.js";
 import CrateDocManager from "./crate-manager.js";
 import { Compat, HistoryCommand } from "../core/index.js";
 import DescShardManager from "./search/docs/desc-shard.js";
@@ -8,6 +9,7 @@ import DescShardManager from "./search/docs/desc-shard.js";
 export {
     settings,
     Statistics,
+    IndexSetter,
     IndexManager,
     CrateDocManager,
     DescShardManager,
