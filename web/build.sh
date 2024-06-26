@@ -14,6 +14,10 @@ for file in "$TEMPLATES_DIR"/*; do
     filename=$(basename -- "$file")
     name="${filename%.*}"
 
+    if [ "$filename" == "base.html" ]; then
+        continue
+    fi
+
     minijinja-cli $TEMPLATES_DIR/${filename} data.yaml -o dist/${name}.html
     cp -r assets core css lib pages vendor main.js dist
 

@@ -6,7 +6,7 @@ import {
     BookSearch,
     CaniuseSearch,
     CrateSearch,
-} from "./lib/search/index.js";
+} from "./search/index.js";
 import {
     LabelCommand,
     RfcCommand,
@@ -14,14 +14,14 @@ import {
     TargetCommand,
     StableCommand,
     HelpCommand,
-} from "./lib/command/index.js";
+} from "./command/index.js";
 import {
     SimpleCommand,
     OpenCommand,
     HistoryCommand,
     CommandManager
-} from "./core/index.js";
-import { IndexManager, RustSearchOmnibox, DescShardManager, getBaseUrl } from "./lib/index.js";
+} from "../core/index.js";
+import { IndexManager, RustSearchOmnibox, DescShardManager, getBaseUrl } from "./index.js";
 
 
 export default async function start(omnibox) {
