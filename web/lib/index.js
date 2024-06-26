@@ -170,7 +170,7 @@ export class RustSearchOmnibox {
             },
             onAppend: () => {
                 let content = "/crates.html";
-                if (window.chrome?.runtime) {
+                if (omnibox?.runtime) {
                     content = chrome.runtime.getURL("manage/crates.html");
                 }
                 return [{
