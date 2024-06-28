@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "include": [
+        "/*"
+    ],
+    "exclude": [
+        "/",
+        "/*.html",
+        "/stats",
+        "/crates",
+        "/settings",
+        "/export"
+    ]
+}
