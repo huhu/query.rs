@@ -27,8 +27,7 @@ jobs:
       - name: Build website
         run: |
           curl -sSfL https://github.com/mitsuhiko/minijinja/releases/latest/download/minijinja-cli-installer.sh | sh
-          make -f web/Makefile
-          cd web && ./build.sh
+          cd web && make build
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
