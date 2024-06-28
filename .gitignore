@@ -3,6 +3,7 @@
 *.crx
 *.pem
 Cargo.lock
+package-lock.json
 node_modules
 target
 .wrangler

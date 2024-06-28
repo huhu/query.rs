@@ -1,6 +1,7 @@
 
-.PHONY: web/core
+.PHONY: build
 
-web/core: core/src
-	@rm -rf web/core
-	@cp -r $< $@
+build:
+	@rm -rf core
+	@cp -r ../core/src core
+	@./build.sh

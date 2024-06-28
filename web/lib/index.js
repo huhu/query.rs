@@ -226,6 +226,26 @@ export class RustSearchOmnibox {
             },
         });
 
+        omnibox.addPrefixQueryEvent("!!!", {
+            name: "Repository",
+            onSearch: (query) => {
+                return crateSearcher.search(query);
+            },
+            onFormat: (index, crate) => {
+                return {
+                    content: `https://query.rs/repo/${crate.id}`,
+                    description: `Repository: <match>${crate.id}</match> v${crate.version} - <dim>${Compat.escape(Compat.eliminateTags(crate.description))}</dim>`,
+                };
+            },
+            onAppend: (query) => {
+                let keyword = query.replace(/[!\s]/g, "");
+                return wrapCrateSearchAppendix({
+                    content: "https://github.com/search?q=" + encodeURIComponent(keyword),
+                    description: "Search Rust crates for " + `<match>${keyword}</match>` + " on https://github.com",
+                });
+            },
+        });
+
         omnibox.addPrefixQueryEvent("#", {
             name: "Attributes",
             isDefaultSearch: async () => {
