@@ -34,7 +34,7 @@ jobs:
         uses: cloudflare/pages-action@v1
         with:
             apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
-            accountId: $ {{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+            accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
             projectName: query-rs
             directory: ./web/dist
             # Optional: Enable this if you want to have GitHub Deployments triggered
