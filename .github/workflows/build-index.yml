@@ -18,11 +18,11 @@ jobs:
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rustc -d /tmp/rustc.js
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml targets -d /tmp/targets.js
           git clone --depth 1 https://github.com/jplatte/caniuse.rs.git /tmp/caniuse
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml caniuse -r /tmp/caniuse -d /tmp/caniuse.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml caniuse -p /tmp/caniuse -d /tmp/caniuse.js
           git clone --depth 1 https://github.com/nrc/rfc-index.git /tmp/rfc-index
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rfcs -r /tmp/rfc-index -d /tmp/rfcs.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rfcs -p /tmp/rfc-index -d /tmp/rfcs.js
           wget https://static.crates.io/db-dump.tar.gz -O /tmp/db-dump.tar.gz
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml --release crates -r /tmp/db-dump.tar.gz -d /tmp/crates.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml --release crates -p /tmp/db-dump.tar.gz -d /tmp/crates.js
           mv /tmp/*.js lib/index
       - name: Build website
         run: |

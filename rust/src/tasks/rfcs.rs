@@ -12,7 +12,7 @@ const INDEX_PATH: &str = "../lib/index/rfcs.js";
 #[argh(subcommand, name = "rfcs")]
 pub struct RfcsTask {
     /// rfc-index repository path
-    #[argh(option, short = 'r')]
+    #[argh(option, short = 'p')]
     repo_path: String,
     /// destination path
     #[argh(option, short = 'd', default = "INDEX_PATH.to_string()")]

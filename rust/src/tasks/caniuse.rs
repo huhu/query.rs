@@ -16,7 +16,7 @@ const INDEX_PATH: &str = "../lib/index/caniuse.js";
 #[argh(subcommand, name = "caniuse")]
 pub struct CaniuseTask {
     /// caniuse.rs repository path
-    #[argh(option, short = 'r')]
+    #[argh(option, short = 'p')]
     repo_path: String,
     /// destination path
     #[argh(option, short = 'd', default = "INDEX_PATH.to_string()")]

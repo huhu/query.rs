@@ -1,5 +1,5 @@
 [package]
-name = "rust-search-extension"
+name = "build-index"
 version = "0.1.0"
 authors = ["Folyd <lyshuhow@gmail.com>"]
 edition = "2021"
