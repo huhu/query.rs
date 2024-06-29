@@ -24,15 +24,16 @@
 
 <body>
     <div class="flex-layout" style="flex-direction: column;">
-        <div style="min-width: 1160px; display: flex;flex-direction: column;">
+        <div style="max-width: 1160px; width:100%; display: flex;flex-direction: column;">
             <ul class="nav">
-                <li class="nav-item"><a href="index.html">Home</a></li>
-                <li class="nav-item"><a href="stats.html">Stats</a></li>
-                <li class="nav-item"><a href="crates.html">Crate manager</a></li>
-                <li class="nav-item"><a href="settings.html">Settings</a></li>
-                <li class="nav-item"><a href="export.html">Export/Import</a></li>
+                <li class="nav-item"><a href="/">Home</a></li>
+                <li class="nav-item"><a href="/stats">Stats</a></li>
+                <li class="nav-item"><a href="/crates">Crate manager</a></li>
+                <li class="nav-item"><a href="/settings">Settings</a></li>
+                <li class="nav-item"><a href="/export">Export/Import</a></li>
             </ul>
-            <div style="padding: 30px 80px; background-color: white; position: relative;">
+            <div style="box-sizing: border-box; padding: 50px 80px; background-color: white; position: relative; 
+                border-radius: 10px; margin-bottom: 50px; min-height: calc(100vh - 100px);">
                 <a href="{{ website }}" style="text-decoration: none">
                     <div class="logo flex-layout">
                         <img src="{{ logo }}" alt="{{ id }}-logo">
