@@ -18,6 +18,5 @@ semver = { version = "1", features = ["serde"] }
 rayon = "1"
 regex = "1"
 argh = "0.1"
-rustsec = "0"
 html-escape = "0"
 db-dump = "0.7.1"
