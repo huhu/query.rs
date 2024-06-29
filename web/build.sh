@@ -19,7 +19,9 @@ for file in "$TEMPLATES_DIR"/*; do
     fi
 
     minijinja-cli $TEMPLATES_DIR/${filename} data.yaml -o dist/${name}.html
-    cp -r assets core css lib pages vendor dist
+    cp -r assets core css vendor dist
+    cp *.js dist
+    cp -r ../lib dist
 
     # Check if the command was successful
     if [ $? -ne 0 ]; then
