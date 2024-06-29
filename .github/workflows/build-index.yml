@@ -9,7 +9,10 @@ jobs:
     name: Build index
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          ref: 'main'
+          submodules: 'recursive'
       - name: "Build index"
         run: |
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml books -d /tmp/books.js
