@@ -1,6 +1,8 @@
 name: Build index
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "10 0 * * *"
 
 jobs:
   build:
@@ -10,20 +12,32 @@ jobs:
       - uses: actions/checkout@v2
       - name: "Build index"
         run: |
-          cd rust
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=Cargo.toml books -d /tmp/books.js
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=Cargo.toml lints -d /tmp/lints.js
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=Cargo.toml labels -d /tmp/labels.js
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=Cargo.toml rustc -d /tmp/rustc.js
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=Cargo.toml targets -d /tmp/targets.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml books -d /tmp/books.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml lints -d /tmp/lints.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml labels -d /tmp/labels.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rustc -d /tmp/rustc.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml targets -d /tmp/targets.js
           git clone --depth 1 https://github.com/jplatte/caniuse.rs.git /tmp/caniuse
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=Cargo.toml caniuse -r /tmp/caniuse -d /tmp/caniuse.js
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml caniuse -r /tmp/caniuse -d /tmp/caniuse.js
           git clone --depth 1 https://github.com/nrc/rfc-index.git /tmp/rfc-index
-          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=Cargo.toml rfcs -r /tmp/rfc-index -d /tmp/rfcs.js
-          zip /tmp/index.zip /tmp/*.js
-      - name: "Upload Index Artifact"
-        uses: actions/upload-artifact@master
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rfcs -r /tmp/rfc-index -d /tmp/rfcs.js
+          wget https://static.crates.io/db-dump.tar.gz -O /tmp/db-dump.tar.gz
+          RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml --release crates -r /tmp/db-dump.tar.gz -d /tmp/crates.js
+          mv /tmp/*.js lib/index
+      - name: Build website
+        run: |
+          curl -sSfL https://github.com/mitsuhiko/minijinja/releases/latest/download/minijinja-cli-installer.sh | sh
+          cd web && make build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
         with:
-          name: index.zip
-          path: /tmp/index.zip
-
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: query-rs
+          directory: ./web/dist
+          # Optional: Enable this if you want to have GitHub Deployments triggered
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          # By default this will be the branch which triggered this workflow
+          branch: main
+          # Change the Wrangler version, allows you to point to a specific version or a tag such as `beta`
+          wranglerVersion: "3"
