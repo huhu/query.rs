@@ -11,16 +11,14 @@
  *       data-search-js="search-d52510db62a78183.js"
  *       data-settings-js="settings-4313503d2e1961c2.js">
  */
-class DocsHandler {
+class MetaHandler {
     element(element) {
-        if (element.getAttribute('name') !== 'rustdoc-vars') {
-            return;
+        if (element.getAttribute('name') === 'rustdoc-vars') {
+            this.rootPath = element.getAttribute('data-root-path');
+            this.resourceSuffix = element.getAttribute('data-resource-suffix');
+            this.searchJs = element.getAttribute('data-search-js');
+            this.settingsJs = element.getAttribute('data-settings-js');
         }
-
-        this.rootPath = element.getAttribute('data-root-path');
-        this.resourceSuffix = element.getAttribute('data-resource-suffix');
-        this.searchJs = element.getAttribute('data-search-js');
-        this.settingsJs = element.getAttribute('data-settings-js');
     }
 
     searchIndexJs() {
@@ -95,18 +93,21 @@ class VlqHexDecoder {
 }
 
 export async function onRequestGet(context) {
-    let docUrl = `https://docs.rs/${context.params.crate}/${context.params.version}`;
+    let crate = context.params.crate;
+    let version = context.params.version;
+
+    let docUrl = `https://docs.rs/${crate}/${version}`;
     console.log(docUrl);
 
-    let handler = new DocsHandler();
-    let rewriter = new HTMLRewriter().on('meta', handler);
+    let metaHandler = new MetaHandler();
+    let rewriter = new HTMLRewriter().on('meta', metaHandler);
 
     rewriter.transform(await fetch(docUrl));
     // sleep 1 ms to wait for the rewriter to finish
-    await new Promise(resolve => setTimeout(resolve, 1));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Step 1: load search-index.js
-    let searchIndexUrl = new URL(`${docUrl}/${handler.searchIndexJs()}`);
+    let searchIndexUrl = new URL(`${docUrl}/${metaHandler.searchIndexJs()}`);
     console.log(searchIndexUrl.href);
     let response = await fetch(searchIndexUrl);
     let text = await response.text();
@@ -115,8 +116,6 @@ export async function onRequestGet(context) {
     let searchIndex = JSON.parse(text.substring(start, end).replace(/\\/g, ''));
 
     // Step 2: load desc shards
-    let descShards = new Map();
-
     // Get desc shards number from search index
     let vlqHex = searchIndex[0][1]["D"];
     let decoder = new VlqHexDecoder(vlqHex, noop => noop);
@@ -124,7 +123,7 @@ export async function onRequestGet(context) {
 
     let shards = {};
     while (decoder.next() > 0) {
-        let descShardJsUrl = new URL(`${docUrl}/${handler.descShardJs(context.params.crate, shardNum)}`);
+        let descShardJsUrl = new URL(`${docUrl}/${metaHandler.descShardJs(context.params.crate, shardNum)}`);
         console.log(descShardJsUrl.href);
         response = await fetch(descShardJsUrl);
         text = await response.text();
@@ -139,5 +138,18 @@ export async function onRequestGet(context) {
         shardNum += 1;
     }
 
-    return Response.json({ searchIndex, descShards: [context.params.crate, shards] });
+    // Step 3: get crate detail
+    response = await fetch(`https://crates.io/api/v1/crates/${crate}`, {
+        headers: {
+            "User-Agent": "Query.rs on Cloudflare Pages function",
+        }
+    });
+    let data = await response.json();
+    return Response.json({
+        crate,
+        version,
+        title: data.crate.description,
+        searchIndex,
+        descShards: [context.params.crate, shards],
+    });
 }
