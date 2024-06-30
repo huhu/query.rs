@@ -26,6 +26,10 @@ class DocsHandler {
     searchIndexJs() {
         return `search-index${this.resourceSuffix}.js`;
     }
+
+    descShardJs(crate, shard) {
+        return `search.desc/${crate}/${crate}-desc-${shard}-${this.resourceSuffix}.js`;
+    }
 }
 
 export async function onRequestGet(context) {
@@ -41,7 +45,6 @@ export async function onRequestGet(context) {
 
     // load search-index.js
     let searchIndexUrl = new URL(`${docUrl}/${handler.searchIndexJs()}`);
-    console.log(searchIndexUrl);
     let response = await fetch(searchIndexUrl);
     let text = await response.text();
     let start = text.indexOf("parse('") + 7;
@@ -50,5 +53,23 @@ export async function onRequestGet(context) {
 
     // load desc shards
     // how to know how many shards?
-    return Response.json(searchIndex);
+    let descShards = new Map();
+    let descShardJsUrl = new URL(`${docUrl}/${handler.descShardJs(context.params.crate, 0)}`);
+    console.log(descShardJsUrl);
+    response = await fetch(descShardJsUrl);
+    text = await response.text();
+    let result = text.substring("searchState.loadedDescShard(".length, text.length - 1);
+    let [crate, shard, descs] = result.split(',');
+    descs = descs.trim();
+    descs = descs.substring(1, descs.length);
+    console.log(descs);
+    descs = descs.split("\\n");
+    let shards = descShards.get(crate);
+    if (shards) {
+        shards[shard] = descs;
+    } else {
+        descShards.set(crate, { [shard]: descs });
+    }
+
+    return Response.json({ searchIndex, descShards: Object.fromEntries(descShards) });
 }
