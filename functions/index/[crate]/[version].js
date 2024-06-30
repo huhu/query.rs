@@ -32,6 +32,68 @@ class DocsHandler {
     }
 }
 
+class VlqHexDecoder {
+    constructor(string, cons) {
+        this.string = string;
+        this.cons = cons;
+        this.offset = 0;
+        this.backrefQueue = [];
+    }
+    // call after consuming `{`
+    decodeList() {
+        const cb = "}".charCodeAt(0);
+        let c = this.string.charCodeAt(this.offset);
+        const ret = [];
+        while (c !== cb) {
+            ret.push(this.decode());
+            c = this.string.charCodeAt(this.offset);
+        }
+        this.offset += 1; // eat cb
+        return ret;
+    }
+    // consumes and returns a list or integer
+    decode() {
+        const [ob, la] = ["{", "`"].map(c => c.charCodeAt(0));
+        let n = 0;
+        let c = this.string.charCodeAt(this.offset);
+        if (c === ob) {
+            this.offset += 1;
+            return this.decodeList();
+        }
+        while (c < la) {
+            n = (n << 4) | (c & 0xF);
+            this.offset += 1;
+            c = this.string.charCodeAt(this.offset);
+        }
+        // last character >= la
+        n = (n << 4) | (c & 0xF);
+        const [sign, value] = [n & 1, n >> 1];
+        this.offset += 1;
+        return sign ? -value : value;
+    }
+    next() {
+        const c = this.string.charCodeAt(this.offset);
+        const [zero, ua, la] = ["0", "@", "`"].map(c => c.charCodeAt(0));
+        // sixteen characters after "0" are backref
+        if (c >= zero && c < ua) {
+            this.offset += 1;
+            return this.backrefQueue[c - zero];
+        }
+        // special exception: 0 doesn't use backref encoding
+        // it's already one character, and it's always nullish
+        if (c === la) {
+            this.offset += 1;
+            return this.cons(0);
+        }
+        const result = this.cons(this.decode());
+        this.backrefQueue.unshift(result);
+        if (this.backrefQueue.length > 16) {
+            this.backrefQueue.pop();
+        }
+        return result;
+    }
+}
+
 export async function onRequestGet(context) {
     let docUrl = `https://docs.rs/${context.params.crate}/${context.params.version}`;
     console.log(docUrl);
@@ -43,33 +105,39 @@ export async function onRequestGet(context) {
     // sleep 1 ms to wait for the rewriter to finish
     await new Promise(resolve => setTimeout(resolve, 1));
 
-    // load search-index.js
+    // Step 1: load search-index.js
     let searchIndexUrl = new URL(`${docUrl}/${handler.searchIndexJs()}`);
+    console.log(searchIndexUrl.href);
     let response = await fetch(searchIndexUrl);
     let text = await response.text();
     let start = text.indexOf("parse('") + 7;
     let end = text.lastIndexOf("'));");
     let searchIndex = JSON.parse(text.substring(start, end).replace(/\\/g, ''));
 
-    // load desc shards
-    // how to know how many shards?
+    // Step 2: load desc shards
     let descShards = new Map();
-    let descShardJsUrl = new URL(`${docUrl}/${handler.descShardJs(context.params.crate, 0)}`);
-    console.log(descShardJsUrl);
-    response = await fetch(descShardJsUrl);
-    text = await response.text();
-    let result = text.substring("searchState.loadedDescShard(".length, text.length - 1);
-    let [crate, shard, descs] = result.split(',');
-    descs = descs.trim();
-    descs = descs.substring(1, descs.length);
-    console.log(descs);
-    descs = descs.split("\\n");
-    let shards = descShards.get(crate);
-    if (shards) {
+
+    // Get desc shards number from search index
+    let vlqHex = searchIndex[0][1]["D"];
+    let decoder = new VlqHexDecoder(vlqHex, noop => noop);
+    let shardNum = 0;
+
+    let shards = {};
+    while (decoder.next() > 0) {
+        let descShardJsUrl = new URL(`${docUrl}/${handler.descShardJs(context.params.crate, shardNum)}`);
+        console.log(descShardJsUrl.href);
+        response = await fetch(descShardJsUrl);
+        text = await response.text();
+        let result = text.substring("searchState.loadedDescShard(".length, text.length - 1);
+        let [crate, shard, ...descs] = result.split(',');
+        descs = descs.join("").trim();
+        // Trim the first and last `"`
+        descs = descs.substring(1, descs.length);
+
+        descs = descs.split("\\n");
         shards[shard] = descs;
-    } else {
-        descShards.set(crate, { [shard]: descs });
+        shardNum += 1;
     }
 
-    return Response.json({ searchIndex, descShards: Object.fromEntries(descShards) });
+    return Response.json({ searchIndex, descShards: [context.params.crate, shards] });
 }
