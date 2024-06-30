@@ -24,12 +24,12 @@ class DocsHandler {
     }
 
     searchIndexJs() {
-        return `${this.rootPath}search-index${this.resourceSuffix}.js`;
+        return `search-index${this.resourceSuffix}.js`;
     }
 }
 
 export async function onRequestGet(context) {
-    const docUrl = `https://docs.rs/${context.params.crate}/${context.params.version}`;
+    let docUrl = `https://docs.rs/${context.params.crate}/${context.params.version}`;
     console.log(docUrl);
 
     let handler = new DocsHandler();
@@ -38,9 +38,17 @@ export async function onRequestGet(context) {
     rewriter.transform(await fetch(docUrl));
     // sleep 1 ms to wait for the rewriter to finish
     await new Promise(resolve => setTimeout(resolve, 1));
-    return new Response(handler.searchIndexJs(), {
-        headers: {
-            "content-type": "text/html; charset=utf-8"
-        }
-    });
+
+    // load search-index.js
+    let searchIndexUrl = new URL(`${docUrl}/${handler.searchIndexJs()}`);
+    console.log(searchIndexUrl);
+    let response = await fetch(searchIndexUrl);
+    let text = await response.text();
+    let start = text.indexOf("parse('") + 7;
+    let end = text.lastIndexOf("'));");
+    let searchIndex = JSON.parse(text.substring(start, end).replace(/\\/g, ''));
+
+    // load desc shards
+    // how to know how many shards?
+    return Response.json(searchIndex);
 }
