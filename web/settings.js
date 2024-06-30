@@ -17,10 +17,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         settings.autoUpdate = event.target.checked;
     };
     const showMacroRailroad = document.getElementById('show-macro-railroad');
-    showMacroRailroad.checked = await settings.showMacroRailroad;
-    showMacroRailroad.onchange = async function (event) {
-        settings.showMacroRailroad = event.target.checked;
-    };
+    if (showMacroRailroad) {
+        showMacroRailroad.checked = await settings.showMacroRailroad;
+        showMacroRailroad.onchange = async function (event) {
+            settings.showMacroRailroad = event.target.checked;
+        };
+    }
 
     // Offline mode checkbox
     if (!(await settings.offlineDocPath)) {
@@ -62,9 +64,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     };
 
     const keepCratesUpToDate = document.getElementById("keep-crates-up-to-date");
-    keepCratesUpToDate.checked = await settings.keepCratesUpToDate;
-    keepCratesUpToDate.onchange = async function (event) {
-        settings.keepCratesUpToDate = event.target.checked;
+    if (keepCratesUpToDate) {
+        keepCratesUpToDate.checked = await settings.keepCratesUpToDate;
+        keepCratesUpToDate.onchange = async function (event) {
+            settings.keepCratesUpToDate = event.target.checked;
+        }
     }
 
     await setupDefaultSearch();
