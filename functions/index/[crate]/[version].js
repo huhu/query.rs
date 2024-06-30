@@ -133,7 +133,9 @@ export async function onRequestGet(context) {
         // Trim the first and last `"`
         descs = descs.substring(1, descs.length);
 
-        descs = descs.split("\\n");
+        descs = descs.split("\\n").map(desc => {
+            return desc.replace(/<\/?(code|span)>/g, "");
+        });
         shards[shard] = descs;
         shardNum += 1;
     }
