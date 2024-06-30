@@ -102,20 +102,30 @@ export async function onRequestGet(context) {
     let metaHandler = new MetaHandler();
     let rewriter = new HTMLRewriter().on('meta', metaHandler);
 
-    rewriter.transform(await fetch(docUrl));
+    let response = await fetch(docUrl);
+    if (response.status !== 200) {
+        return Response.json({ 'error': `Crate ${crate} not found` }, { status: 404 });
+    }
+
+    rewriter.transform(response);
     // sleep 1 ms to wait for the rewriter to finish
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1));
 
     // Step 1: load search-index.js
     let searchIndexUrl = new URL(`${docUrl}/${metaHandler.searchIndexJs()}`);
     console.log(searchIndexUrl.href);
-    let response = await fetch(searchIndexUrl);
+    response = await fetch(searchIndexUrl);
     let text = await response.text();
     let start = text.indexOf("parse('") + 7;
-    let end = text.lastIndexOf("'));");
+    let end = text.indexOf("')");
     let searchIndex = JSON.parse(text.substring(start, end).replace(/\\/g, ''));
 
     // Step 2: load desc shards
+    if (!(searchIndex[0] && searchIndex[0][1] && "D" in searchIndex[0][1])) {
+        return Response.json({
+            error: `This crate version ${docUrl} is not supported`
+        }, { status: 400 });
+    }
     // Get desc shards number from search index
     let vlqHex = searchIndex[0][1]["D"];
     let decoder = new VlqHexDecoder(vlqHex, noop => noop);
