@@ -1,6 +1,26 @@
 import { Compat } from "../core/index.js";
 import { CrateDocManager, Statistics } from "../lib/index.js";
 
+document.addEventListener("DOMContentLoaded", async () => {
+    let addButton = document.querySelector("button");
+    addButton.onclick = async (e) => {
+        let crate = document.getElementById("crate-name").value;
+        let response = await fetch(`https://crates.io/api/v1/crates/${crate}`);
+        if (response.status !== 200) {
+            console.log(response);
+            return;
+        }
+
+        let data = await response.json();
+        response = await fetch(`https://query.rs/index/${data.crate.name}/${data.crate.newest_version}`);
+        data = await response.json();
+        console.log(data);
+
+        await CrateDocManager.addCrate(data);
+        await refresh();
+    };
+});
+
 function buildRemoveButton(name) {
     let btn = document.createElement("span");
     btn.classList.add("btn-remove");
