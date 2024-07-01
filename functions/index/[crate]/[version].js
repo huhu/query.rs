@@ -146,7 +146,8 @@ export async function onRequestGet(context) {
         descs = descs.split("\\n").map(desc => {
             return desc.replace(/<\/?(code|span)>/g, "");
         });
-        shards[shard] = descs;
+        // trim and parse shard into int
+        shards[parseInt(shard.trim())] = descs;
         shardNum += 1;
     }
 
@@ -158,10 +159,11 @@ export async function onRequestGet(context) {
     });
     let data = await response.json();
     return Response.json({
-        crate,
-        version,
-        title: data.crate.description,
+        libName: crate,
+        crateName: crate,
+        crateVersion: version,
+        crateTitle: data.crate.description,
         searchIndex,
-        descShards: [context.params.crate, shards],
+        descShards: [[context.params.crate, shards]],
     });
 }
