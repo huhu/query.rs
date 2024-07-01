@@ -112,7 +112,7 @@ export async function onRequestGet(context) {
     if (response.status !== 200) {
         return Response.json({ 'error': `Crate ${crate} not found` }, { status: 404 });
     }
-
+    let [crateName, crateVersion, libName] = new URL(response.url).pathname.slice(1).split("/");
     rewriter.transform(response);
     // sleep 1 ms to wait for the rewriter to finish
     await new Promise(resolve => setTimeout(resolve, 1));
@@ -139,7 +139,7 @@ export async function onRequestGet(context) {
 
     let shards = {};
     while (decoder.next() > 0) {
-        let descShardJsUrl = new URL(`${docUrl}/${metaHandler.descShardJs(context.params.crate, shardNum)}`);
+        let descShardJsUrl = new URL(`${docUrl}/${metaHandler.descShardJs(libName, shardNum)}`);
         console.log(descShardJsUrl.href);
         response = await fetch(descShardJsUrl);
         text = await response.text();
@@ -165,12 +165,12 @@ export async function onRequestGet(context) {
     });
     let data = await response.json();
     let index = {
-        libName: crate,
-        crateName: crate,
-        crateVersion: version,
+        libName,
+        crateName,
+        crateVersion,
         crateTitle: data.crate.description,
         searchIndex,
-        descShards: [[context.params.crate, shards]],
+        descShards: [[libName, shards]],
     };
 
     // cache the index
