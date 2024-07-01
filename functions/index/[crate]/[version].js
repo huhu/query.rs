@@ -134,7 +134,7 @@ export async function onRequestGet(context) {
     // Step 2: load desc shards
     if (!(searchIndex[0] && searchIndex[0][1] && "D" in searchIndex[0][1])) {
         return Response.json({
-            error: `This crate version ${docUrl} is not supported`
+            error: `This crate version: ${libName}/${crateVersion} is not supported`
         }, { status: 400 });
     }
     // Get desc shards number from search index

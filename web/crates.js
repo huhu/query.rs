@@ -1,21 +1,30 @@
 import { Compat } from "../core/index.js";
 import { CrateDocManager, Statistics } from "../lib/index.js";
+import Toast from "./toast.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-    let addButton = document.querySelector("button");
+    let addButton = document.querySelector("span.btn");
     addButton.onclick = async (e) => {
         let crate = document.getElementById("crate-name").value;
+        if (!crate) {
+            new Toast(".toast").info("Please input crate name");
+            return;
+        }
         let response = await fetch(`https://crates.io/api/v1/crates/${crate}`);
         if (response.status !== 200) {
-            console.log(response);
+            new Toast(".toast").info(`Crate \`${crate}\` not found`);
             return;
         }
 
         let data = await response.json();
         response = await fetch(`https://query.rs/index/${data.crate.name}/${data.crate.newest_version}`);
-        data = await response.json();
-        console.log(data);
+        if (response.status !== 200) {
+            let data = await response.json();
+            new Toast(".toast").info(data.error);
+            return;
+        }
 
+        data = await response.json();
         await CrateDocManager.addCrate(data);
         await refresh();
     };
@@ -29,8 +38,8 @@ function buildRemoveButton(name) {
         await CrateDocManager.removeCrate(name);
         // Update the crate count
         let crates = await CrateDocManager.getCrates();
-        document.getElementById("crate-count").textContent = Object.keys(crates).length || '0';
         btn.parentElement.remove();
+        updateMetrics(crates.length);
     };
     return btn;
 }
@@ -54,6 +63,12 @@ function buildCrateItem(crate) {
     </div>`;
     li.appendChild(buildRemoveButton(crate.name));
     return li;
+}
+
+function updateMetrics(cratesCount) {
+    document.getElementById("crate-count").textContent = cratesCount;
+    let usage = Object.keys(localStorage).map(k => (localStorage.getItem(k) ?? '').length * 2 / 1024 / 1024).reduce((a, b) => a + b);
+    document.getElementById("storage-usage").textContent = `${Math.round(usage * 100) / 100} MB`;
 }
 
 async function refresh(orderBy = "time") {
@@ -91,7 +106,7 @@ async function refresh(orderBy = "time") {
         root.appendChild(buildCrateItem(crate));
     });
 
-    document.getElementById("crate-count").textContent = crates.length;
+    updateMetrics(crates.length);
 }
 
 let crateFilter = document.querySelector("select[name='crate-filter']");

@@ -189,19 +189,19 @@ input:checked + .slider:before {
   cursor: pointer;
   width: 120px;
 }
-.btn-export {
+.btn-primary {
   background-color: #f9bb2daa;
   margin-top: 40px;
 }
-.btn-export:hover {
+.btn-primary:hover {
   background-color: #f9bb2d;
 }
-.btn-import {
+.btn-secondary {
   background-color: #121212bb;
   margin-top: 40px;
   color: white;
 }
-.btn-import:hover {
+.btn-secondary:hover {
   background-color: #121212;
 }
 .file-selector {
@@ -212,6 +212,15 @@ input:checked + .slider:before {
 .file-selector.required {
   border: 1px dashed red;
   animation: shake 0.5s;
+}
+.toast {
+    max-width: 80%;
+    top: 20px;
+    z-index: 10;
+    text-align: center;
+    padding: 8px;
+    display: none;
+    margin: 10px auto;
 }
 @keyframes shake {
   0% {
