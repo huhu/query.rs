@@ -5,3 +5,7 @@ compatibility_date = "2024-06-28"
 [dev]
 port = 8080
 local_protocol = "http"
+
+[[r2_buckets]]
+binding = "QUERY_INDEX"
+bucket_name = "query-index"

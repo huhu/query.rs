@@ -96,6 +96,12 @@ export async function onRequestGet(context) {
     let crate = context.params.crate;
     let version = context.params.version;
 
+    let cacheKey = `${crate}/${version}`;
+    const obj = await context.env.QUERY_INDEX.get(cacheKey);
+    if (obj) {
+        return Response.json(await obj.json());
+    }
+
     let docUrl = `https://docs.rs/${crate}/${version}`;
     console.log(docUrl);
 
@@ -158,12 +164,16 @@ export async function onRequestGet(context) {
         }
     });
     let data = await response.json();
-    return Response.json({
+    let index = {
         libName: crate,
         crateName: crate,
         crateVersion: version,
         crateTitle: data.crate.description,
         searchIndex,
         descShards: [[context.params.crate, shards]],
-    });
+    };
+
+    // cache the index
+    await context.env.QUERY_INDEX.put(cacheKey, JSON.stringify(index));
+    return Response.json(index);
 }
