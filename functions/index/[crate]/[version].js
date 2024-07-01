@@ -114,8 +114,13 @@ export async function onRequestGet(context) {
     }
     let [crateName, crateVersion, libName] = new URL(response.url).pathname.slice(1).split("/");
     rewriter.transform(response);
-    // sleep 1 ms to wait for the rewriter to finish
-    await new Promise(resolve => setTimeout(resolve, 1));
+
+    let waitTime = 0;
+    while (!metaHandler.resourceSuffix || waitTime < 100) {
+        // wait until rewriting finished
+        await new Promise(resolve => setTimeout(resolve, 1));
+        waitTime += 1;
+    }
 
     // Step 1: load search-index.js
     let searchIndexUrl = new URL(`${docUrl}/${metaHandler.searchIndexJs()}`);
