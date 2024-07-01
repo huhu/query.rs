@@ -32,8 +32,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         data = await response.json();
-        await CrateDocManager.addCrate(data);
-        await refresh();
+        try {
+            await CrateDocManager.addCrate(data);
+            await refresh();
+        }
+        catch (e) {
+            new Toast(".toast").info(e.message);
+            return;
+        }
     };
 });
 
