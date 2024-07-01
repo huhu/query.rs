@@ -10,6 +10,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             new Toast(".toast").info("Please input crate name");
             return;
         }
+
+        let crates = await CrateDocManager.getCrates();
+        if (crate in crates) {
+            new Toast(".toast").info(`Crate \`${crate}\` already exists`);
+            return;
+        }
+
         let response = await fetch(`https://crates.io/api/v1/crates/${crate}`);
         if (response.status !== 200) {
             new Toast(".toast").info(`Crate \`${crate}\` not found`);
