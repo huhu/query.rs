@@ -1,5 +1,5 @@
-import { Compat, storage } from "../core/index.js";
-import { settings, CrateDocManager, Statistics } from "../lib/index.js";
+import { Compat } from "omnibox-js";
+import { storage, settings, CrateDocManager, Statistics } from "../lib/index.js";
 
 (async function () {
     // ============== export ==============

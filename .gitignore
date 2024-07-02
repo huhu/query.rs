@@ -8,6 +8,5 @@ node_modules
 target
 .wrangler
 
-web/core
 web/*.html
 dist

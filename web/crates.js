@@ -1,4 +1,4 @@
-import { Compat } from "../core/index.js";
+import { Compat } from "omnibox-js";
 import { CrateDocManager, Statistics } from "../lib/index.js";
 import Toast from "./toast.js";
 
