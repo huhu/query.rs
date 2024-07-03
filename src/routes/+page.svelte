@@ -1,2 +1,17 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+  import { Omnibox } from "omnibox-js";
+  import start from "$lib/main.js";
+  import { onMount } from "svelte";
+  import "omnibox-js/omnibox.css";
+
+  onMount(async () => {
+    const omnibox = Omnibox.webpage({
+      el: "#omnibox",
+      icon: "/assets/icon.png",
+      placeholder: `Search rust things instantly!`,
+    });
+    await start(omnibox);
+  });
+</script>
+
+<div id="omnibox" style="width: 85%; margin: 20px auto;"></div>

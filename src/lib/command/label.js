@@ -1,4 +1,5 @@
-import { Compat, Command } from "../../core/index.js";
+import { Compat } from "omnibox-js";
+import Command from "./base.js";
 
 export default class LabelCommand extends Command {
     constructor(index) {
@@ -31,7 +32,7 @@ export default class LabelCommand extends Command {
             return {
                 content: `https://github.com/rust-lang/rust/labels/${label.name}`,
                 description: `<match>${label.name}</match> - <dim>${Compat.escape(label.description)}</dim>`
-            }
+            };
         });
     }
 };

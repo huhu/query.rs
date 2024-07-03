@@ -1,4 +1,5 @@
-import { Compat, Command } from "../../core/index.js";
+import Command from "./base.js";
+import { Compat } from "omnibox-js";
 import { getScheduledVersions } from "../rust-version.js";
 
 export default class StableCommand extends Command {

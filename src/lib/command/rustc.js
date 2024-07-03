@@ -1,4 +1,4 @@
-import { Command } from "../../core/index.js";
+import Command from "./base.js";
 
 export default class RustcCommand extends Command {
     constructor(index) {
