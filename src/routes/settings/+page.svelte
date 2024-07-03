@@ -1,28 +1,38 @@
+<script>
+  import { onMount } from "svelte";
+  import { settings } from "$lib/index.js";
+  import { browser } from "$app/environment";
+  let isOfflineMode = false;
+  let offlineDocPath = "";
+  let defaultSearch = {
+    attributes: true,
+    docsRs: true,
+    thirdPartyDocs: false,
+  };
+  let crateRegistry = "crates.io";
+
+  $: {
+    if (browser) {
+        console.log(offlineDocPath);
+      settings.offlineMode = isOfflineMode;
+      settings.offlineDocPath = offlineDocPath;
+      // settings.defaultSearch = defaultSearch;
+      settings.crateRegistry = crateRegistry;
+    }
+  }
+
+  onMount(async () => {
+    offlineDocPath = await settings.offlineDocPath;
+    isOfflineMode = await settings.isOfflineMode;
+    defaultSearch = await settings.defaultSearch;
+    crateRegistry = await settings.crateRegistry;
+  });
+</script>
+
 <div class="text">
   <div class="setting-group">
     <div class="title-text">General</div>
     <div>
-      <div class="setting-item">
-        <div>
-          Enable auto update
-          <span
-            aria-label="Whether auto opens the index update page when the browser launch (default false). At any time, you can use the `:update` command to sync the latest index."
-            data-balloon-pos="up"
-            data-balloon-length="large"
-            style="vertical-align: middle"
-          >
-            <img
-              style="vertical-align: middle;width: 15px;margin-right: 5px;"
-              src="../assets/info.svg"
-              alt="info"
-            />
-          </span>
-          <label class="toggle">
-            <input type="checkbox" id="auto-update" />
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
       <div class="setting-item">
         <div>
           Enable offline mode
@@ -39,13 +49,14 @@
             />
           </span>
           <label class="toggle">
-            <input type="checkbox" id="offline-mode" />
+            <input type="checkbox" bind:checked={isOfflineMode} />
             <span class="slider"></span>
           </label>
         </div>
         <input
           type="text"
           class="offline-doc-path"
+          bind:value={offlineDocPath}
           placeholder="Input the local doc path"
         />
       </div>
@@ -75,28 +86,31 @@
         <div class="setting-subitem">
           - Third-party docs
           <label class="toggle">
-            <input type="checkbox" id="ds-3rd-docs" />
+            <input
+              type="checkbox"
+              bind:checked={defaultSearch.thirdPartyDocs}
+            />
             <span class="slider"></span>
           </label>
         </div>
         <div class="setting-subitem">
           - Docs.rs
           <label class="toggle">
-            <input type="checkbox" id="ds-docs-rs" />
+            <input type="checkbox" bind:checked={defaultSearch.docsRs} />
             <span class="slider"></span>
           </label>
         </div>
         <div class="setting-subitem">
           - Attributes
           <label class="toggle">
-            <input type="checkbox" id="ds-attributes" />
+            <input type="checkbox" bind:checked={defaultSearch.attributes} />
             <span class="slider"></span>
           </label>
         </div>
       </div>
       <div>
         <label>Crate registry</label>
-        <select name="crate-registry">
+        <select name="crate-registry" bind:value={crateRegistry}>
           <option value="crates.io">crates.io</option>
           <option value="lib.rs">lib.rs</option>
         </select>
