@@ -1,9 +1,30 @@
 {
-    "dependencies": {
-        "omnibox-js": "^0.2.0"
-    },
-    "devDependencies": {
-        "esbuild": "0.23.0",
+	"name": "query-rs",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+		"test": "vitest",
+		"lint": "eslint ."
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@types/eslint": "^8.56.7",
+		"eslint": "^9.0.0",
+		"eslint-plugin-svelte": "^2.36.0",
+		"globals": "^15.0.0",
+		"svelte": "^4.2.7",
+		"svelte-check": "^3.6.0",
+		"typescript": "^5.0.0",
+		"vite": "^5.0.3",
+		"vitest": "^1.2.0",
         "wrangler": "^3.62.0"
-    }
+	},
+	"type": "module"
 }
