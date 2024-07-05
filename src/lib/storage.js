@@ -1,6 +1,9 @@
 import { Compat } from "omnibox-js";
 
-let storage = null;
+ /**
+ * @type {Storage}
+ */
+let storage;
 
 if (Compat.isRunningInWebExtension()) {
     // Mimic localStorage API with chrome.storage.
