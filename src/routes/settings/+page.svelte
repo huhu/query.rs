@@ -128,7 +128,7 @@
         <div>
           Enable auto update
           <span
-            aria-label="Whether auto opens the index update page when the browser launch (default false). At any time, you can use the `:update` command to sync the latest index."
+            aria-label="Whether auto opens the index update page when the browser launch (default false). At any time, you can use the ':update' command to sync the latest index."
             data-balloon-pos="up"
             data-balloon-length="large"
             style="vertical-align: middle"
