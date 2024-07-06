@@ -52,3 +52,21 @@
     </label>
   </div>
 </div>
+<div class="setting-item">
+    <div>
+        Show macro railroad
+        <label class="toggle">
+            <input type="checkbox" id="show-macro-railroad">
+            <span class="slider"></span>
+        </label>
+    </div>
+</div>
+<div class="setting-item">
+    <div>
+        Always keep crates up-to-date
+        <label class="toggle">
+            <input type="checkbox" id="keep-crates-up-to-date">
+            <span class="slider"></span>
+        </label>
+    </div>
+</div>
