@@ -21,6 +21,7 @@
     },
     "devDependencies": {
         "@sveltejs/adapter-cloudflare": "^4.6.1",
+        "@sveltejs/adapter-static": "^3.0.2",
         "@sveltejs/kit": "^2.0.0",
         "@sveltejs/vite-plugin-svelte": "^3.0.0",
         "@types/eslint": "^8.56.7",
