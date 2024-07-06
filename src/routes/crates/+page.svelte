@@ -24,10 +24,15 @@
   let cratesData = {};
 
   $: if (browser && crates.length >= 0) {
-    let size = Object.keys(localStorage)
-      .map((k) => ((localStorage.getItem(k) ?? "").length * 2) / 1024 / 1024)
-      .reduce((a, b) => a + b);
-    usageSize = `${Math.round(size * 100) / 100} MB`;
+    let keys = Object.keys(localStorage);
+    if (keys.length > 0) {
+      let size = Object.keys(localStorage)
+        .map((k) => ((localStorage.getItem(k) ?? "").length * 2) / 1024 / 1024)
+        .reduce((a, b) => a + b);
+      usageSize = `${Math.round(size * 100) / 100} MB`;
+    } else {
+      usageSize = "0 MB";
+    }
   }
 
   $: {
