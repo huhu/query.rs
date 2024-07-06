@@ -26,18 +26,15 @@ jobs:
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rfcs -p /tmp/rfc-index -d /tmp/rfcs.js
           wget https://static.crates.io/db-dump.tar.gz -O /tmp/db-dump.tar.gz
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml --release crates -p /tmp/db-dump.tar.gz -d /tmp/crates.js
-          mv /tmp/*.js lib/index
-      - name: Build website
-        run: |
-          curl -sSfL https://github.com/mitsuhiko/minijinja/releases/latest/download/minijinja-cli-installer.sh | sh
-          cd web && make build
+          mv /tmp/*.js src/lib/index
+          npm run build
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: query-rs
-          directory: ./web/dist
+          directory: .svelte-ki/cloudflare
           # Optional: Enable this if you want to have GitHub Deployments triggered
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # By default this will be the branch which triggered this workflow

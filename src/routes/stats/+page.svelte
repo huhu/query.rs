@@ -1,0 +1,70 @@
+<script>
+  import moment from "moment";
+  import { renderCharts, renderYearList } from "./stats";
+  import { onMount } from "svelte";
+
+  const now = moment().valueOf();
+  const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
+
+  onMount(async () => {
+    await renderCharts(now, yearAgo);
+    await renderYearList();
+  });
+</script>
+
+<link rel="stylesheet" href="/css/calendar-heatmap.css" />
+<link rel="stylesheet" href="/css/charts.css" />
+<div style="flex-direction: column;" class="flex-layout">
+  <div class="chart-heatmap"></div>
+</div>
+<div class="search-time" style="text-align: center;font-size: 20px;">
+  <b>0</b> searches in <b>the last year</b>, approximately saved
+  <b>0 seconds</b>.
+  <b
+    aria-label="We consider one search save 5 seconds in average, just an estimated value."
+    data-balloon-pos="up"
+    data-balloon-length="large"
+    style="vertical-align: middle"
+    class="tooltip-color"
+  >
+    <img src="../assets/info.svg" alt="info" />
+  </b>
+</div>
+<div id="chart">
+  <div style="padding: 30px 0;">
+    <div
+      class="search-stats-graph"
+      style=" height: 8px; width: 100%; display: flex;"
+    ></div>
+    <div class="search-stats-text" style=" padding: 10px;">
+      <ol style="display: flex; justify-content: space-around;"></ol>
+    </div>
+  </div>
+  <div
+    style="display: flex; flex-direction: row-reverse; align-items: flex-start; padding-top: 30px;"
+  >
+    <div>
+      <div class="" style="padding-bottom: 20px;">
+        <h3>Searches per weekday</h3>
+        <div class="chart-histogram-week" style="position: relative;"></div>
+      </div>
+      <div class="" style="padding-bottom: 20px;">
+        <h3>Searches per day of month</h3>
+        <div class="chart-histogram-date" style="position: relative;"></div>
+      </div>
+      <div class="" style="padding-bottom: 20px;">
+        <h3>Searches per hour (local time)</h3>
+        <div class="chart-histogram-hour" style="position: relative;"></div>
+      </div>
+    </div>
+
+    <div class="" style="padding-right: 80px;">
+      <h3>Top searched crates</h3>
+      <div
+        class="topCratesData"
+        style="position: relative;box-sizing: border-box;"
+      ></div>
+    </div>
+  </div>
+</div>
+<ul class="filter-list"></ul>
