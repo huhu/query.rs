@@ -27,14 +27,14 @@ jobs:
           wget https://static.crates.io/db-dump.tar.gz -O /tmp/db-dump.tar.gz
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml --release crates -p /tmp/db-dump.tar.gz -d /tmp/crates.js
           mv /tmp/*.js src/lib/index
-          npm run build
+          npm install && npm run build
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: query-rs
-          directory: .svelte-ki/cloudflare
+          directory: .svelte-kit/cloudflare
           # Optional: Enable this if you want to have GitHub Deployments triggered
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # By default this will be the branch which triggered this workflow
