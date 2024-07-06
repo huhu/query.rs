@@ -1,5 +1,5 @@
-export async function onRequestGet(context) {
-    let crate = context.params.crate;
+export async function GET({ params }) {
+    let crate = params.crate;
     let response = await fetch(`https://crates.io/api/v1/crates/${crate}`, {
         headers: {
             "User-Agent": "Query.rs on Cloudflare Pages function",

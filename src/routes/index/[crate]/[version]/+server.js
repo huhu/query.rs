@@ -12,6 +12,9 @@
  *       data-settings-js="settings-4313503d2e1961c2.js">
  */
 class MetaHandler {
+    /**
+     * @param {{ getAttribute: (arg0: string) => string; }} element
+     */
     element(element) {
         if (element.getAttribute('name') === 'rustdoc-vars') {
             this.rootPath = element.getAttribute('data-root-path');
@@ -25,16 +28,27 @@ class MetaHandler {
         return `search-index${this.resourceSuffix}.js`;
     }
 
+    /**
+     * @param {string} crate
+     * @param {number} shard
+     */
     descShardJs(crate, shard) {
         return `search.desc/${crate}/${crate}-desc-${shard}-${this.resourceSuffix}.js`;
     }
 }
 
 class VlqHexDecoder {
+    /**
+     * @param {any} string
+     * @param {(noop: any) => any} cons
+     */
     constructor(string, cons) {
         this.string = string;
         this.cons = cons;
         this.offset = 0;
+        /**
+         * @type {any[]}
+         */
         this.backrefQueue = [];
     }
     // call after consuming `{`
@@ -92,12 +106,12 @@ class VlqHexDecoder {
     }
 }
 
-export async function onRequestGet(context) {
-    let crate = context.params.crate;
-    let version = context.params.version;
+export async function GET({params, platform}) {
+    let crate = params.crate;
+    let version = params.version;
 
     let cacheKey = `${crate}/${version}`;
-    const obj = await context.env.QUERY_INDEX.get(cacheKey);
+    const obj = await platform.env.QUERY_INDEX.get(cacheKey);
     if (obj) {
         return Response.json(await obj.json());
     }
@@ -139,7 +153,7 @@ export async function onRequestGet(context) {
     }
     // Get desc shards number from search index
     let vlqHex = searchIndex[0][1]["D"];
-    let decoder = new VlqHexDecoder(vlqHex, noop => noop);
+    let decoder = new VlqHexDecoder(vlqHex, (/** @type {any} */ noop) => noop);
     let shardNum = 0;
 
     let shards = {};
@@ -149,12 +163,12 @@ export async function onRequestGet(context) {
         response = await fetch(descShardJsUrl);
         text = await response.text();
         let result = text.substring("searchState.loadedDescShard(".length, text.length - 1);
-        let [crate, shard, ...descs] = result.split(',');
+        let [_crate, shard, ...descs] = result.split(',');
         descs = descs.join("").trim();
         // Trim the first and last `"`
         descs = descs.substring(1, descs.length);
 
-        descs = descs.split("\\n").map(desc => {
+        descs = descs.split("\\n").map((/** @type {string} */ desc) => {
             return desc.replace(/<\/?(code|span)>/g, "");
         });
         // trim and parse shard into int
@@ -179,6 +193,6 @@ export async function onRequestGet(context) {
     };
 
     // cache the index
-    await context.env.QUERY_INDEX.put(cacheKey, JSON.stringify(index));
+    await platform.env.QUERY_INDEX.put(cacheKey, JSON.stringify(index));
     return Response.json(index);
 }
