@@ -3,6 +3,7 @@
   import { Statistics, CrateDocManager } from "$lib/index.js";
   import { Compat } from "omnibox-js";
   import { onMount } from "svelte";
+  import toast, { Toaster } from "svelte-french-toast";
 
   /**
    * @type {string}
@@ -50,12 +51,12 @@
 
   async function addCrate() {
     if (!searchCrate) {
-      // new Toast(".toast").info("Please input crate name");
+      toast.error("Please input crate name");
       return;
     }
 
-    if (searchCrate in crates) {
-      // new Toast(".toast").info(`Crate \`${crate}\` already exists`);
+    if (searchCrate in (await CrateDocManager.getCrates())) {
+      toast.error(`Crate \`${searchCrate}\` already exists`);
       return;
     }
 
@@ -63,7 +64,7 @@
       `https://crates.io/api/v1/crates/${searchCrate}`
     );
     if (response.status !== 200) {
-      // new Toast(".toast").info(`Crate \`${crate}\` not found`);
+      toast.error(`Crate \`${searchCrate}\` not found`);
       return;
     }
 
@@ -74,15 +75,17 @@
       );
       if (response.status !== 200) {
         let data = await response.json();
-        // new Toast(".toast").info(data.error);
+        toast.error(data.error);
         return;
       }
 
       data = await response.json();
       await CrateDocManager.addCrate(data);
       crates = await getCrates();
+      toast.success(`Crate \`${searchCrate}\` added`);
+      searchCrate = "";
     } catch (e) {
-      //   new Toast(".toast").info(e.message);
+      toast.error(e.message);
     }
   }
 
@@ -100,6 +103,15 @@
     return crates;
   }
 
+  /**
+   * @param {{ key: string; }} event
+   */
+  async function handleKeydown(event) {
+    if (event.key === "Enter" && searchCrate) {
+      await addCrate();
+    }
+  }
+
   onMount(async () => {
     crates = await getCrates();
     const { timeline } = await Statistics.load();
@@ -112,6 +124,8 @@
   });
 </script>
 
+<svelte:window on:keydown={handleKeydown} />
+<Toaster />
 <div
   style="position:relative;text-align:center;margin:20px;margin-bottom:60px;"
 >
@@ -122,7 +136,6 @@
     style="width:400px;height:32px;padding:0 12px;border-radius:10px;border:1px solid #f9bb2daa;"
   />
   <span class="btn btn-primary" on:click={addCrate}> Add crate </span>
-  <div class="toast"></div>
 </div>
 <div class="subtitle-text crate-list-filter">
   <span>
