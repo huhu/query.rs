@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { settings } from "$lib/index.js";
   import ExtensionSettings from "./ExtensionSettings.svelte";
-  import { PUBLIC_EXTENSION_MODE } from "$env/static/public";
+  import { Compat } from "omnibox-js";
 
   // Get the information about the current platform os.
   // Possible os values: "mac", "win", "android", "cros", "linux", or "openbsd"
@@ -180,7 +180,7 @@
           <option value="lib.rs">lib.rs</option>
         </select>
       </div>
-      {#if PUBLIC_EXTENSION_MODE}
+      {#if Compat.isRunningInWebExtension()}
         <ExtensionSettings />
       {/if}
     </div>
