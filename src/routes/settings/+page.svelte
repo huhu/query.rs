@@ -1,6 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import { settings } from "$lib/index.js";
+  import ExtensionSettings from "./ExtensionSettings.svelte";
+  import { PUBLIC_EXTENSION_MODE } from "$env/static/public";
 
   // Get the information about the current platform os.
   // Possible os values: "mac", "win", "android", "cros", "linux", or "openbsd"
@@ -12,21 +14,7 @@
     return os;
   }
 
-  // document.addEventListener('DOMContentLoaded',
   async function render() {
-    const autoUpdateCheckbox = document.getElementById("auto-update");
-    autoUpdateCheckbox.checked = await settings.autoUpdate;
-    autoUpdateCheckbox.onchange = async function (event) {
-      settings.autoUpdate = event.target.checked;
-    };
-    const showMacroRailroad = document.getElementById("show-macro-railroad");
-    if (showMacroRailroad) {
-      showMacroRailroad.checked = await settings.showMacroRailroad;
-      showMacroRailroad.onchange = async function (event) {
-        settings.showMacroRailroad = event.target.checked;
-      };
-    }
-
     // Offline mode checkbox
     if (!(await settings.offlineDocPath)) {
       // If the offline doc path not exists, turn off the offline mode.
@@ -65,16 +53,6 @@
     crateRegistry.onchange = function () {
       settings.crateRegistry = crateRegistry.value;
     };
-
-    const keepCratesUpToDate = document.getElementById(
-      "keep-crates-up-to-date"
-    );
-    if (keepCratesUpToDate) {
-      keepCratesUpToDate.checked = await settings.keepCratesUpToDate;
-      keepCratesUpToDate.onchange = async function (event) {
-        settings.keepCratesUpToDate = event.target.checked;
-      };
-    }
 
     await setupDefaultSearch();
   }
@@ -124,27 +102,6 @@
   <div class="setting-group">
     <div class="title-text">General</div>
     <div>
-      <div class="setting-item">
-        <div>
-          Enable auto update
-          <span
-            aria-label="Whether auto opens the index update page when the browser launch (default false). At any time, you can use the ':update' command to sync the latest index."
-            data-balloon-pos="up"
-            data-balloon-length="large"
-            style="vertical-align: middle"
-          >
-            <img
-              style="vertical-align: middle;width: 15px;margin-right: 5px;"
-              src="../assets/info.svg"
-              alt="info"
-            />
-          </span>
-          <label class="toggle">
-            <input type="checkbox" id="auto-update" />
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
       <div class="setting-item">
         <div>
           Enable offline mode
@@ -217,12 +174,15 @@
         </div>
       </div>
       <div>
-        <label>Crate registry</label>
+        Crate registry
         <select name="crate-registry">
           <option value="crates.io">crates.io</option>
           <option value="lib.rs">lib.rs</option>
         </select>
       </div>
+      {#if PUBLIC_EXTENSION_MODE}
+        <ExtensionSettings />
+      {/if}
     </div>
   </div>
   <div class="setting-group">
