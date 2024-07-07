@@ -1,4 +1,4 @@
-import { storage } from "./index.js";
+import storage from "./storage.js";
 
 // All getters are async getter, all setter are sync setter,
 // we just ignore the set promise.
