@@ -26,7 +26,7 @@ jobs:
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rfcs -p /tmp/rfc-index -d /tmp/rfcs.js
           wget https://static.crates.io/db-dump.tar.gz -O /tmp/db-dump.tar.gz
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml --release crates -p /tmp/db-dump.tar.gz -d /tmp/crates.js
-          mv /tmp/*.js src/lib/index
+          mv /tmp/*.js lib/index
           npm install && npm run build
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
