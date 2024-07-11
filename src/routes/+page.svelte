@@ -1,6 +1,5 @@
 <script>
-  import { Omnibox } from "omnibox-js";
-  import start from "$lib/main.js";
+  import { start, Omnibox } from "$lib/index.js";
   import { onMount } from "svelte";
   import "omnibox-js/omnibox.css";
 

@@ -6,7 +6,6 @@
     CrateDocManager,
     Statistics,
   } from "$lib/index.js";
-  import { onMount } from "svelte";
 
   /**
    * @type {{ [x: string]: any; }}
