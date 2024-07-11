@@ -1,5 +1,5 @@
 <script>
-  import { settings } from "$lib/index.js";
+  import { settings } from "../../querylib.js";
   import { onMount } from "svelte";
 
   onMount(async () => {

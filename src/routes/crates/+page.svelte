@@ -1,7 +1,6 @@
 <script>
   import { browser } from "$app/environment";
-  import { Statistics, CrateDocManager } from "$lib/index.js";
-  import { Compat } from "omnibox-js";
+  import { Statistics, CrateDocManager, Compat } from "../../querylib.js";
   import { onMount } from "svelte";
   import toast, { Toaster } from "svelte-french-toast";
 

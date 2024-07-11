@@ -1,0 +1,22 @@
+{
+    "name": "querylib",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "main": "./index.js",
+    "scripts": {
+        "build": "vite build",
+        "preview": "vite preview",
+        "test": "vitest",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "omnibox-js": "^0.2.0"
+    },
+    "devDependencies": {
+        "@types/eslint": "^8.56.7",
+        "eslint": "^9.0.0",
+        "vite": "^5.0.3",
+        "vitest": "^1.2.0"
+    }
+}

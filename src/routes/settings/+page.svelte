@@ -1,8 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { settings } from "$lib/index.js";
+  import { settings, Compat } from "../../querylib.js";
   import ExtensionSettings from "./ExtensionSettings.svelte";
-  import { Compat } from "omnibox-js";
 
   // Get the information about the current platform os.
   // Possible os values: "mac", "win", "android", "cros", "linux", or "openbsd"

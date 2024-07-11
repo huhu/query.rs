@@ -1,5 +1,5 @@
 <script>
-  import { start, Omnibox } from "$lib/index.js";
+  import { start, Omnibox } from "../querylib.js";
   import { onMount } from "svelte";
   import "omnibox-js/omnibox.css";
 

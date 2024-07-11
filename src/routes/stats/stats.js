@@ -1,5 +1,5 @@
 import { barChart, histogram, calendarHeatmap } from "./charts.js";
-import { STATS_PATTERNS, Statistics } from "$lib/statistics.js";
+import { STATS_PATTERNS, Statistics } from "../../querylib.js";
 import moment from "moment";
 
 const TYPE_OTHER = "other";

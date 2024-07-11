@@ -1,11 +1,11 @@
 <script>
-  import { Compat } from "omnibox-js";
   import {
     storage,
     settings,
+    Compat,
     CrateDocManager,
     Statistics,
-  } from "$lib/index.js";
+  } from "../../querylib.js";
 
   /**
    * @type {{ [x: string]: any; }}
