@@ -1,7 +1,6 @@
 <script>
   import { start, Omnibox } from "../querylib.js";
   import { onMount } from "svelte";
-  import "omnibox-js/omnibox.css";
 
   onMount(async () => {
     const omnibox = Omnibox.webpage({
@@ -13,4 +12,5 @@
   });
 </script>
 
+<link rel="stylesheet" href="/css/omnibox.css" />
 <div id="omnibox" style="width: 85%; margin: 20px auto;"></div>

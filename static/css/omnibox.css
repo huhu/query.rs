@@ -1,0 +1,129 @@
+.omn-container {
+  box-sizing: border-box;
+  display: flex;
+  z-index: 3;
+  position: relative;
+  background: #fff;
+  border: 1px solid #dfe1e5;
+  box-shadow: none;
+  border-radius: 24px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 16px;
+  align-items: center;
+}
+
+.omn-input {
+  width: 100%;
+  border: transparent;
+  padding: 5px;
+}
+
+.omn-hint {
+  display: flex;
+  color: #2559c9;
+  white-space: nowrap;
+  text-wrap: nowrap;
+}
+
+.omn-hint-gapline {
+  width: 1px;
+  height: 15px;
+  background: #9cb5eb;
+  margin: 0 5px;
+  align-self: center;
+}
+
+.omn-filled {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+  border-color: transparent;
+}
+
+.omn-input:focus {
+  outline: none;
+}
+
+.omn-dropdown {
+  position: absolute;
+  z-index: 999;
+  margin-top: -1px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 4px 6px rgba(32, 33, 36, 0.28);
+  border: 0;
+  padding-bottom: 4px;
+}
+
+.omn-gapline {
+  border-top: 1px solid #e8eaed;
+  margin: 0 20px 0 14px;
+  padding-bottom: 4px;
+}
+
+.omn-dropdown-item {
+  padding: 0.6rem 1rem;
+  display: flex;
+  font-size: 16px;
+}
+
+.omn-dropdown-item a {
+  font-weight: normal;
+  text-decoration: none;
+  color: inherit;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.omn-dropdown-item a:visited {
+  color: inherit;
+}
+
+.omn-dropdown-item:hover {
+  cursor: pointer;
+}
+
+.omn-dropdown-item img {
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  vertical-align: middle;
+}
+
+.omn-dropdown-indicator {
+  display: none;
+  position: absolute;
+  box-sizing: border-box;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border: 2px #3168cb solid;
+  border-radius: 0 10px 10px 0;
+}
+
+.omn-selected .omn-dropdown-indicator {
+  display: block;
+}
+
+.omn-selected,
+.omn-dropdown-item:hover {
+  background-color: #f2f2f2;
+}
+
+.omn-match {
+  font-weight: 600;
+}
+
+.omn-dim {
+  font-weight: 300;
+  color: #474747;
+}
