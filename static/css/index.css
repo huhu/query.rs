@@ -213,15 +213,6 @@ input:checked + .slider:before {
   border: 1px dashed red;
   animation: shake 0.5s;
 }
-.toast {
-    max-width: 80%;
-    top: 20px;
-    z-index: 10;
-    text-align: center;
-    padding: 8px;
-    display: none;
-    margin: 10px auto;
-}
 @keyframes shake {
   0% {
     transform: translate(1px, 1px) rotate(0deg);

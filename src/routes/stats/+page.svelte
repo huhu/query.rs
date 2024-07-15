@@ -12,7 +12,6 @@
   });
 </script>
 
-<link rel="stylesheet" href="/css/calendar-heatmap.css" />
 <link rel="stylesheet" href="/css/charts.css" />
 <div style="flex-direction: column;" class="flex-layout">
   <div class="chart-heatmap"></div>
