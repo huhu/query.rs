@@ -5,7 +5,7 @@
     Compat,
     CrateDocManager,
     Statistics,
-  } from "../../querylib.js";
+  } from "querylib";
 
   /**
    * @type {{ [x: string]: any; }}

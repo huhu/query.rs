@@ -1,6 +1,6 @@
 <script>
   import { browser } from "$app/environment";
-  import { Statistics, CrateDocManager, Compat } from "../../querylib.js";
+  import { Statistics, CrateDocManager, Compat } from "querylib";
   import { onMount } from "svelte";
   import toast, { Toaster } from "svelte-french-toast";
 

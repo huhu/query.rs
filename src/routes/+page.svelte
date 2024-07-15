@@ -1,5 +1,5 @@
 <script>
-  import { start, Omnibox } from "../querylib.js";
+  import { start, Omnibox } from "querylib";
   import { onMount } from "svelte";
 
   onMount(async () => {

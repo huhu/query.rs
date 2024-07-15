@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { settings, Compat } from "../../querylib.js";
+  import { settings, Compat } from "querylib";
   import ExtensionSettings from "./ExtensionSettings.svelte";
 
   // Get the information about the current platform os.
