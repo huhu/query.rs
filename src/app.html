@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Query.rs</title>
-    <link rel='stylesheet' href='%sveltekit.assets%/css/generic.css'>
     <link rel='stylesheet' href='%sveltekit.assets%/css/balloon.min.css'>
-    <link rel='stylesheet' href='%sveltekit.assets%/css/index.css'>
     <link href="https://fonts.googleapis.com/css?family=Alfa+Slab+One&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600&display=swap" rel="stylesheet">
     <style>
@@ -21,17 +19,16 @@
 </head>
 <body>
     <div class="flex-layout" style="flex-direction: column;">
-        <div style="max-width: 1160px; width:100%; display: flex;flex-direction: column;">
-            <ul class="nav">
-                <li class="nav-item"><a href="/">Home</a></li>
-                <li class="nav-item"><a href="/stats">Stats</a></li>
-                <li class="nav-item"><a href="/crates">Crate manager</a></li>
-                <li class="nav-item"><a href="/settings">Settings</a></li>
-                <li class="nav-item"><a href="/export">Export/Import</a></li>
+        <div class="max-w-[1160px] w-full flex flex-col">
+            <ul class="list-none flex-row flex self-end px-6 py-0 text-xl">
+                <li class="p-5"><a href="/">Home</a></li>
+                <li class="p-5"><a href="/stats">Stats</a></li>
+                <li class="p-5"><a href="/crates">Crates</a></li>
+                <li class="p-5"><a href="/settings">Settings</a></li>
+                <li class="p-5"><a href="/export">Export/Import</a></li>
             </ul>
-            <div style="box-sizing: border-box; padding: 50px 80px; background-color: white; position: relative; 
-                border-radius: 10px; margin-bottom: 50px; min-height: calc(100vh - 100px);">
-                <a href="/" style="text-decoration: none">
+            <div class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_100px)]">
+                <a href="/" class="no-underline hover:no-underline">
                     <div class="logo flex-layout">
                         <img src="/assets/icon.png" alt="logo">
                         Query.rs

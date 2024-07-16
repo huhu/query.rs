@@ -148,48 +148,50 @@
   }
 </script>
 
-<div class="setting-group">
-  <div class="title-text">Export</div>
-  <div class="text">
-    <div>Export following data to JSON file:</div>
-    <br />
-    {#each Object.keys(exportConfig) as key}
-      <div class="setting-item">
-        <div>
-          <label class="toggle">
-            <input type="checkbox" bind:checked={exportConfig[key]} />
-            <span class="slider"></span>
-          </label>
-          {formatItem(key)}
+<div class="flex flex-col items-start m-auto text w-full md:mx-36">
+  <div class="setting-group">
+    <div class="title-text">Export</div>
+    <div class="text">
+      <div>Export following data to JSON file:</div>
+      <br />
+      {#each Object.keys(exportConfig) as key}
+        <div class="setting-item">
+          <div>
+            <label class="toggle">
+              <input type="checkbox" bind:checked={exportConfig[key]} />
+              <span class="slider"></span>
+            </label>
+            {formatItem(key)}
+          </div>
         </div>
-      </div>
-    {/each}
-    <div class="btn btn-primary btn-export" on:click={onExport}>Export</div>
+      {/each}
+      <div class="btn btn-primary btn-export" on:click={onExport}>Export</div>
+    </div>
   </div>
-</div>
-<div class="setting-group">
-  <div class="title-text">Import</div>
-  <div class="text">
-    <div>Import from local JSON file:</div>
-    <br />
-    <input
-      class="file-selector text"
-      bind:this={fileSelector}
-      on:change={onFileSelected}
-      type="file"
-      accept="application/json"
-    />
-    {#each Object.keys(importConfig) as key}
-      <div class="setting-item">
-        <div>
-          <label class="toggle">
-            <input type="checkbox" bind:checked={importConfig[key]} />
-            <span class="slider"></span>
-          </label>
-          {formatItem(key)}
+  <div class="setting-group">
+    <div class="title-text">Import</div>
+    <div class="text">
+      <div>Import from local JSON file:</div>
+      <br />
+      <input
+        class="file-selector text"
+        bind:this={fileSelector}
+        on:change={onFileSelected}
+        type="file"
+        accept="application/json"
+      />
+      {#each Object.keys(importConfig) as key}
+        <div class="setting-item">
+          <div>
+            <label class="toggle">
+              <input type="checkbox" bind:checked={importConfig[key]} />
+              <span class="slider"></span>
+            </label>
+            {formatItem(key)}
+          </div>
         </div>
-      </div>
-    {/each}
-    <div class="btn btn-secondary btn-import" on:click={onImport}>Import</div>
+      {/each}
+      <div class="btn btn-secondary btn-import" on:click={onImport}>Import</div>
+    </div>
   </div>
 </div>

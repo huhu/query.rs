@@ -13,4 +13,4 @@
 </script>
 
 <link rel="stylesheet" href="/css/omnibox.css" />
-<div id="omnibox" style="width: 85%; margin: 20px auto;"></div>
+<div id="omnibox" class="w-full md:w-[85%] mx-[auto] my-[20px]"></div>

@@ -2,6 +2,7 @@ import { barChart, histogram, calendarHeatmap } from "./charts.js";
 import { STATS_PATTERNS, Statistics } from "querylib";
 import moment from "moment";
 
+let chartWidth = 460;
 const TYPE_OTHER = "other";
 const CHART_COLOR = "rgba(249, 188, 45, 0.5)";
 const STATS_MAP = {
@@ -48,12 +49,7 @@ function makeNumericKeyObject(start, end, initial = 0) {
         }, {});
 }
 
-const histogramConfig = {
-    width: 460,
-    height: 240,
-    color: CHART_COLOR,
-    margin: { top: 30, right: 0, bottom: 40, left: 40 },
-};
+
 
 function calculateSavedTime(times) {
     let seconds = times * 5;
@@ -117,6 +113,12 @@ function renderHistogram(weeksObj, datesObj, hoursObj) {
     if (weekContainer.hasChildNodes()) {
         weekContainer.innerHTML = null;
     }
+    const histogramConfig = {
+        width: chartWidth,
+        height: 240,
+        color: CHART_COLOR,
+        margin: { top: 30, right: 0, bottom: 40, left: 40 },
+    };
     histogram({
         selector: ".chart-histogram-week",
         data: weeksData,
@@ -208,7 +210,7 @@ function renderTopCratesChart(topCratesObj) {
         // Calculate height dynamically to keep the bar with consistence width regardless of the topCratesData length.
         height: 800 / 15 * topCratesData.length + 40,
         barHeight: 25,
-        width: 460,
+        width: chartWidth,
         data: topCratesData,
         selector: ".topCratesData",
         color: CHART_COLOR,
@@ -217,6 +219,7 @@ function renderTopCratesChart(topCratesObj) {
 
 
 export async function renderCharts(now, yearAgo, searchTime) {
+    chartWidth = Math.min(chartWidth, document.getElementById("chart").clientWidth) - 10;
     const { timeline } = await Statistics.load();
 
     const data = timeline.filter(([time]) => {

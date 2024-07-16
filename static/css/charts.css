@@ -8,6 +8,13 @@ rect.day-cell:hover {
   stroke: #555555;
   stroke-width: 1px;
 }
+#chart rect {
+  stroke: #f9bb2d;
+  stroke-width: 1px;
+}
+#chart rect:hover {
+  fill: #ff9d00;
+}
 .day-cell-tooltip {
   position: absolute;
   z-index: 9999;
@@ -23,16 +30,16 @@ rect.day-cell:hover {
 }
 .histogram-bar-tooltip {
   box-sizing: border-box;
-    position: absolute;
-    z-index: 9999;
-    padding: 5px 9px;
-    color: #ffffff;
-    font-size: 12px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 3px;
-    text-align: center;
-  }
+  position: absolute;
+  z-index: 9999;
+  padding: 5px 9px;
+  color: #ffffff;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
+  text-align: center;
+}
 
-  svg:not(:root) {
-    overflow: initial;
+svg:not(:root) {
+  overflow: initial;
 }

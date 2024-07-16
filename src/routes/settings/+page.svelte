@@ -97,7 +97,7 @@
   });
 </script>
 
-<div class="text">
+<div class="flex flex-col items-start m-auto text w-full md:mx-36">
   <div class="setting-group">
     <div class="title-text">General</div>
     <div>
@@ -117,13 +117,13 @@
             />
           </span>
           <label class="toggle">
-            <input type="checkbox" id="offline-mode" />
+            <input type="checkbox" id="offline-mode"/>
             <span class="slider"></span>
           </label>
         </div>
         <input
           type="text"
-          class="offline-doc-path"
+          class="offline-doc-path rounded border border-solid border-[#f9bb2daa] px-2 focus:outline-none"
           placeholder="Input the local doc path"
         />
       </div>
@@ -174,7 +174,7 @@
       </div>
       <div>
         Crate registry
-        <select name="crate-registry">
+        <select name="crate-registry" class="border">
           <option value="crates.io">crates.io</option>
           <option value="lib.rs">lib.rs</option>
         </select>
@@ -182,23 +182,6 @@
       {#if Compat.isRunningInWebExtension()}
         <ExtensionSettings />
       {/if}
-    </div>
-  </div>
-  <div class="setting-group">
-    <div class="title-text">About</div>
-    <div>
-      <div class="setting-item">
-        <a href="https://rust.extension.sh">Website</a>
-      </div>
-      <div class="setting-item">
-        <a href="https://rust.extension.sh/changelog">Changelog</a>
-      </div>
-      <div class="setting-item">
-        <a href="https://github.com/huhu/rust-search-extension">Github</a>
-      </div>
-      <div class="setting-item">
-        <a href="https://discord.gg/xucZNVd">Discord</a>
-      </div>
     </div>
   </div>
   <div class="setting-group">

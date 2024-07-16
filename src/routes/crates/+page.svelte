@@ -131,17 +131,16 @@
 <svelte:window on:keydown={handleKeydown} />
 <Toaster />
 <div
-  style="position:relative;text-align:center;margin:20px;margin-bottom:60px;"
+  class="m-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
 >
   <input
-    id="crate-name"
     bind:value={searchCrate}
     type="text"
-    style="width:400px;height:32px;padding:0 12px;border-radius:10px;border:1px solid #f9bb2daa;"
+    class="w-full md:w-[400px] h-8 px-2 py-0 rounded border border-solid border-[#f9bb2daa] focus:outline-none"
   />
-  <span class="btn btn-primary" on:click={addCrate}> Add crate </span>
+  <span class="btn btn-primary m-4" on:click={addCrate}> Add crate </span>
 </div>
-<div class="subtitle-text crate-list-filter">
+<div class="subtext crate-list-filter">
   <span>
     You have indexed <span>{crates.length}</span> crate(s), disk usage:
     <span>{usageSize}</span>
@@ -149,7 +148,7 @@
   </span>
   <span>
     Sort by:
-    <select bind:value={orderBy}>
+    <select bind:value={orderBy} class="border">
       <option value="time">Indexed time</option>
       <option value="alphanumeric">Alphanumeric</option>
       <option value="searches">Searches</option>
