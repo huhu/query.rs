@@ -37,14 +37,14 @@
                             d="M1 1h15M1 7h15M1 13h15" />
                     </svg>
                 </div>
-                <ul id="menu-list"
+                <div id="menu-list"
                     class="hidden z-50 right-0 text-left list-none absolute flex-col target:flex shadow-md text-base bg-[#fcfaf6] rounded-md w-full">
                     <a class="p-3 px-6 block" href="/">Home</a>
                     <a class="p-3 px-6 block" href="/stats">Stats</a>
                     <a class="p-3 px-6 block" href="/crates">Crates</a>
                     <a class="p-3 px-6 block" href="/settings">Settings</a>
                     <a class="p-3 px-6 block" href="/export">Export/Import</a>
-                </ul>
+                </div>
             </div>
             <div
                 class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_100px)]">
@@ -62,6 +62,9 @@
 <script>
     document.querySelector("#menu").onclick = () => {
         document.querySelector("#menu-list").classList.toggle("hidden");
+    };
+    document.querySelector("#menu-list").onclick = (event) => {
+        event.currentTarget.classList.toggle("hidden");
     };
 </script>
 
