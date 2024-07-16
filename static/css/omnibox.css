@@ -6,12 +6,20 @@
   background: #fff;
   border: 1px solid #dfe1e5;
   box-shadow: none;
-  border-radius: 24px;
   margin: 0 auto;
   width: 100%;
-  padding: 12px 15px;
-  font-size: 16px;
   align-items: center;
+  border-radius: 14px;
+  padding: 4px 10px;
+  font-size: 15px;
+}
+
+@media (min-width: 768px) {
+  .omn-container {
+    border-radius: 24px;
+    padding: 6px 12px;
+    font-size: 16px;
+  }
 }
 
 .omn-input {
