@@ -278,9 +278,6 @@ a {
   color: initial;
   text-decoration: underline;
 }
-a:hover {
-  font-weight: bold;
-}
 a:visited {
   color: initial;
 }
