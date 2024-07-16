@@ -174,7 +174,7 @@
       <div>Import from local JSON file:</div>
       <br />
       <input
-        class="file-selector text"
+        class="file-selector text w-full"
         bind:this={fileSelector}
         on:change={onFileSelected}
         type="file"
