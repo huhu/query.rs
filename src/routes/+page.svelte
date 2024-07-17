@@ -26,3 +26,8 @@
 <link rel="stylesheet" href="/css/omnibox.css" />
 <div id="omnibox" class="w-full md:w-[85%] mx-[auto] my-[20px]"></div>
 <Tour bind:this={tour} />
+<div class="text-center mt-6 md:mt-10 mx-auto text-wrap">
+  Love query.rs?
+  <a href="https://github.com/huhu/query.rs">Star us on GitHub</a>, or
+  <a href="https://discord.gg/rPWWBqxBhp">Join our Discord!</a>
+</div>
