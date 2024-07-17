@@ -99,20 +99,23 @@
   /**
    * @type {string|null}
    */
-  let currentQuery = $page.url.searchParams.get("q");
+  let currentQuery;
 
   $: if (browser) {
     if ($page.state.q && $page.state.q !== currentQuery) {
       currentQuery = $page.state.q;
     }
-    triggerQuery();
+    triggerQuery(currentQuery);
   }
 
-  function triggerQuery() {
+  /**
+   * @param {string|null} [query]
+   */
+  export function triggerQuery(query) {
     let omniboxInput = document.querySelector(".omn-input");
-    if (currentQuery && omniboxInput) {
+    if (query && omniboxInput) {
       setTimeout(async () => {
-        omniboxInput.value = currentQuery;
+        omniboxInput.value = query;
         omniboxInput.dispatchEvent(new Event("input"));
       });
     }
