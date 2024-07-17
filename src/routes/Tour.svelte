@@ -21,8 +21,8 @@
           queries: ["#cfg", "#derive"],
         },
         {
-          title: "Offline mode <a href='/settings'>supported</a>",
-          queries: [],
+          title: "Search docs by type signature, <a href='https://doc.rust-lang.org/1.79.0/rustdoc/read-documentation/search.html'>full search features</a>",
+          queries: ["vec -> usize", "[] -> Option"],
         },
       ],
     },
@@ -76,11 +76,11 @@
       tips: [
         {
           title: "Commands",
-          queries: [":", ":help", ":book", ":cargo", ":stable"],
+          queries: [":", ":help", ":book", ":cargo", ":stable", ":target", ":tool", ":yet", ":rustc"],
         },
         {
           title: "Append <b>-</b> for pagination",
-          queries: ["entry -", "fn:search --"],
+          queries: ["entry -", "!tokio --"],
         },
         {
           title:
