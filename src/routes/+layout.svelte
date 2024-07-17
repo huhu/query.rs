@@ -54,7 +54,7 @@
       </div>
     </div>
     <div
-      class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_100px)]"
+      class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_180px)]"
     >
       <a href="/" class="no-underline hover:no-underline">
         <div class="logo flex-layout">
@@ -64,5 +64,8 @@
       </a>
       <slot />
     </div>
-  </div>
+</div>
+<footer class="pb-6">
+    © 2024 Query.rs, built by <a href="https://github.com/folyd" target="_blank">Folyd</a> with ❤️❤️
+</footer>
 </div>
