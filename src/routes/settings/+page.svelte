@@ -15,39 +15,6 @@
   }
 
   async function render() {
-    // Offline mode checkbox
-    if (!(await settings.offlineDocPath)) {
-      // If the offline doc path not exists, turn off the offline mode.
-      settings.isOfflineMode = false;
-    }
-    const offlineModeCheckbox = document.getElementById("offline-mode");
-    const checkedState = await settings.isOfflineMode;
-    offlineModeCheckbox.checked = checkedState;
-    toggleOfflinePathEnableState(checkedState);
-    offlineModeCheckbox.onchange = function (event) {
-      const checked = event.target.checked;
-      settings.isOfflineMode = checked;
-      toggleOfflinePathEnableState(checked);
-    };
-
-    // Offline doc path
-    const offlineDocPath = document.querySelector(".offline-doc-path");
-    offlineDocPath.value = await settings.offlineDocPath;
-    offlineDocPath.onchange = async function (event) {
-      let path = event.target.value;
-      if (getPlatformOs() === "win") {
-        // Replace all "/" to "\" for Windows.
-        path = event.target.value.replaceAll("/", "\\");
-      }
-      if (path.startsWith("/")) {
-        // Prepend file:// to allow browser open the file url
-        path = "file://" + path;
-      }
-
-      event.target.value = path;
-      settings.offlineDocPath = path;
-    };
-
     let crateRegistry = document.querySelector("select[name='crate-registry']");
     crateRegistry.value = await settings.crateRegistry;
     crateRegistry.onchange = function () {
@@ -55,17 +22,6 @@
     };
 
     await setupDefaultSearch();
-  }
-
-  function toggleOfflinePathEnableState(enable) {
-    const offlineDocPath = document.querySelector(".offline-doc-path");
-    if (enable) {
-      offlineDocPath.classList.remove("disable");
-      offlineDocPath.classList.add("enable");
-    } else {
-      offlineDocPath.classList.remove("enable");
-      offlineDocPath.classList.add("disable");
-    }
   }
 
   async function setupDefaultSearch() {
@@ -102,32 +58,6 @@
   <div class="setting-group">
     <div class="title-text">General</div>
     <div>
-      <div class="setting-item">
-        <div>
-          Enable offline mode
-          <span
-            aria-label="Please check the FAQ if you are a Firefox user."
-            data-balloon-pos="up"
-            data-balloon-length="large"
-            style="vertical-align: middle"
-          >
-            <img
-              style="vertical-align: middle;width: 15px;margin-right: 5px;"
-              src="../assets/info.svg"
-              alt="info"
-            />
-          </span>
-          <label class="toggle">
-            <input type="checkbox" id="offline-mode" />
-            <span class="slider"></span>
-          </label>
-        </div>
-        <input
-          type="text"
-          class="offline-doc-path rounded border border-solid border-[#f9bb2daa] px-2 focus:outline-none"
-          placeholder="Input the local doc path"
-        />
-      </div>
       <div class="setting-item">
         <div>
           Enable default search items
