@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { settings, Compat } from "querylib";
   import ExtensionSettings from "./ExtensionSettings.svelte";
+  import Export from "./Export.svelte";
 
   // Get the information about the current platform os.
   // Possible os values: "mac", "win", "android", "cros", "linux", or "openbsd"
@@ -117,7 +118,7 @@
             />
           </span>
           <label class="toggle">
-            <input type="checkbox" id="offline-mode"/>
+            <input type="checkbox" id="offline-mode" />
             <span class="slider"></span>
           </label>
         </div>
@@ -184,32 +185,5 @@
       {/if}
     </div>
   </div>
-  <div class="setting-group">
-    <div class="title-text">Other extensions</div>
-    <div>
-      <div class="setting-item">
-        <a href="https://rust.extension.sh">Rust Search Extension</a>
-      </div>
-      <div class="setting-item">
-        <a href="https://cpp.extension.sh">C/C++ Search Extension</a>
-      </div>
-      <div class="setting-item">
-        <a href="https://go.extension.sh">Go Search Extension</a>
-      </div>
-      <div class="setting-item">
-        <a href="https://k8s.extension.sh">Kubernetes Search Extension</a>
-      </div>
-    </div>
-  </div>
-  <div class="setting-group">
-    <div class="title-text">Author</div>
-    <div>
-      <div class="setting-item">
-        <a href="https://twitter.com/_hisriver">@hisriver</a>
-      </div>
-      <div class="setting-item">
-        <a href="https://github.com/folyd">Github</a>
-      </div>
-    </div>
-  </div>
 </div>
+<Export />
