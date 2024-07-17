@@ -22,15 +22,16 @@
   }
 }
 .omn-search-icon {
-    height: 22px;
-    line-height: 22px;
-    width: 22px;
-    margin-right: 5px;
-  }
+  height: 22px;
+  line-height: 22px;
+  width: 22px;
+  margin-right: 5px;
+}
 .omn-input {
   width: 100%;
   border: transparent;
   padding: 5px;
+  overflow-x: hidden;
 }
 
 .omn-hint {

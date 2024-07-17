@@ -23,7 +23,6 @@
   });
 </script>
 
-<link rel="stylesheet" href="/css/omnibox.css" />
 <div id="omnibox" class="w-full md:w-[85%] mx-[auto] my-[20px]"></div>
 <Tour bind:this={tour} />
 <div class="text-center mt-6 md:mt-10 mx-auto text-wrap">

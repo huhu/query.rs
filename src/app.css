@@ -1,3 +1,5 @@
+@import "./omnibox.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,7 +15,7 @@ html {
 }
 
 img {
-    display: inline;
+  display: inline;
 }
 
 .logo {
