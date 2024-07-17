@@ -79,7 +79,7 @@
           queries: [":", ":help", ":book", ":cargo", ":stable"],
         },
         {
-          title: "Append '-' for pagination",
+          title: "Append <b>-</b> for pagination",
           queries: ["entry -", "fn:search --"],
         },
         {
