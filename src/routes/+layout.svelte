@@ -65,7 +65,7 @@
       <slot />
     </div>
 </div>
-<footer class="pb-6">
-    © 2024 Query.rs, built by <a href="https://github.com/folyd" target="_blank">Folyd</a> with ❤️❤️
+<footer class="pb-6 text-center px-4">
+    © 2024 Query.rs, built by <a href="https://github.com/folyd" target="_blank">Folyd</a> with ❤️❤️, see <a href="/about">about</a> page to learn more.
 </footer>
 </div>
