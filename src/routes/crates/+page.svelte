@@ -60,15 +60,20 @@
     }
 
     if (searchCrate in (await CrateDocManager.getCrates())) {
-      toast.error(`Crate \`${searchCrate}\` already exists`);
+      toast.error(`Crate ${searchCrate} already exists`);
       return;
     }
 
+    let toastId = toast("Loading crate...", {
+      icon: "👏",
+    });
+    console.log(toastId);
     let response = await fetch(
       `https://crates.io/api/v1/crates/${searchCrate}`
     );
     if (response.status !== 200) {
-      toast.error(`Crate \`${searchCrate}\` not found`);
+      toast.dismiss(toastId);
+      toast.error(`Crate ${searchCrate} not found`);
       return;
     }
 
@@ -77,6 +82,8 @@
       response = await fetch(
         `https://query.rs/index/${data.crate.name}/${data.crate.newest_version}`
       );
+      toast.dismiss(toastId);
+
       if (response.status !== 200) {
         let data = await response.json();
         toast.error(data.error);
@@ -86,9 +93,10 @@
       data = await response.json();
       await CrateDocManager.addCrate(data);
       crates = await getCrates();
-      toast.success(`Crate \`${searchCrate}\` added`);
+      toast.success(`Crate ${searchCrate} added`);
       searchCrate = "";
     } catch (e) {
+      toast.dismiss(toastId);
       toast.error(e.message);
     }
   }
