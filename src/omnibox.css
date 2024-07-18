@@ -21,11 +21,17 @@
     font-size: 16px;
   }
 }
-.omn-search-icon {
+.omn-search-icon,
+.omn-clear {
   height: 22px;
   line-height: 22px;
   width: 22px;
   margin-right: 5px;
+}
+.omn-clear {
+  display: none;
+  cursor: pointer;
+  margin-right: 10px;
 }
 .omn-input {
   width: 100%;
