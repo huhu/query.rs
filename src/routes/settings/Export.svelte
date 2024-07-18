@@ -65,10 +65,7 @@
     let data = Object.create(null);
     if (exportConfig.settings) {
       data["settings"] = {
-        "auto-update": await settings.autoUpdate,
         "crate-registry": await settings.crateRegistry,
-        "offline-mode": await settings.isOfflineMode,
-        "offline-path": await settings.offlineDocPath,
       };
     }
     if (exportConfig.searchHistory) {
@@ -81,7 +78,10 @@
       let catalog = await CrateDocManager.getCrates();
       let list = Object.create(null);
       for (const name of Object.keys(catalog)) {
-        list[`@${name}`] = await CrateDocManager.getCrateSearchIndex(name);
+        list[`@${name}`] = await storage.getItem(`@${name}`);
+        list[`desc-shards-${name}`] = await storage.getItem(
+          `desc-shards-${name}`
+        );
       }
       data["crates"] = {
         catalog,
@@ -123,10 +123,7 @@
 
     if (importedJson["settings"] && importConfig.settings) {
       let importedSettings = importedJson["settings"];
-      settings.autoUpdate = importedSettings["auto-update"];
       settings.crateRegistry = importedSettings["crate-registry"];
-      settings.isOfflineMode = importedSettings["offline-mode"];
-      settings.offlineDocPath = importedSettings["offline-path"];
     }
     if (importedJson["history"] && importConfig.searchHistory) {
       await storage.setItem("history", importedJson["history"]);
