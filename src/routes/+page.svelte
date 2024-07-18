@@ -5,15 +5,18 @@
   import { page } from "$app/stores";
 
   /**
+   * @type {HTMLElement}
+   */
+  let omniboxRender;
+  /**
    * @type {Tour}
    */
   let tour;
 
   onMount(async () => {
     const omnibox = Omnibox.webpage({
-      el: "#omnibox",
+      element: omniboxRender,
       icon: "/assets/icon.png",
-      placeholder: `Search rust things instantly!`,
     });
     await start(omnibox);
     let query = $page.url.searchParams.get("q");
@@ -23,7 +26,34 @@
   });
 </script>
 
-<div id="omnibox" class="w-full md:w-[85%] mx-[auto] my-[20px]"></div>
+<div class="relative w-full md:w-[80%] mx-[auto] my-[20px]">
+  <div bind:this={omniboxRender} class="omn-container">
+    <textarea
+      class="omn-input"
+      autocapitalize="off"
+      autocomplete="off"
+      autocorrect="off"
+      maxlength="2048"
+      role="combobox"
+      rows="1"
+      style="resize:none"
+      spellcheck="false"
+      placeholder="Search rust things instantly!"
+    />
+    <div class="omn-search-icon">
+      <svg
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+        >
+        </path>
+      </svg>
+    </div>
+  </div>
+</div>
 <Tour bind:this={tour} />
 <div class="text-center mt-6 md:mt-10 mx-auto text-wrap">
   Love query.rs?
