@@ -40,11 +40,11 @@
         },
         {
           title: "<a href='/crates'>Add crate</a> to search docs",
-          queries: ["@tokio spawn", "@axum route"],
+          queries: ["@tokio spawn", "@tokio int -> bool"],
         },
         {
           title: "Search added crates's docs",
-          queries: ["~spawn"],
+          queries: ["~spawn", "~str -> vec"],
         },
       ],
     },
@@ -83,13 +83,12 @@
           queries: ["entry -", "!tokio --"],
         },
         {
-          title:
-            "<a href='/stats'>Search statistics</>, <a href='/crates'>Crate manage</a>, <a href='/settings'>Import/export</a>",
+          title: "<b><code>ALT</code> + <code>Enter</code></b> to open in the new tab",
           queries: [],
         },
         {
           title:
-            "See also <a href='https://rust.extension.sh'>rust.extension.sh</a>",
+            "<a href='/stats'>Search statistics</>, <a href='/crates'>Crate manage</a>, <a href='/settings'>Import/export</a>",
           queries: [],
         },
       ],
