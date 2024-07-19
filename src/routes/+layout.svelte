@@ -1,12 +1,24 @@
 <script>
   import { onMount } from "svelte";
-  import { storage, CrateDocManager } from "querylib";
+  import { storage, Statistics, CrateDocManager } from "querylib";
   import "../app.css";
 
   let hiddenMenu = true;
 
   onMount(async () => {
     if ((await storage.getItem("first-visit")) !== "false") {
+      // Create first query record
+      let statistics = await Statistics.load();
+      await statistics.record(
+        {
+          query: "hi",
+          content: "https://query.rs",
+          description: "Welcome to query.rs",
+          time: Date.now(),
+        },
+        true
+      );
+
       let response = await fetch("https://crates.io/api/v1/crates/tokio");
       let data = await response.json();
       response = await fetch(
