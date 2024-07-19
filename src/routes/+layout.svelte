@@ -1,7 +1,22 @@
 <script>
+  import { onMount } from "svelte";
+  import { storage, CrateDocManager } from "querylib";
   import "../app.css";
 
   let hiddenMenu = true;
+
+  onMount(async () => {
+    if ((await storage.getItem("first-visit")) !== "false") {
+      let response = await fetch("https://crates.io/api/v1/crates/tokio");
+      let data = await response.json();
+      response = await fetch(
+        `https://query.rs/index/${data.crate.name}/${data.crate.newest_version}`
+      );
+      data = await response.json();
+      await CrateDocManager.addCrate(data);
+      await storage.setItem("first-visit", "false");
+    }
+  });
 </script>
 
 <div class="flex-layout" style="flex-direction: column;">
@@ -64,8 +79,10 @@
       </a>
       <slot />
     </div>
-</div>
-<footer class="pb-6 text-center px-4">
-    © 2024 Query.rs, built by <a href="https://github.com/folyd" target="_blank">Folyd</a> with ❤️❤️, see <a href="/about">about</a> page to learn more.
-</footer>
+  </div>
+  <footer class="pb-6 text-center px-4">
+    © 2024 Query.rs, built by
+    <a href="https://github.com/folyd" target="_blank">Folyd</a>
+    with ❤️❤️, see <a href="/about">about</a> page to learn more.
+  </footer>
 </div>

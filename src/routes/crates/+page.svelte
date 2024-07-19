@@ -84,13 +84,12 @@
       );
       toast.dismiss(toastId);
 
+      data = await response.json();
       if (response.status !== 200) {
-        let data = await response.json();
         toast.error(data.error);
         return;
       }
 
-      data = await response.json();
       await CrateDocManager.addCrate(data);
       crates = await getCrates();
       toast.success(`Crate ${searchCrate} added`);
