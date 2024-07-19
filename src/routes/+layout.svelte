@@ -47,27 +47,35 @@
         <a href="/settings">Settings</a>
       </li>
     </ul>
-    <div class="md:hidden text-right">
-      <button
-        on:click={() => (hiddenMenu = !hiddenMenu)}
-        class="p-4 inline-block"
-      >
-        <svg
-          class="w-5 h-5"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 17 14"
+    <div>
+      <div class="flex flex-row justify-between items-center md:hidden">
+        <img
+          class:invisible={hiddenMenu}
+          src="/assets/logo.svg"
+          alt="logo"
+          class="w-24 mx-6"
+        />
+        <button
+          on:click={() => (hiddenMenu = !hiddenMenu)}
+          class="p-4 inline-block"
         >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M1 1h15M1 7h15M1 13h15"
-          />
-        </svg>
-      </button>
+          <svg
+            class="w-5 h-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 1h15M1 7h15M1 13h15"
+            />
+          </svg>
+        </button>
+      </div>
       <div
         class:hidden={hiddenMenu}
         on:click={() => (hiddenMenu = true)}
@@ -84,10 +92,11 @@
       class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_180px)]"
     >
       <a href="/" class="no-underline hover:no-underline">
-        <div class="logo flex-layout">
-          <img src="/assets/icon.png" alt="logo" />
-          Query.rs
-        </div>
+        <img
+          src="/assets/logo.svg"
+          alt="logo"
+          class="block mx-auto w-60 md:w-80 mt-8 mb-12"
+        />
       </a>
       <slot />
     </div>

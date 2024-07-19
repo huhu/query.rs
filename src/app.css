@@ -18,19 +18,6 @@ img {
   display: inline;
 }
 
-.logo {
-  padding: 40px;
-  font-family: "Alfa Slab One", serif;
-  font-size: 32px;
-  text-align: center;
-  display: flex;
-}
-
-.logo img {
-  width: 60px;
-  margin: 0 25px;
-}
-
 .flex-layout {
   display: flex;
   justify-content: center;
