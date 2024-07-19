@@ -147,9 +147,10 @@
   />
   <span class="btn btn-primary m-4" on:click={addCrate}> Add crate </span>
 </div>
-<div class="subtext crate-list-filter">
+<div class="subtext flex justify-between my-4">
   <span>
-    You have indexed <span>{crates.length}</span> crate(s), disk usage:
+    You have indexed <span>{crates.length}</span>
+    {crates.length > 0 ? "crates" : "crate"}, disk usage:
     <span>{usageSize}</span>
     /10 MB
   </span>
@@ -165,7 +166,7 @@
 <ul class="text">
   {#each crates as crate}
     <li class="crate-list-item" style="padding: 15px;">
-      <div style="display: flex; flex-direction: column;">
+      <div class="flex flex-col">
         <div>
           <b class="subtitle-text">{crate.crateName || crate.name}</b>
           <span class="crate-attr">v{crate.version}</span>

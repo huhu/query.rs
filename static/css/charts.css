@@ -74,8 +74,3 @@ svg:not(:root) {
   padding: 3px;
   font-size: 16px;
 }
-.crate-list-filter {
-  margin: 15px 12px;
-  display: flex;
-  justify-content: space-between;
-}
