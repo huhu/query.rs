@@ -4,6 +4,24 @@
   import "../app.css";
 
   let hiddenMenu = true;
+  const menus = [
+    {
+      name: "Home",
+      path: "/",
+    },
+    {
+      name: "Stats",
+      path: "/stats",
+    },
+    {
+      name: "Crates",
+      path: "/crates",
+    },
+    {
+      name: "Settings",
+      path: "/settings",
+    },
+  ];
 
   onMount(async () => {
     if ((await storage.getItem("first-visit")) !== "false") {
@@ -36,16 +54,11 @@
     <ul
       class="hidden list-none flex-row overflow-auto md:flex self-end py-5 text-base md:text-xl"
     >
-      <li class="px-5 rounded-md hover:bg-[#f9bc2d46]"><a href="/">Home</a></li>
-      <li class="px-5 rounded-md hover:bg-[#f9bc2d46]">
-        <a href="/stats">Stats</a>
-      </li>
-      <li class="px-5 rounded-md hover:bg-[#f9bc2d46]">
-        <a href="/crates">Crates</a>
-      </li>
-      <li class="px-5 rounded-md hover:bg-[#f9bc2d46]">
-        <a href="/settings">Settings</a>
-      </li>
+      {#each menus as menu}
+        <li class="px-5 rounded-md hover:bg-[#f9bc2d46]">
+          <a href={menu.path}>{menu.name}</a>
+        </li>
+      {/each}
     </ul>
     <div>
       <div class="flex flex-row justify-between items-center md:hidden">
@@ -84,10 +97,9 @@
         class:-translate-y-64={hiddenMenu}
         class:translate-y-0={!hiddenMenu}
       >
-        <a class="p-3 px-6 block" href="/">Home</a>
-        <a class="p-3 px-6 block" href="/stats">Stats</a>
-        <a class="p-3 px-6 block" href="/crates">Crates</a>
-        <a class="p-3 px-6 block" href="/settings">Settings</a>
+        {#each menus as menu}
+          <a class="p-3 px-6 block" href={menu.path}>{menu.name}</a>
+        {/each}
       </div>
     </div>
     <div
