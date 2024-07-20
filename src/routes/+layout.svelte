@@ -50,14 +50,15 @@
     <div>
       <div class="flex flex-row justify-between items-center md:hidden">
         <img
-          class:invisible={hiddenMenu}
           src="/assets/logo.svg"
           alt="logo"
-          class="w-24 mx-6"
+          class="w-24 mx-6 transition-opacity ease-in-out delay-300 duration-1000"
+          class:opacity-0={hiddenMenu}
+          class:opacity-100={!hiddenMenu}
         />
         <button
           on:click={() => (hiddenMenu = !hiddenMenu)}
-          class="p-4 inline-block"
+          class="z-50 p-4 inline-block"
         >
           <svg
             class="w-5 h-5"
@@ -77,10 +78,11 @@
         </button>
       </div>
       <div
-        class:hidden={hiddenMenu}
         on:click={() => (hiddenMenu = true)}
         aria-readonly="true"
-        class="z-50 right-0 text-left list-none absolute flex-col target:flex shadow-md text-base bg-[#fcfaf6] rounded-md w-full"
+        class="transition ease-in-out duration-500 z-10 right-0 text-left list-none absolute flex-col target:flex shadow-md text-base bg-[#fcfaf6] rounded-md w-full"
+        class:-translate-y-64={hiddenMenu}
+        class:translate-y-0={!hiddenMenu}
       >
         <a class="p-3 px-6 block" href="/">Home</a>
         <a class="p-3 px-6 block" href="/stats">Stats</a>
