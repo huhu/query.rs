@@ -1,15 +1,72 @@
 <script>
   import moment from "moment";
-  import { renderCharts, renderYearList } from "./stats";
+  import {
+    renderCharts,
+    getHistogramEchartDatas,
+    WEEKS_LABEL,
+    DATES_LABEL,
+    HOURS_LABEL,
+    getYearList,
+  } from "./stats";
   import { onMount } from "svelte";
+  import Histogram from "./HistogramChart.svelte";
 
-  const now = moment().valueOf();
-  const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
+  /**
+   * @type {number[]}
+   */
+  let weekData = [];
+
+  /**
+   * @type {number[]}
+   */
+   let dateData = [];
+
+  /**
+   * @type {number[]}
+   */
+   let hourData = [];
+
+   /**
+    * @type {number[]}
+    */
+   let yearList = [];
+
+   let currentYear = moment().year();
+
+  /**
+   * 
+   * @param {number} now
+   * @param {number} yearAgo
+   */
+  async function getEchartData(now, yearAgo) {
+    const { weeksArr, dateArr, hourArr } = await getHistogramEchartDatas(now, yearAgo);
+    weekData = weeksArr;
+    dateData = dateArr;
+    hourData = hourArr;
+    await renderCharts(now, yearAgo, moment(yearAgo).format('YYYY'));
+  }
+
+   /**
+    * 
+    * @param {number} y
+    */
+  function handleChangeYear(y){
+    currentYear = y;
+    const year = moment(String(y));
+    const now = year.endOf('year').valueOf();
+    const yearAgo = year.startOf('year').valueOf();
+    getEchartData(now, yearAgo);
+  };
 
   onMount(async () => {
+    const now = moment().valueOf();
+    const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
+
     await renderCharts(now, yearAgo);
-    await renderYearList();
-  });
+    const list = await getYearList(currentYear);
+    yearList = list;
+    getEchartData(now, yearAgo);
+  })
 </script>
 
 <link rel="stylesheet" href="/css/charts.css" />
@@ -39,17 +96,17 @@
     </div>
     <div class="flex flex-col md:flex-row-reverse md:justify-around pt-16">
       <div>
-        <div class="pb-12">
+        <div>
           <h3>Searches per weekday</h3>
-          <div class="chart-histogram-week" style="position: relative;"></div>
+          <Histogram data={weekData} labels={WEEKS_LABEL} />
         </div>
-        <div class="pb-12">
+        <div>
           <h3>Searches per day of month</h3>
-          <div class="chart-histogram-date" style="position: relative;"></div>
+          <Histogram data={dateData} labels={DATES_LABEL} />
         </div>
-        <div class="pb-12">
+        <div>
           <h3>Searches per hour (local time)</h3>
-          <div class="chart-histogram-hour" style="position: relative;"></div>
+          <Histogram data={hourData} labels={HOURS_LABEL} />
         </div>
       </div>
 
@@ -60,4 +117,8 @@
     </div>
   </div>
 </div>
-<ul class="hidden md:block filter-list"></ul>
+<ul class="hidden md:block filter-list">
+  {#each yearList as item}
+    <li class:selected={item === currentYear} on:click={() => handleChangeYear(item)}>{item}</li>
+  {/each}
+</ul>
