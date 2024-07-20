@@ -18,11 +18,12 @@
         },
         {
           title: "Search attributes",
-          queries: ["#cfg", "#derive"],
+          queries: ["#", "#cfg", "#derive"],
         },
         {
-          title: "Search docs by type signature, <a href='https://doc.rust-lang.org/1.79.0/rustdoc/read-documentation/search.html'>full search features</a>",
-          queries: ["vec -> usize", "[] -> Option"],
+          title:
+            "Search docs by type signature, <a href='https://doc.rust-lang.org/1.79.0/rustdoc/read-documentation/search.html'>full search features</a>",
+          queries: ["vec -> usize", "[] -> bool"],
         },
       ],
     },
@@ -32,11 +33,11 @@
       tips: [
         {
           title: "Search top 20K crates",
-          queries: ["!tokio", "!axum"],
+          queries: ["!", "!tokio", "!axum"],
         },
         {
           title: "Search crates.io/lib.rs",
-          queries: ["!!sqlx", "!!reqwest"],
+          queries: ["!!", "!!sqlx", "!!reqwest"],
         },
         {
           title: "<a href='/crates'>Add crate</a> to search docs",
@@ -58,15 +59,15 @@
         },
         {
           title: "Search rust books",
-          queries: ["%pin", "%error"],
+          queries: ["%", "%pin", "%error"],
         },
         {
           title: "Search clippy lints",
-          queries: [">if_let", ">try"],
+          queries: [">", ">if_let", ">try"],
         },
         {
           title: "Search caniuse",
-          queries: ["?const", "?slice"],
+          queries: ["?", "?const", "?slice"],
         },
       ],
     },
@@ -76,14 +77,25 @@
       tips: [
         {
           title: "Commands",
-          queries: [":", ":help", ":book", ":cargo", ":stable", ":target", ":tool", ":yet", ":rustc"],
+          queries: [
+            ":",
+            ":help",
+            ":book",
+            ":cargo",
+            ":stable",
+            ":target",
+            ":tool",
+            ":yet",
+            ":rustc",
+          ],
         },
         {
           title: "Append <b>-</b> for pagination",
           queries: ["entry -", "!tokio --"],
         },
         {
-          title: "<b><code>ALT</code> + <code>Enter</code></b> to open in the new tab",
+          title:
+            "<b><code>ALT</code> + <code>Enter</code></b> to open in the new tab",
           queries: [],
         },
         {
@@ -138,7 +150,7 @@
                   style:background-color={color}
                   on:click={() => pushState("", { q })}
                 >
-                  {q}
+                  <code>{q}</code>
                 </button>
               {/each}
             </div>
