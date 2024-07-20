@@ -1,4 +1,6 @@
-<img align="center" src="/static/assets/logo.svg">
+<p align="center">
+    <img src="/static/og-640x320.png">
+</p>
 
 # Query.rs
 
