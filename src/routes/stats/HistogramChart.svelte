@@ -58,10 +58,10 @@
       });
   }
 
-  onMount(async () => {
+  onMount(() => {
     elementChart = init(echartElement);
     elementChart.setOption(option);
   })
 </script>
 
-<div class="relative h-[320px] w-[460px]" bind:this={echartElement}></div>
+<div class="relative h-[320px] w-[380px] md:w-[460px] m-auto" bind:this={echartElement}></div>

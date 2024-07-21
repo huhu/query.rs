@@ -63,8 +63,7 @@
     const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
 
     await renderCharts(now, yearAgo);
-    const list = await getYearList(currentYear);
-    yearList = list;
+    yearList = await getYearList(currentYear);
     getEchartData(now, yearAgo);
   })
 </script>
