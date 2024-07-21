@@ -1,10 +1,10 @@
-import { barChart, histogram, calendarHeatmap } from "./charts.js";
+import { barChart, calendarHeatmap } from "./charts.js";
 import { STATS_PATTERNS, Statistics } from "querylib";
 import moment from "moment";
 
 let chartWidth = 460;
 const TYPE_OTHER = "other";
-const CHART_COLOR = "rgba(249, 188, 45, 0.5)";
+export const CHART_COLOR = "rgba(249, 188, 45, 0.5)";
 const STATS_MAP = {
     "stable": {
         color: "#FEC744",
@@ -39,7 +39,7 @@ const STATS_NUMBER = STATS_PATTERNS.reduce((pre, current) => {
     pre[current.type] = current.name;
     return pre;
 }, Object.create(null));
-const WEEKS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export const WEEKS_LABEL = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function makeNumericKeyObject(start, end, initial = 0) {
     return Array.from({ length: end + 1 - start }).fill(initial)
@@ -49,6 +49,17 @@ function makeNumericKeyObject(start, end, initial = 0) {
         }, {});
 }
 
+/**
+ * @param {number} start 
+ * @param {number} end 
+ * @returns {number[]}
+ */
+function makeNumericKeyArray(start, end,) {
+    return Array.from({ length: end + 1 - start }).map((_, index) => index + 1);
+};
+
+export const DATES_LABEL = makeNumericKeyArray(1, 31);
+export const HOURS_LABEL = makeNumericKeyArray(1, 23);
 
 
 function calculateSavedTime(times) {
@@ -100,50 +111,6 @@ function renderHeatmap(data, now, yearAgo) {
             console.log('data', data);
         });
     heatmap();
-}
-
-function renderHistogram(weeksObj, datesObj, hoursObj) {
-    const [weeksData, datesData, hoursData] = [weeksObj, datesObj, hoursObj]
-        .map(data => {
-            return Object.entries(data).map(([key, value]) => {
-                return { name: key, value };
-            });
-        });
-    const weekContainer = document.querySelector(".chart-histogram-week");
-    if (weekContainer.hasChildNodes()) {
-        weekContainer.innerHTML = null;
-    }
-    const histogramConfig = {
-        width: chartWidth,
-        height: 240,
-        color: CHART_COLOR,
-        margin: { top: 30, right: 0, bottom: 40, left: 40 },
-    };
-    histogram({
-        selector: ".chart-histogram-week",
-        data: weeksData,
-        ...histogramConfig,
-    });
-
-    const dateContainer = document.querySelector(".chart-histogram-date");
-    if (dateContainer.hasChildNodes()) {
-        dateContainer.innerHTML = null;
-    }
-    histogram({
-        selector: ".chart-histogram-date",
-        data: datesData,
-        ...histogramConfig,
-    });
-
-    const hourContainer = document.querySelector(".chart-histogram-hour");
-    if (hourContainer.hasChildNodes()) {
-        hourContainer.innerHTML = null;
-    }
-    histogram({
-        selector: ".chart-histogram-hour",
-        data: hoursData,
-        ...histogramConfig,
-    });
 }
 
 function renderSearchStats(typeDataObj, total) {
@@ -232,7 +199,7 @@ export async function renderCharts(now, yearAgo, searchTime) {
         return pre;
     }, {});
 
-    const weeksObj = WEEKS.reduce((obj, week) => {
+    const weeksObj = WEEKS_LABEL.reduce((obj, week) => {
         obj[week] = 0;
         return obj;
     }, {});
@@ -248,7 +215,7 @@ export async function renderCharts(now, yearAgo, searchTime) {
         const time = moment(t);
         const hour = time.hour();
 
-        weeksObj[WEEKS[time.weekday()]] += 1;
+        weeksObj[WEEKS_LABEL[time.weekday()]] += 1;
         datesObj[time.date()] += 1;
         if (hour !== 0) {
             hoursObj[hour] += 1;
@@ -265,38 +232,56 @@ export async function renderCharts(now, yearAgo, searchTime) {
 
     renderSearchTimes(data.length, searchTime);
     renderHeatmap(heatMapData, now, yearAgo);
-    renderHistogram(weeksObj, datesObj, hoursObj)
     renderSearchStats(typeDataObj, typeTotal);
     renderTopCratesChart(topCratesObj);
 }
 
-export async function renderYearList() {
-    const y = new Date().getFullYear();
-    const year = document.querySelector(".filter-list");
-
+/**
+ * 
+ * @param {number} now 
+ * @param {number} yearAgo 
+ * @returns 
+ */
+export async function getHistogramEchartDatas(now, yearAgo) {
     const { timeline } = await Statistics.load();
+    const data = timeline.filter(([time]) => {
+        return now >= time && time >= yearAgo;
+    });
+    const weeksArr = WEEKS_LABEL.map(() => 0);
+    const dateArr = DATES_LABEL.map(() => 0);
+    const hourArr = HOURS_LABEL.map(() => 0);
 
+    for (const [t] of data) {
+        const time = moment(t);
+        const hour = time.hour();
+
+        weeksArr[time.weekday()] += 1;
+        dateArr[time.date() - 1] += 1;
+        if (hour !== 0) {
+            hourArr[hour - 1] += 1;
+        }
+    };
+    return {
+        weeksArr,
+        dateArr,
+        hourArr,
+    }
+}
+
+/**
+ * 
+ * @param {number} y 
+ * @returns {Promise<number[]>}
+ */
+export async function getYearList(y) {
+    const { timeline } = await Statistics.load();
     const min = timeline.reduce((pre, current) => {
         return Math.min(pre, current[0]);
     }, moment().valueOf());
-
+    const list = [];
     for (let i = y; i >= moment(min).year(); i--) {
-        const li = document.createElement('li');
-        li.innerText = i;
-        if (i === y) {
-            li.className = "selected";
-        }
-        year.append(li);
+        list.push(i);
     }
-
-    year.addEventListener('click', async function (e) {
-        if (e.target.tagName === "LI") {
-            year.childNodes.forEach(i => i.classList.remove("selected"));
-            e.target.className = "selected";
-            const time = moment(e.target.innerText);
-            const now = time.endOf('year').valueOf();
-            const yearAgo = time.startOf('year').valueOf();
-            await renderCharts(now, yearAgo, moment(yearAgo).format('YYYY'));
-        }
-    });
+    return list;
 }
+
