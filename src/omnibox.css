@@ -13,7 +13,6 @@
   padding: 4px 10px;
   font-size: 15px;
 }
-
 @media (min-width: 768px) {
   .omn-container {
     border-radius: 24px;
@@ -80,7 +79,6 @@
   border-radius: 0 0 24px 24px;
   box-shadow: 0 4px 6px rgba(32, 33, 36, 0.28);
   border: 0;
-  padding-bottom: 4px;
 }
 
 .omn-gapline {

@@ -1,6 +1,7 @@
 <script>
   import { start, Omnibox } from "querylib";
   import { onMount } from "svelte";
+  import DropdownFooter from "./DropdownFooter.svelte";
   import Tour from "./Tour.svelte";
   import { page } from "$app/stores";
 
@@ -17,6 +18,20 @@
     const omnibox = Omnibox.webpage({
       element: omniboxRender,
       icon: "/assets/icon.png",
+      onFooter: (
+        /** @type {import("querylib").Render } */ render,
+        /** @type {{ curr: number; total: number; }} */ pagination
+      ) => {
+        let footer = document.createElement("div");
+        new DropdownFooter({
+          target: footer,
+          props: {
+            render,
+            pagination,
+          },
+        });
+        return footer;
+      },
     });
     await start(omnibox);
     let query = $page.url.searchParams.get("q");
