@@ -10,12 +10,12 @@
       path: "/",
     },
     {
-      name: "Stats",
-      path: "/stats",
-    },
-    {
       name: "Crates",
       path: "/crates",
+    },
+    {
+      name: "Stats",
+      path: "/stats",
     },
     {
       name: "Settings",
