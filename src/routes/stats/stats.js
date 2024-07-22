@@ -1,7 +1,8 @@
-import { barChart, calendarHeatmap } from "./charts.js";
+import { calendarHeatmap } from "./charts.js";
 import { STATS_PATTERNS, Statistics } from "querylib";
 import moment from "moment";
 
+const TOP_CRATE_LENGTH = 15;
 let chartWidth = 460;
 const TYPE_OTHER = "other";
 export const CHART_COLOR = "rgba(249, 188, 45, 0.5)";
@@ -79,13 +80,10 @@ function calculateSavedTime(times) {
     }
 }
 
-function renderSearchTimes(length = 0, searchTime) {
+function renderSearchTimes(length = 0) {
     let searchTimes = document.querySelector(".search-time");
     let frequency = searchTimes.querySelectorAll("b");
     frequency[0].textContent = `${length}`;
-    if (searchTime) {
-        frequency[1].textContent = `${searchTime}`;
-    }
     frequency[2].textContent = calculateSavedTime(length);
 }
 
@@ -157,35 +155,7 @@ function renderSearchStats(typeDataObj, total) {
     });
 }
 
-function renderTopCratesChart(topCratesObj) {
-    const topCratesContainer = document.querySelector(".topCratesData");
-    if (topCratesContainer.hasChildNodes()) {
-        topCratesContainer.innerHTML = null;
-    }
-    const topCratesData = Object.entries(topCratesObj)
-        .sort((a, b) => b[1] - a[1])
-        .map(([key, value], index) => {
-            return {
-                label: `#${index + 1}`,
-                name: key,
-                value
-            };
-        });
-    topCratesData.splice(15);
-    barChart({
-        margin: ({ top: 30, right: 0, bottom: 10, left: 30 }),
-        // Calculate height dynamically to keep the bar with consistence width regardless of the topCratesData length.
-        height: 800 / 15 * topCratesData.length + 40,
-        barHeight: 25,
-        width: chartWidth,
-        data: topCratesData,
-        selector: ".topCratesData",
-        color: CHART_COLOR,
-    });
-}
-
-
-export async function renderCharts(now, yearAgo, searchTime) {
+export async function renderCharts(now, yearAgo) {
     chartWidth = Math.min(chartWidth, document.getElementById("chart").clientWidth) - 10;
     const { timeline } = await Statistics.load();
 
@@ -209,9 +179,7 @@ export async function renderCharts(now, yearAgo, searchTime) {
     let typeTotal = 0;
     const typeDataObj = Object.create(null);
 
-    const topCratesObj = Object.create(null);
-
-    data.forEach(([t, content, type]) => {
+    data.forEach(([t, content]) => {
         const time = moment(t);
         const hour = time.hour();
 
@@ -225,15 +193,11 @@ export async function renderCharts(now, yearAgo, searchTime) {
             typeDataObj[typeName] = (typeDataObj[typeName] || 0) + 1;
             typeTotal += 1;
         }
-        if (type) {
-            topCratesObj[type] = (topCratesObj[type] || 0) + 1;
-        }
     });
 
-    renderSearchTimes(data.length, searchTime);
+    renderSearchTimes(data.length);
     renderHeatmap(heatMapData, now, yearAgo);
     renderSearchStats(typeDataObj, typeTotal);
-    renderTopCratesChart(topCratesObj);
 }
 
 /**
@@ -251,7 +215,9 @@ export async function getHistogramEchartDatas(now, yearAgo) {
     const dateArr = DATES_LABEL.map(() => 0);
     const hourArr = HOURS_LABEL.map(() => 0);
 
-    for (const [t] of data) {
+    const topCratesObj = Object.create(null);
+
+    for (const [t, , type] of data) {
         const time = moment(t);
         const hour = time.hour();
 
@@ -260,11 +226,26 @@ export async function getHistogramEchartDatas(now, yearAgo) {
         if (hour !== 0) {
             hourArr[hour - 1] += 1;
         }
+        if (type) {
+            topCratesObj[type] = (topCratesObj[type] || 0) + 1;
+        }
     };
+
+    const topCratesArr = Object.entries(topCratesObj)
+        .sort((a, b) => b[1] - a[1])
+        .map(([key, value], index) => {
+            return {
+                label: `#${index + 1}`,
+                name: key,
+                value
+            };
+        });
+    topCratesArr.splice(TOP_CRATE_LENGTH);
     return {
         weeksArr,
         dateArr,
         hourArr,
+        topCratesArr,
     }
 }
 

@@ -64,4 +64,4 @@
   })
 </script>
 
-<div class="relative h-[320px] w-[380px] md:w-[460px] m-auto" bind:this={echartElement}></div>
+<div class="relative h-[320px] w-[340px] md:w-[460px] m-auto" bind:this={echartElement}></div>

@@ -10,6 +10,7 @@
   } from "./stats";
   import { onMount } from "svelte";
   import Histogram from "./HistogramChart.svelte";
+  import TopCratesChart from "./TopCratesChart.svelte";
 
   /**
    * @type {number[]}
@@ -33,17 +34,25 @@
 
    let currentYear = moment().year();
 
+   /**
+    * @type {{label:string, name:string; value: number}[]}
+    */
+   let topCratesData = [];
+
+   let searchTime = "the last year";
+
   /**
    * 
    * @param {number} now
    * @param {number} yearAgo
    */
   async function getEchartData(now, yearAgo) {
-    const { weeksArr, dateArr, hourArr } = await getHistogramEchartDatas(now, yearAgo);
+    const { weeksArr, dateArr, hourArr, topCratesArr } = await getHistogramEchartDatas(now, yearAgo);
     weekData = weeksArr;
     dateData = dateArr;
     hourData = hourArr;
-    await renderCharts(now, yearAgo, moment(yearAgo).format('YYYY'));
+    topCratesData = topCratesArr;
+    await renderCharts(now, yearAgo);
   }
 
    /**
@@ -52,7 +61,8 @@
     */
   function handleChangeYear(y){
     currentYear = y;
-    const year = moment(String(y));
+    searchTime = String(y);
+    const year = moment(searchTime);
     const now = year.endOf('year').valueOf();
     const yearAgo = year.startOf('year').valueOf();
     getEchartData(now, yearAgo);
@@ -61,8 +71,6 @@
   onMount(async () => {
     const now = moment().valueOf();
     const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
-
-    await renderCharts(now, yearAgo);
     yearList = await getYearList(currentYear);
     getEchartData(now, yearAgo);
   })
@@ -74,7 +82,7 @@
     <div class="chart-heatmap hidden md:block"></div>
   </div>
   <div class="search-time w-full text-center text-xl">
-    <b>0</b> searches in <b>the last year</b>, approximately saved
+    <b>0</b> searches in <b>{searchTime}</b>, approximately saved
     <b>0 seconds</b>.
     <b
       aria-label="We consider one search save 5 seconds in average, just an estimated value."
@@ -111,7 +119,7 @@
 
       <div>
         <h3>Top searched crates</h3>
-        <div class="topCratesData relative box-border"></div>
+        <TopCratesChart data={topCratesData} />
       </div>
     </div>
   </div>
