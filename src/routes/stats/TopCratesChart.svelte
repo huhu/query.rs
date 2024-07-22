@@ -1,10 +1,10 @@
 <script>
   import { onMount } from "svelte";
   import { init } from "echarts";
-  import { CHART_COLOR } from "./stats";
+  import { CHART_COLOR, TOP_CRATE_LABEL } from "./stats";
 
    /**
-    * @type {{label:string, name:string; value: number}[]}
+    * @type {{name:string; value: number}[]}
     */
   export let data = [];
 
@@ -24,7 +24,7 @@
     },
     yAxis: {
       type: "category",
-      data,
+      data: TOP_CRATE_LABEL,
       inverse: true,
 
     },
@@ -51,17 +51,11 @@
   $: {
     if(elementChart) {
       elementChart.setOption({
-        yAxis: {
-          data: data.map((item) => item.label),
-        },
         series: [
           {
             data,
           }
         ]
-      });
-      elementChart.resize({
-        height: 800 / 15 * data.length + 100,
       });
     }
   }
@@ -72,4 +66,4 @@
   })
 </script>
 
-<div class="relative w-[340px] md:w-[460px] m-auto" bind:this={echartElement}></div>
+<div class="relative w-[340px] md:w-[460px] m-auto h-[1060px]" bind:this={echartElement}></div>
