@@ -1,18 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { settings, Compat } from "querylib";
-  import ExtensionSettings from "./ExtensionSettings.svelte";
+  import { settings } from "querylib";
   import Export from "./Export.svelte";
-
-  // Get the information about the current platform os.
-  // Possible os values: "mac", "win", "android", "cros", "linux", or "openbsd"
-  function getPlatformOs() {
-    let os = "unknown";
-    if (navigator.userAgent.indexOf("Win") != -1) os = "win";
-    if (navigator.userAgent.indexOf("Mac") != -1) os = "mac";
-    if (navigator.userAgent.indexOf("Linux") != -1) os = "linux";
-    return os;
-  }
 
   async function render() {
     let crateRegistry = document.querySelector("select[name='crate-registry']");
@@ -110,9 +99,6 @@
           <option value="lib.rs">lib.rs</option>
         </select>
       </div>
-      {#if Compat.isRunningInWebExtension()}
-        <ExtensionSettings />
-      {/if}
     </div>
   </div>
 </div>
