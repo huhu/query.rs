@@ -35,7 +35,7 @@
    let currentYear = moment().year();
 
    /**
-    * @type {{label:string, name:string; value: number}[]}
+    * @type {{name:string; value: number}[]}
     */
    let topCratesData = [];
 

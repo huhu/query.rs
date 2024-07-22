@@ -61,6 +61,7 @@ function makeNumericKeyArray(start, end,) {
 
 export const DATES_LABEL = makeNumericKeyArray(1, 31);
 export const HOURS_LABEL = makeNumericKeyArray(1, 23);
+export const TOP_CRATE_LABEL = Array.from({ length: TOP_CRATE_LENGTH }).map((_, i) => `#${i + 1}`);
 
 
 function calculateSavedTime(times) {
@@ -233,9 +234,8 @@ export async function getHistogramEchartDatas(now, yearAgo) {
 
     const topCratesArr = Object.entries(topCratesObj)
         .sort((a, b) => b[1] - a[1])
-        .map(([key, value], index) => {
+        .map(([key, value]) => {
             return {
-                label: `#${index + 1}`,
                 name: key,
                 value
             };
