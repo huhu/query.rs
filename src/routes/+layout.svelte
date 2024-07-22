@@ -93,8 +93,8 @@
       <div
         on:click={() => (hiddenMenu = true)}
         aria-readonly="true"
-        class="transition ease-in-out duration-500 z-10 right-0 text-left list-none absolute flex-col target:flex shadow-md text-base bg-[#fcfaf6] rounded-md w-full"
-        class:-translate-y-64={hiddenMenu}
+        class="transition ease-in-out duration-700 z-10 right-0 text-left list-none absolute flex-col target:flex shadow-md text-base bg-[#fcfaf6] rounded-md w-full"
+        class:-translate-y-72={hiddenMenu}
         class:translate-y-0={!hiddenMenu}
       >
         {#each menus as menu}
