@@ -8,13 +8,6 @@ rect.day-cell:hover {
   stroke: #555555;
   stroke-width: 1px;
 }
-#chart rect {
-  stroke: #f9bb2d;
-  stroke-width: 1px;
-}
-#chart rect:hover {
-  fill: #ff9d00;
-}
 .day-cell-tooltip {
   position: absolute;
   z-index: 9999;

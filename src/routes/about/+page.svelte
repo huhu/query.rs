@@ -37,4 +37,18 @@
     <a href="https://github.com/huhu/rust-search-extension/issues/230">Arc</a>,
     etc. Query.rs addresses this gap.
   </p>
+  <p class="py-4"></p>
+  <h2 class="pb-6">About Logo</h2>
+
+  <div class="text-center mb-6 flex flex-col md:flex-row md:justify-evenly">
+    <img class="w-full my-3 md:w-64" src="/assets/logo.svg" alt="logo" />
+    <img class="w-full my-3 md:w-64" src="/assets/logo-red.svg" alt="logo" />
+  </div>
+  <p>
+    The logo was designed by Folyd using Figma and is inspired by the
+    <a href="https://en.wikipedia.org/wiki/Pac-Man" target="_blank">Pac-Man</a>
+    game. It symbolizes how query.rs "eats" and digests Rust information, then returns
+    it when a user performs a search.
+  </p>
+  <img src="/og-640x320.png" alt="logo" class="w-full my-10" />
 </div>
