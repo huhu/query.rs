@@ -140,7 +140,7 @@
         {type}
       </div>
       <ul class="px-5 p-2 text-sm list-disc list-outside">
-        {#each tips as tip}
+        {#each tips as tip, index}
           <li class="py-1">
             <div>{@html tip.title}</div>
             <div>
@@ -153,6 +153,16 @@
                   <code>{q}</code>
                 </button>
               {/each}
+              {#if index === 0}
+                <span class="relative inline-flex h-3 w-3">
+                  <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f9bb2d] opacity-75"
+                  ></span>
+                  <span
+                    class="relative inline-flex rounded-full h-3 w-3 bg-[#f9bc2d46]"
+                  ></span>
+                </span>
+              {/if}
             </div>
           </li>
         {/each}
