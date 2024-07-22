@@ -5,13 +5,13 @@
   export let pagination;
 
   function pageUp() {
-    setTimeout(() => {
-      render.pageUp();
+    setTimeout(async () => {
+      await render.pageUp();
     });
   }
   function pageDown() {
-    setTimeout(() => {
-      render.pageDown();
+    setTimeout(async () => {
+      await render.pageDown();
     });
   }
 </script>
