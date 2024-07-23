@@ -1,0 +1,6 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Query.rs</ShortName>
+  <Description>A search engine for Rust.</Description>
+  <Image width="16" height="16" type="image/x-icon">https://query.rs/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://query.rs?q={searchTerms}"/>
+</OpenSearchDescription>
