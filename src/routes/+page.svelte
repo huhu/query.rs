@@ -54,6 +54,7 @@
       style="resize:none"
       spellcheck="false"
       placeholder="Search rust things instantly!"
+      autofocus
     />
     <div class="omn-clear">
       <svg

@@ -140,8 +140,10 @@
 <div
   class="m-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
 >
+  <!-- svelte-ignore a11y-autofocus -->
   <input
     bind:value={searchCrate}
+    autofocus
     type="text"
     class="w-full md:w-[400px] h-8 px-2 py-0 rounded border border-solid border-[#f9bb2daa] focus:outline-none"
   />
