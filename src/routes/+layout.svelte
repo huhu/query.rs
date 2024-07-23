@@ -24,7 +24,16 @@
   ];
 
   onMount(async () => {
-    if ((await storage.getItem("first-visit")) !== "false") {
+    let firstVisit = await storage.getItem("first-visit");
+    if (firstVisit === null) {
+      let response = await fetch("https://crates.io/api/v1/crates/tokio");
+      let data = await response.json();
+      response = await fetch(
+        `https://query.rs/index/${data.crate.name}/${data.crate.newest_version}`
+      );
+      data = await response.json();
+      await CrateDocManager.addCrate(data);
+
       // Create first query record
       let statistics = await Statistics.load();
       await statistics.record(
@@ -36,14 +45,6 @@
         },
         true
       );
-
-      let response = await fetch("https://crates.io/api/v1/crates/tokio");
-      let data = await response.json();
-      response = await fetch(
-        `https://query.rs/index/${data.crate.name}/${data.crate.newest_version}`
-      );
-      data = await response.json();
-      await CrateDocManager.addCrate(data);
       await storage.setItem("first-visit", "false");
     }
   });
