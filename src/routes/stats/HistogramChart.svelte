@@ -4,6 +4,10 @@
   import { CHART_COLOR } from "./stats";
 
   /**
+   * @type {string}
+   */
+  export let color = CHART_COLOR;
+  /**
    * @type {number[]}
    */
   export let data = [];
@@ -16,7 +20,7 @@
   /**
    * @type {HTMLElement}
    */
-  let echartElement
+  let echartElement;
 
   /**
    * @type {any}
@@ -38,13 +42,14 @@
       },
     ],
     tooltip: {
-      show:true,
-      trigger: 'axis'
-    }
-  }
+      show: true,
+      trigger: "axis",
+    },
+  };
 
   $: {
-      elementChart && elementChart.setOption({
+    elementChart &&
+      elementChart.setOption({
         xAxis: {
           type: "category",
           data: labels,
@@ -53,15 +58,21 @@
           {
             data,
             type: "bar",
-          }
-        ]
+            itemStyle: {
+              borderRadius: [5, 5, 0, 0], // [topLeft, topRight, bottomRight, bottomLeft]
+            },
+          },
+        ],
       });
   }
 
   onMount(() => {
     elementChart = init(echartElement);
     elementChart.setOption(option);
-  })
+  });
 </script>
 
-<div class="relative h-[320px] w-[340px] md:w-[460px] m-auto" bind:this={echartElement}></div>
+<div
+  class="relative h-[320px] w-[340px] md:w-[460px] m-auto"
+  bind:this={echartElement}
+></div>

@@ -20,34 +20,35 @@
   /**
    * @type {number[]}
    */
-   let dateData = [];
+  let dateData = [];
 
   /**
    * @type {number[]}
    */
-   let hourData = [];
-
-   /**
-    * @type {number[]}
-    */
-   let yearList = [];
-
-   let currentYear = moment().year();
-
-   /**
-    * @type {{name:string; value: number}[]}
-    */
-   let topCratesData = [];
-
-   let searchTime = "the last year";
+  let hourData = [];
 
   /**
-   * 
+   * @type {number[]}
+   */
+  let yearList = [];
+
+  let currentYear = moment().year();
+
+  /**
+   * @type {{name:string; value: number}[]}
+   */
+  let topCratesData = [];
+
+  let searchTime = "the last year";
+
+  /**
+   *
    * @param {number} now
    * @param {number} yearAgo
    */
   async function getEchartData(now, yearAgo) {
-    const { weeksArr, dateArr, hourArr, topCratesArr } = await getHistogramEchartDatas(now, yearAgo);
+    const { weeksArr, dateArr, hourArr, topCratesArr } =
+      await getHistogramEchartDatas(now, yearAgo);
     weekData = weeksArr;
     dateData = dateArr;
     hourData = hourArr;
@@ -55,25 +56,25 @@
     await renderCharts(now, yearAgo);
   }
 
-   /**
-    * 
-    * @param {number} y
-    */
-  function handleChangeYear(y){
+  /**
+   *
+   * @param {number} y
+   */
+  function handleChangeYear(y) {
     currentYear = y;
     searchTime = String(y);
     const year = moment(searchTime);
-    const now = year.endOf('year').valueOf();
-    const yearAgo = year.startOf('year').valueOf();
+    const now = year.endOf("year").valueOf();
+    const yearAgo = year.startOf("year").valueOf();
     getEchartData(now, yearAgo);
-  };
+  }
 
   onMount(async () => {
     const now = moment().valueOf();
     const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
     yearList = await getYearList(currentYear);
     getEchartData(now, yearAgo);
-  })
+  });
 </script>
 
 <link rel="stylesheet" href="/css/charts.css" />
@@ -126,6 +127,11 @@
 </div>
 <ul class="hidden md:block filter-list">
   {#each yearList as item}
-    <li class:selected={item === currentYear} on:click={() => handleChangeYear(item)}>{item}</li>
+    <li
+      class:selected={item === currentYear}
+      on:click={() => handleChangeYear(item)}
+    >
+      {item}
+    </li>
   {/each}
 </ul>
