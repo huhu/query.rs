@@ -90,17 +90,13 @@
           ],
         },
         {
-          title: "Append <b>-</b> for pagination",
+          title:
+            "Pagination: <b><code>Ctrl</code> + <code>n</code></b> / <b><code>Ctrl</code> + <code>p</code></b>, or append <b>-</b>",
           queries: ["entry -", "!tokio --"],
         },
         {
           title:
             "<b><code>ALT</code> + <code>Enter</code></b> to open in the new tab",
-          queries: [],
-        },
-        {
-          title:
-            "<a href='/stats'>Search statistics</>, <a href='/crates'>Crate manage</a>, <a href='/settings'>Import/export</a>",
           queries: [],
         },
       ],
