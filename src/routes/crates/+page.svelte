@@ -137,6 +137,11 @@
 
 <svelte:window on:keydown={handleKeydown} />
 <Toaster />
+<div class="text-center text-sm max-w-screen-md mx-auto px-4">
+  You can add the crate you search most to local, this allows you to search that
+  crate's docs via <code class="text-[#f9bb2d]">@crate-name keyword</code>, for example:
+  <a href="https://query.rs/?q=@tokio%20spawn">@tokio spawn</a>
+</div>
 <div
   class="m-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
 >
