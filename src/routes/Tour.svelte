@@ -83,17 +83,21 @@
             ":book",
             ":cargo",
             ":stable",
-            ":target",
             ":tool",
             ":yet",
-            ":rustc",
           ],
         },
         {
           title:
-            "Pagination: <b><code>Ctrl</code> + <code>n</code></b> / <b><code>Ctrl</code> + <code>p</code></b>, or append <b>-</b>",
+            "<b><code>Ctrl</code> + <code>j</code></b> / <b><code>k</code></b> to move selection down/up",
+          queries: [],
+        },
+        {
+          title:
+            "<b><code>Ctrl</code> + <code>n</code></b> / <b><code>p</code></b> or append <b>-</b> to page down/up",
           queries: ["entry -", "!tokio --"],
         },
+
         {
           title:
             "<b><code>ALT</code> + <code>Enter</code></b> to open in the new tab",
