@@ -69,6 +69,10 @@
           title: "Search caniuse",
           queries: ["?", "?const", "?slice"],
         },
+        {
+          title: "Query parameters: <a href='/?q=cell' target='_blank'>?q=cell</a>",
+          queries: [],
+        },
       ],
     },
     {
@@ -89,15 +93,14 @@
         },
         {
           title:
-            "<b><code>Ctrl</code> + <code>j</code></b> / <b><code>k</code></b> to move selection down/up",
-          queries: [],
-        },
-        {
-          title:
             "<b><code>Ctrl</code> + <code>n</code></b> / <b><code>p</code></b> or append <b>-</b> to page down/up",
           queries: ["entry -", "!tokio --"],
         },
-
+        {
+          title:
+            "<b><code>Ctrl</code> + <code>j</code></b> / <b><code>k</code></b> to move selection down/up",
+          queries: [],
+        },
         {
           title:
             "<b><code>ALT</code> + <code>Enter</code></b> to open in the new tab",
