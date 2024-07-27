@@ -4,7 +4,12 @@
   import DropdownFooter from "./DropdownFooter.svelte";
   import Tour from "./Tour.svelte";
   import { page } from "$app/stores";
+  import { onNavigate } from "$app/navigation";
 
+  /**
+   * @type {Omnibox}
+   */
+  let omnibox;
   /**
    * @type {HTMLElement}
    */
@@ -14,8 +19,17 @@
    */
   let tour;
 
+  onNavigate(() => {
+    if (omnibox) {
+      // Clear event listeners, otherwise, when switch route back,
+      // onMount() would call again, led to strange behaviors
+      // due to multiple event listeners have been registered.
+      omnibox.render.clearListeners();
+    }
+  });
+
   onMount(async () => {
-    const omnibox = Omnibox.webpage({
+    omnibox = Omnibox.webpage({
       element: omniboxRender,
       icon: "/assets/icon.png",
       onFooter: (
