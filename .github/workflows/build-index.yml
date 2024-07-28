@@ -11,8 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: 'main'
-          submodules: 'recursive'
+          ref: "main"
+          submodules: "recursive"
       - name: "Build index"
         run: |
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml books -d /tmp/books.js
@@ -26,8 +26,14 @@ jobs:
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rfcs -p /tmp/rfc-index -d /tmp/rfcs.js
           wget https://static.crates.io/db-dump.tar.gz -O /tmp/db-dump.tar.gz
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml --release crates -p /tmp/db-dump.tar.gz -d /tmp/crates.js
-          mv /tmp/*.js lib/index
+          cp /tmp/*.js lib/index
+          zip /tmp/index.zip /tmp/*.js
           npm install && npm run build
+      - name: "Upload Index Artifact"
+        uses: actions/upload-artifact@master
+        with:
+          name: index.zip
+          path: /tmp/index.zip
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
