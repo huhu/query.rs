@@ -4,10 +4,6 @@
   import { CHART_COLOR } from "./stats";
 
   /**
-   * @type {string}
-   */
-  export let color = CHART_COLOR;
-  /**
    * @type {number[]}
    */
   export let data = [];
