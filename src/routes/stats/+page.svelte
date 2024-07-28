@@ -11,6 +11,7 @@
   import { onMount } from "svelte";
   import Histogram from "./HistogramChart.svelte";
   import TopCratesChart from "./TopCratesChart.svelte";
+  import HeatMapChart from "./HeatMapChart.svelte";
 
   /**
    * @type {number[]}
@@ -42,17 +43,29 @@
   let searchTime = "the last year";
 
   /**
+   * @type {number[]}
+  */
+  let dateRange = [];
+
+  /**
+   * @type {(string | number)[][]} 
+  */
+  let heatMapData = [];
+
+  /**
    *
    * @param {number} now
    * @param {number} yearAgo
    */
   async function getEchartData(now, yearAgo) {
-    const { weeksArr, dateArr, hourArr, topCratesArr } =
+    dateRange = [now, yearAgo];
+    const { weeksArr, dateArr, hourArr, topCratesArr, heatMapArr } =
       await getHistogramEchartDatas(now, yearAgo);
     weekData = weeksArr;
     dateData = dateArr;
     hourData = hourArr;
     topCratesData = topCratesArr;
+    heatMapData = heatMapArr;
     await renderCharts(now, yearAgo);
   }
 
@@ -72,6 +85,7 @@
   onMount(async () => {
     const now = moment().valueOf();
     const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
+    dateRange = [now, yearAgo];
     yearList = await getYearList(currentYear);
     getEchartData(now, yearAgo);
   });
@@ -79,8 +93,8 @@
 
 <link rel="stylesheet" href="/css/charts.css" />
 <div class="flex flex-col items-center m-auto w-full">
-  <div class="flex-layout flex-col">
-    <div class="chart-heatmap hidden md:block"></div>
+  <div class="mb-9 w-full hidden md:block">
+    <HeatMapChart dateRange={dateRange} data={heatMapData}/>
   </div>
   <div class="search-time w-full text-center text-xl">
     <b>0</b> searches in <b>{searchTime}</b>, approximately saved
