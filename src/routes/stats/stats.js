@@ -1,4 +1,3 @@
-import { calendarHeatmap } from "./charts.js";
 import { STATS_PATTERNS, Statistics } from "querylib";
 import moment from "moment";
 
@@ -88,30 +87,6 @@ function renderSearchTimes(length = 0) {
     frequency[2].textContent = calculateSavedTime(length);
 }
 
-function renderHeatmap(data, now, yearAgo) {
-    let heatmap = calendarHeatmap(now, yearAgo)
-        .data(data)
-        .selector('.chart-heatmap')
-        .tooltipEnabled(true)
-        .colorRange([
-            { min: 0, color: '#f4f7f7' },
-            { min: 1, max: 2, color: '#ffdd2b' },
-            { min: 3, max: 6, color: '#f6a405' },
-            { min: 7, max: 11, color: '#f56b04' },
-            { min: 12, max: 'Infinity', color: '#f40703' }
-        ])
-        .tooltipUnit([
-            { min: 0, unit: 'search' },
-            { min: 1, max: 1, unit: 'searches' },
-            { min: 2, max: 'Infinity', unit: 'searches' }
-        ])
-        .legendEnabled(true)
-        .onClick(function (data) {
-            console.log('data', data);
-        });
-    heatmap();
-}
-
 function renderSearchStats(typeDataObj, total) {
     let searchStatsGraph = document.querySelector(".search-stats-graph");
     if (searchStatsGraph.hasChildNodes()) {
@@ -164,12 +139,6 @@ export async function renderCharts(now, yearAgo) {
         return now >= time && time >= yearAgo;
     });
 
-    const heatMapData = data.reduce((pre, [t]) => {
-        const time = moment(t).format("YYYY-MM-DD");
-        pre[time] = (pre[time] || 0) + 1;
-        return pre;
-    }, {});
-
     const weeksObj = WEEKS_LABEL.reduce((obj, week) => {
         obj[week] = 0;
         return obj;
@@ -197,7 +166,6 @@ export async function renderCharts(now, yearAgo) {
     });
 
     renderSearchTimes(data.length);
-    renderHeatmap(heatMapData, now, yearAgo);
     renderSearchStats(typeDataObj, typeTotal);
 }
 
@@ -217,6 +185,12 @@ export async function getHistogramEchartDatas(now, yearAgo) {
     const hourArr = HOURS_LABEL.map(() => 0);
 
     const topCratesObj = Object.create(null);
+
+    const heatMapArr = data.reduce((pre, [t]) => {
+        const time = moment(t).format("YYYY-MM-DD");
+        pre[time] = (pre[time] || 0) + 1;
+        return pre;
+    }, {});
 
     for (const [t, , type] of data) {
         const time = moment(t);
@@ -246,6 +220,7 @@ export async function getHistogramEchartDatas(now, yearAgo) {
         dateArr,
         hourArr,
         topCratesArr,
+        heatMapArr: Object.entries(heatMapArr),
     }
 }
 
