@@ -46,8 +46,9 @@
     },
     calendar: {
       top: 30,
-      left: 30,
+      left: 20,
       bottom: 30,
+      right: 0,
       range: dateRange,
       yearLabel: { show: false },
       cellSize: 'auto',
@@ -93,4 +94,4 @@
 
 </script>
 
-<div class="w-full h-[180px] m-auto" bind:this={chartElement}></div>
+<div class="w-[820px] h-[160px] m-auto" bind:this={chartElement}></div>
