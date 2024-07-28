@@ -19,7 +19,12 @@
    */
   let tour;
 
-  onNavigate(() => {
+  onNavigate((navigation) => {
+    if (navigation.from?.route.id === navigation.to?.route.id) {
+      // Ignore the same route navigation
+      return;
+    }
+
     if (omnibox) {
       // Clear event listeners, otherwise, when switch route back,
       // onMount() would call again, led to strange behaviors
