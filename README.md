@@ -10,3 +10,9 @@
 **A search engine for Rust.**
 
 https://query.rs
+
+## Future plan
+
+- [ ] Full-text docs search
+- [ ] Rust articles/blogs search
+- [ ] Rust jobs search
