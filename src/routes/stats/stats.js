@@ -2,7 +2,6 @@ import { STATS_PATTERNS, Statistics } from "querylib";
 import moment from "moment";
 
 const TOP_CRATE_LENGTH = 15;
-let chartWidth = 460;
 const TYPE_OTHER = "other";
 export const CHART_COLOR = "rgba(249, 188, 45, 0.5)";
 const STATS_MAP = {
@@ -41,6 +40,10 @@ const STATS_NUMBER = STATS_PATTERNS.reduce((pre, current) => {
 }, Object.create(null));
 export const WEEKS_LABEL = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+/**
+ * @param {number} start
+ * @param {number} end
+ */
 function makeNumericKeyObject(start, end, initial = 0) {
     return Array.from({ length: end + 1 - start }).fill(initial)
         .reduce((obj, current, index) => {
@@ -62,83 +65,10 @@ export const DATES_LABEL = makeNumericKeyArray(1, 31);
 export const HOURS_LABEL = makeNumericKeyArray(1, 23);
 export const TOP_CRATE_LABEL = Array.from({ length: TOP_CRATE_LENGTH }).map((_, i) => `#${i + 1}`);
 
-
-function calculateSavedTime(times) {
-    let seconds = times * 5;
-    if (seconds > 3600) {
-        let hours = seconds / 3600;
-        let minutes = seconds % 3600 / 60;
-        if (minutes > 0) {
-            return `${Math.round(hours)} hours ${Math.round(minutes)} minutes`;
-        } else {
-            return `${Math.round(hours)} hours`;
-        }
-    } else if (seconds > 60) {
-        return `${Math.round(seconds / 60)} minutes`;
-    } else {
-        return `${Math.round(seconds)} seconds`;
-    }
-}
-
-function renderSearchTimes(length = 0) {
-    let searchTimes = document.querySelector(".search-time");
-    let frequency = searchTimes.querySelectorAll("b");
-    frequency[0].textContent = `${length}`;
-    frequency[2].textContent = calculateSavedTime(length);
-}
-
-function renderSearchStats(typeDataObj, total) {
-    let searchStatsGraph = document.querySelector(".search-stats-graph");
-    if (searchStatsGraph.hasChildNodes()) {
-        searchStatsGraph.innerHTML = null;
-    }
-
-    let searchStatsText = document.querySelector(".search-stats-text");
-    let ol = searchStatsText.querySelector("ol");
-    if (ol.hasChildNodes()) {
-        ol.innerHTML = null;
-    }
-    // Generate default type data.
-    let defaultTypeData = Object.create(null)
-    Object.keys(STATS_MAP).forEach(name => {
-        defaultTypeData[name] = 0;
-    });
-
-    // Merge default type data with statistic type data.
-    let array = Object.entries(Object.assign(defaultTypeData, typeDataObj));
-
-    // Split the other part from the others in order to
-    // keep the other part always in the last order.
-    [
-        ...array.filter(([key]) => key !== TYPE_OTHER).sort((a, b) => b[1] - a[1]),
-        ...array.filter(([key]) => key === TYPE_OTHER),
-    ].forEach(([name, value]) => {
-        let { color, description } = STATS_MAP[name];
-        let li = document.createElement("li");
-        let percent = total ? (value / total * 100).toFixed(1) : 0.0;
-        li.innerHTML = `<div aria-label="${description}" data-balloon-pos="up" data-balloon-length="large"
-                        style="text-align: center" class="tooltip-color">
-                        <span class="color-circle-dot" style="background-color:${color}"></span>
-                        <span class="">${name}</span>
-                        <span class="">${percent}%</span>
-                     </div>`;
-        ol.append(li);
-        if (value > 0) {
-            searchStatsGraph.insertAdjacentHTML('beforeend',
-                `<span class="percent-bar" style="width: ${percent}%; background-color:${color}"></span>`
-            );
-        }
-    });
-}
-
-export async function renderCharts(now, yearAgo) {
-    chartWidth = Math.min(chartWidth, document.getElementById("chart").clientWidth) - 10;
-    const { timeline } = await Statistics.load();
-
-    const data = timeline.filter(([time]) => {
-        return now >= time && time >= yearAgo;
-    });
-
+/**
+ * @param {any[]} data
+ */
+export function getSearchStats(data) {
     const weeksObj = WEEKS_LABEL.reduce((obj, week) => {
         obj[week] = 0;
         return obj;
@@ -165,21 +95,35 @@ export async function renderCharts(now, yearAgo) {
         }
     });
 
-    renderSearchTimes(data.length);
-    renderSearchStats(typeDataObj, typeTotal);
+
+    // Generate default type data.
+    let defaultTypeData = Object.create(null)
+    Object.keys(STATS_MAP).forEach(name => {
+        defaultTypeData[name] = 0;
+    });
+
+    // Merge default type data with statistic type data.
+    let array = Object.entries(Object.assign(defaultTypeData, typeDataObj));
+
+    // Split the other part from the others in order to
+    // keep the other part always in the last order.
+    return [
+        ...array.filter(([key]) => key !== TYPE_OTHER).sort((a, b) => b[1] - a[1]),
+        ...array.filter(([key]) => key === TYPE_OTHER),
+    ]
+        .map(([name, value]) => {
+            let { color, description } = STATS_MAP[name];
+            let percent = typeTotal ? (value / typeTotal * 100).toFixed(1) : 0.0;
+            return {
+                color, description, name, percent,
+            }
+        });
 }
 
 /**
- * 
- * @param {number} now 
- * @param {number} yearAgo 
- * @returns 
+ * @param {any[]} data
  */
-export async function getHistogramEchartDatas(now, yearAgo) {
-    const { timeline } = await Statistics.load();
-    const data = timeline.filter(([time]) => {
-        return now >= time && time >= yearAgo;
-    });
+export function getHistogramEchartDatas(data) {
     const weeksArr = WEEKS_LABEL.map(() => 0);
     const dateArr = DATES_LABEL.map(() => 0);
     const hourArr = HOURS_LABEL.map(() => 0);

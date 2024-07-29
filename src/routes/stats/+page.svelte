@@ -1,7 +1,7 @@
 <script>
   import moment from "moment";
   import {
-    renderCharts,
+    getSearchStats,
     getHistogramEchartDatas,
     WEEKS_LABEL,
     DATES_LABEL,
@@ -12,6 +12,7 @@
   import Histogram from "./HistogramChart.svelte";
   import TopCratesChart from "./TopCratesChart.svelte";
   import HeatMapChart from "./HeatMapChart.svelte";
+  import { Statistics } from "querylib";
 
   /**
    * @type {number[]}
@@ -44,13 +45,22 @@
 
   /**
    * @type {number[]}
-  */
+   */
   let dateRange = [];
 
   /**
-   * @type {(string | number)[][]} 
-  */
+   * @type {(string | number)[][]}
+   */
   let heatMapData = [];
+  /**
+   * @type {{name:string; description: string, color: string, percent: string}[]}
+   */
+  let searchStats = [];
+  /**
+   * @type {number}
+   * @description the total number of search in the last year
+   */
+  let yearSearchTotal = 0;
 
   /**
    *
@@ -58,15 +68,21 @@
    * @param {number} yearAgo
    */
   async function getEchartData(now, yearAgo) {
+    const { timeline } = await Statistics.load();
+    const data = timeline.filter(([time]) => {
+      return now >= time && time >= yearAgo;
+    });
+
+    yearSearchTotal = data.length;
     dateRange = [now, yearAgo];
     const { weeksArr, dateArr, hourArr, topCratesArr, heatMapArr } =
-      await getHistogramEchartDatas(now, yearAgo);
+      getHistogramEchartDatas(data);
     weekData = weeksArr;
     dateData = dateArr;
     hourData = hourArr;
     topCratesData = topCratesArr;
     heatMapData = heatMapArr;
-    await renderCharts(now, yearAgo);
+    searchStats = getSearchStats(data);
   }
 
   /**
@@ -82,6 +98,26 @@
     getEchartData(now, yearAgo);
   }
 
+  /**
+   * @param {number} times
+   */
+  function calculateSavedTime(times) {
+    let seconds = times * 5;
+    if (seconds > 3600) {
+      let hours = seconds / 3600;
+      let minutes = (seconds % 3600) / 60;
+      if (minutes > 0) {
+        return `${Math.round(hours)} hours ${Math.round(minutes)} minutes`;
+      } else {
+        return `${Math.round(hours)} hours`;
+      }
+    } else if (seconds > 60) {
+      return `${Math.round(seconds / 60)} minutes`;
+    } else {
+      return `${Math.round(seconds)} seconds`;
+    }
+  }
+
   onMount(async () => {
     const now = moment().valueOf();
     const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
@@ -94,11 +130,11 @@
 <link rel="stylesheet" href="/css/charts.css" />
 <div class="flex flex-col items-center m-auto w-full">
   <div class="mb-9 w-full hidden md:block">
-    <HeatMapChart dateRange={dateRange} data={heatMapData}/>
+    <HeatMapChart {dateRange} data={heatMapData} />
   </div>
   <div class="search-time w-full text-center text-xl">
-    <b>0</b> searches in <b>{searchTime}</b>, approximately saved
-    <b>0 seconds</b>.
+    <b>{yearSearchTotal}</b> searches in <b>{searchTime}</b>, approximately
+    saved <b>{calculateSavedTime(yearSearchTotal)}</b>.
     <b
       aria-label="We consider one search save 5 seconds in average, just an estimated value."
       data-balloon-pos="up"
@@ -111,9 +147,33 @@
   </div>
   <div id="chart" class="w-full">
     <div class="py-12">
-      <div class="search-stats-graph h-[8px] flex"></div>
+      <div class="search-stats-graph h-[8px] flex">
+        {#each searchStats as item}
+          <span
+            class="percent-bar"
+            style="width: {item.percent}%; background-color:{item.color}"
+          ></span>
+        {/each}
+      </div>
       <div class="search-stats-text p-2">
-        <ol class="flex justify-around flex-wrap"></ol>
+        <ol class="flex justify-around flex-wrap">
+          {#each searchStats as item}
+            <div
+              aria-label="${item.description}"
+              data-balloon-pos="up"
+              data-balloon-length="large"
+              style="text-align: center"
+              class="tooltip-color"
+            >
+              <span
+                class="color-circle-dot"
+                style="background-color:${item.color}"
+              ></span>
+              <span>{item.name}</span>
+              <span>{item.percent}%</span>
+            </div>
+          {/each}
+        </ol>
       </div>
     </div>
     <div class="flex flex-col md:flex-row-reverse md:justify-around pt-16">
