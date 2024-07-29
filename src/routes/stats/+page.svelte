@@ -6,7 +6,6 @@
     WEEKS_LABEL,
     DATES_LABEL,
     HOURS_LABEL,
-    getYearList,
   } from "./stats";
   import { onMount } from "svelte";
   import Histogram from "./HistogramChart.svelte";
@@ -53,7 +52,7 @@
    */
   let heatMapData = [];
   /**
-   * @type {{name:string; description: string, color: string, percent: string}[]}
+   * @type {{name:string; description: string, color: string, percent: string | number}[]}
    */
   let searchStats = [];
   /**
@@ -116,6 +115,23 @@
     } else {
       return `${Math.round(seconds)} seconds`;
     }
+  }
+
+  /**
+   *
+   * @param {number} y
+   * @returns {Promise<number[]>}
+   */
+  async function getYearList(y) {
+    const { timeline } = await Statistics.load();
+    const min = timeline.reduce((pre, current) => {
+      return Math.min(pre, current[0]);
+    }, moment().valueOf());
+    const list = [];
+    for (let i = y; i >= moment(min).year(); i--) {
+      list.push(i);
+    }
+    return list;
   }
 
   onMount(async () => {
@@ -199,12 +215,12 @@
   </div>
 </div>
 <ul class="hidden md:block filter-list">
-  {#each yearList as item}
+  {#each yearList as year}
     <li
-      class:selected={item === currentYear}
-      on:click={() => handleChangeYear(item)}
+      class:selected={year === currentYear}
+      on:click={() => handleChangeYear(year)}
     >
-      {item}
+      {year}
     </li>
   {/each}
 </ul>

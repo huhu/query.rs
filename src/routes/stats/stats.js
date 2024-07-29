@@ -1,4 +1,4 @@
-import { STATS_PATTERNS, Statistics } from "querylib";
+import { STATS_PATTERNS } from "querylib";
 import moment from "moment";
 
 const TOP_CRATE_LENGTH = 15;
@@ -167,21 +167,3 @@ export function getHistogramEchartDatas(data) {
         heatMapArr: Object.entries(heatMapArr),
     }
 }
-
-/**
- * 
- * @param {number} y 
- * @returns {Promise<number[]>}
- */
-export async function getYearList(y) {
-    const { timeline } = await Statistics.load();
-    const min = timeline.reduce((pre, current) => {
-        return Math.min(pre, current[0]);
-    }, moment().valueOf());
-    const list = [];
-    for (let i = y; i >= moment(min).year(); i--) {
-        list.push(i);
-    }
-    return list;
-}
-
