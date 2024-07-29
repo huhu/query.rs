@@ -146,12 +146,13 @@
     </b>
   </div>
   <div id="chart" class="w-full">
-    <div class="py-12">
-      <div class="search-stats-graph h-[8px] flex">
+    <div class="py-12 w-full mx-auto md:w-[85%]">
+      <div class="h-[8px] flex">
         {#each searchStats as item}
           <span
             class="percent-bar"
-            style="width: {item.percent}%; background-color:{item.color}"
+            style="width: {item.percent}%"
+            style:background-color={item.color}
           ></span>
         {/each}
       </div>
@@ -165,9 +166,7 @@
               style="text-align: center"
               class="tooltip-color"
             >
-              <span
-                class="color-circle-dot"
-                style="background-color:${item.color}"
+              <span class="color-circle-dot" style:background-color={item.color}
               ></span>
               <span>{item.name}</span>
               <span>{item.percent}%</span>
