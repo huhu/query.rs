@@ -1,5 +1,5 @@
 import { STATS_PATTERNS } from "querylib";
-import moment from "moment";
+import dayjs from "dayjs";
 
 const TOP_CRATE_LENGTH = 15;
 const TYPE_OTHER = "other";
@@ -72,7 +72,7 @@ export function getSearchStats(data) {
     const weeksObj = WEEKS_LABEL.reduce((obj, week) => {
         obj[week] = 0;
         return obj;
-    }, {});
+    }, Object.create(null));
     const datesObj = makeNumericKeyObject(1, 31);
     const hoursObj = makeNumericKeyObject(1, 23);
 
@@ -80,10 +80,10 @@ export function getSearchStats(data) {
     const typeDataObj = Object.create(null);
 
     data.forEach(([t, content]) => {
-        const time = moment(t);
+        const time = dayjs(t);
         const hour = time.hour();
 
-        weeksObj[WEEKS_LABEL[time.weekday()]] += 1;
+        weeksObj[WEEKS_LABEL[time.day()]] += 1;
         datesObj[time.date()] += 1;
         if (hour !== 0) {
             hoursObj[hour] += 1;
@@ -131,16 +131,16 @@ export function getHistogramEchartDatas(data) {
     const topCratesObj = Object.create(null);
 
     const heatMapArr = data.reduce((pre, [t]) => {
-        const time = moment(t).format("YYYY-MM-DD");
+        const time = dayjs(t).format("YYYY-MM-DD");
         pre[time] = (pre[time] || 0) + 1;
         return pre;
     }, {});
 
     for (const [t, , type] of data) {
-        const time = moment(t);
+        const time = dayjs(t);
         const hour = time.hour();
 
-        weeksArr[time.weekday()] += 1;
+        weeksArr[time.day()] += 1;
         dateArr[time.date() - 1] += 1;
         if (hour !== 0) {
             hourArr[hour - 1] += 1;

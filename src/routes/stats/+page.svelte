@@ -1,5 +1,5 @@
 <script>
-  import moment from "moment";
+  import dayjs from "dayjs";
   import {
     getSearchStats,
     getHistogramEchartDatas,
@@ -33,7 +33,7 @@
    */
   let yearList = [];
 
-  let currentYear = moment().year();
+  let currentYear = dayjs().year();
 
   /**
    * @type {{name:string; value: number}[]}
@@ -91,7 +91,7 @@
   function handleChangeYear(y) {
     currentYear = y;
     searchTime = String(y);
-    const year = moment(searchTime);
+    const year = dayjs(searchTime);
     const now = year.endOf("year").valueOf();
     const yearAgo = year.startOf("year").valueOf();
     getEchartData(now, yearAgo);
@@ -126,17 +126,17 @@
     const { timeline } = await Statistics.load();
     const min = timeline.reduce((pre, current) => {
       return Math.min(pre, current[0]);
-    }, moment().valueOf());
+    }, dayjs().valueOf());
     const list = [];
-    for (let i = y; i >= moment(min).year(); i--) {
+    for (let i = y; i >= dayjs(min).year(); i--) {
       list.push(i);
     }
     return list;
   }
 
   onMount(async () => {
-    const now = moment().valueOf();
-    const yearAgo = moment().startOf("day").subtract(1, "year").valueOf();
+    const now = dayjs().valueOf();
+    const yearAgo = dayjs().startOf("day").subtract(1, "year").valueOf();
     dateRange = [now, yearAgo];
     yearList = await getYearList(currentYear);
     getEchartData(now, yearAgo);

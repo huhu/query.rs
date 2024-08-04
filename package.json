@@ -13,9 +13,8 @@
         "lint": "eslint ."
     },
     "dependencies": {
+        "dayjs": "^1.11.12",
         "echarts": "^5.5.1",
-        "moment": "^2.30.1",
-        "momentjs": "^2.0.0",
         "querylib": "./lib",
         "svelte-french-toast": "^1.2.0"
     },

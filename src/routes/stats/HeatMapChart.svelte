@@ -1,7 +1,7 @@
 <script>
   import {onMount} from 'svelte';
   import { init } from "echarts";
-  import moment from 'moment';
+  import dayjs from 'dayjs';
   /**
    * @type {number[]}
   */
@@ -28,7 +28,7 @@
       confine: true,
       formatter: (/** @type {{ color:string; data: any }} */ params) => {
         return `<div><strong>${params.data[1]}</strong> searches on 
-          ${moment(params.data[0]).format('ddd, MMM Do YYYY')}</div>`
+          ${dayjs(params.data[0]).format('ddd, MMM D YYYY')}</div>`
       }
     },
     visualMap: {
