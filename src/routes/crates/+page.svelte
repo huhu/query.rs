@@ -139,20 +139,19 @@
 <Toaster />
 <div class="text-center text-sm max-w-screen-md mx-auto px-4">
   You can add the crate you search most to local, this allows you to search that
-  crate's docs via <code class="text-[#f9bb2d]">@crate-name keyword</code>, for example:
-  <a href="https://query.rs/?q=@tokio%20spawn">@tokio spawn</a>
+  crate's docs via <code class="text-[#f9bb2d]">@crate-name keyword</code>, for
+  example: <a href="https://query.rs/?q=@tokio%20spawn">@tokio spawn</a>
 </div>
 <div
   class="m-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
 >
-  <!-- svelte-ignore a11y-autofocus -->
   <input
     bind:value={searchCrate}
     autofocus
     type="text"
     class="w-full md:w-[400px] h-8 px-2 py-0 rounded border border-solid border-[#f9bb2daa] focus:outline-none"
   />
-  <span class="btn btn-primary m-4" on:click={addCrate}> Add crate </span>
+  <button class="btn btn-primary m-4" on:click={addCrate}> Add crate </button>
 </div>
 <div class="subtext flex justify-between my-4">
   <span>
@@ -199,10 +198,12 @@
           <span>{crate.formatedTime}</span>
         </div>
       </div>
-      <span
+      <button
         class="btn-remove"
-        on:click={async () => await removeCrate(crate.name)}>Remove</span
+        on:click={async () => await removeCrate(crate.name)}
       >
+        Remove
+      </button>
     </li>
   {/each}
 </ul>

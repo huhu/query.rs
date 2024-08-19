@@ -92,10 +92,7 @@
     saveToFile(JSON.stringify(data), `${date}.json`, "text/plain");
   }
 
-  /**
-   * @param {any} event
-   */
-  function onFileSelected(event) {
+  function onFileSelected() {
     fileSelector.classList.remove("required");
 
     let fileReader = new FileReader();
@@ -162,7 +159,9 @@
           </div>
         </div>
       {/each}
-      <div class="btn btn-primary btn-export" on:click={onExport}>Export</div>
+      <button class="btn btn-primary btn-export" on:click={onExport}>
+        Export
+      </button>
     </div>
   </div>
   <div class="setting-group">
@@ -188,7 +187,9 @@
           </div>
         </div>
       {/each}
-      <div class="btn btn-secondary btn-import" on:click={onImport}>Import</div>
+      <button class="btn btn-secondary btn-import" on:click={onImport}>
+        Import
+      </button>
     </div>
   </div>
 </div>

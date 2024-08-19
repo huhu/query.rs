@@ -91,9 +91,8 @@
           </svg>
         </button>
       </div>
-      <div
+      <button
         on:click={() => (hiddenMenu = true)}
-        aria-readonly="true"
         class="transition ease-in-out duration-700 z-10 right-0 text-left list-none absolute flex-col target:flex shadow-md text-base bg-[#fcfaf6] rounded-md w-full"
         class:-translate-y-72={hiddenMenu}
         class:translate-y-0={!hiddenMenu}
@@ -101,7 +100,7 @@
         {#each menus as menu}
           <a class="p-3 px-6 block" href={menu.path}>{menu.name}</a>
         {/each}
-      </div>
+      </button>
     </div>
     <div
       class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_180px)]"

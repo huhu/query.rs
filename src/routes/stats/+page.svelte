@@ -214,13 +214,13 @@
     </div>
   </div>
 </div>
-<ul class="hidden md:block filter-list">
+<div class="hidden md:block filter-list">
   {#each yearList as year}
-    <li
+    <button
       class:selected={year === currentYear}
       on:click={() => handleChangeYear(year)}
     >
       {year}
-    </li>
+    </button>
   {/each}
-</ul>
+</div>
