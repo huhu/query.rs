@@ -1,5 +1,6 @@
-import { IndexManager } from 'querylib';
-import { CrateSearch, DescShardManager, DocSearch } from 'querylib/search/index.js';
+import stdDescShards from 'querylib/index/desc-shards/std';
+import searchIndex from 'querylib/index/std-docs.js';
+import { DocSearch } from 'querylib/search/index.js';
 
 /**
  * This function behaves as a suggestion provider for the search queries.
@@ -28,7 +29,7 @@ export async function GET({params, platform}) {
     let urls = [];
     
     await stdSearch(query, completions, desc, urls, 4);
-    await crateSearch(query, completions, desc, urls, 3);
+    // await crateSearch(query, completions, desc, urls, 3);
 
     result.push(completions);
     result.push(desc);
@@ -48,12 +49,12 @@ export async function GET({params, platform}) {
  * @param {number} maxCount 
  */
 async function stdSearch(query, completions, desc, urls, maxCount) {
-    const stdDescShards = await DescShardManager.create("std-stable");
+    const descShards = await StdShardManager.create();
     let stdSearcher = new DocSearch(
         "std",
-        await IndexManager.getStdStableIndex(),
+        structuredClone(searchIndex),
         "https://doc.rust-lang.org/",
-        stdDescShards,
+        descShards,
     );
 
     let response = await stdSearcher.search(query);
@@ -74,30 +75,65 @@ async function stdSearch(query, completions, desc, urls, maxCount) {
     }
 }
 
-/**
- * Search for a crate.
- * @param {string} query 
- * @param {string[]} completions 
- * @param {string[]} desc 
- * @param {string[]} urls 
- * @param {number} maxCount 
- */
-async function crateSearch(query, completions, desc, urls, maxCount) {
-    const crateSearcher = new CrateSearch(await IndexManager.getCrateMapping(), await IndexManager.getCrateIndex());
-    let response = crateSearcher.search(query);
+// /**
+//  * Search for a crate.
+//  * @param {string} query 
+//  * @param {string[]} completions 
+//  * @param {string[]} desc 
+//  * @param {string[]} urls 
+//  * @param {number} maxCount 
+//  */
+// async function crateSearch(query, completions, desc, urls, maxCount) {
+//     const crateSearcher = new CrateSearch(await IndexManager.getCrateMapping(), await IndexManager.getCrateIndex());
+//     let response = crateSearcher.search(query);
 
-    let count = 0;
-    for (const entry of response) {
-        if (maxCount && count >= maxCount) {
-            break;
-        } else {
-            count += 1;
-        }
+//     let count = 0;
+//     for (const entry of response) {
+//         if (maxCount && count >= maxCount) {
+//             break;
+//         } else {
+//             count += 1;
+//         }
 
-        let entryDisplay = "crate: " + entry["id"];
-        entryDisplay = entryDisplay //+ " - " + "https://docs.rs/" + entry["id"];
-        completions.push(entryDisplay);
-        desc.push(entry["description"]);
-        urls.push("https://docs.rs/" + entry["id"]);
+//         let entryDisplay = "crate: " + entry["id"];
+//         entryDisplay = entryDisplay //+ " - " + "https://docs.rs/" + entry["id"];
+//         completions.push(entryDisplay);
+//         desc.push(entry["description"]);
+//         urls.push("https://docs.rs/" + entry["id"]);
+//     }
+// }
+
+
+class StdShardManager {
+    constructor() {
+        // A dummy descShards map to allow interact in librustdoc's DocSearch js
+        this.descShards = new DummyMap();
+        // The real crate -> desc shard map.
+        this._descShards = new Map();
     }
+
+    static async create() {
+        const shardManager = new StdShardManager();
+        shardManager.addCrateDescShards();
+        return shardManager;
+    }
+
+    addCrateDescShards() {
+        const descShards = stdDescShards;
+        this._descShards = new Map([...this._descShards, ...descShards]);
+    }
+
+    // Load a single desc shard.
+    // Compatible with librustdoc main.js.
+    async loadDesc({ descShard, descIndex }) {
+        let crateDescShard = this._descShards.get(descShard.crate);
+        if (!crateDescShard || crateDescShard.length === 0) {
+            return null;
+        }
+        return crateDescShard[descShard.shard][descIndex];
+    }
+}
+
+class DummyMap {
+    set(_ke, _value) { }
 }
