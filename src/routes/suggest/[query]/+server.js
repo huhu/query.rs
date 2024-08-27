@@ -2,6 +2,13 @@ import stdDescShards from 'querylib/index/desc-shards/std';
 import searchIndex from 'querylib/index/std-docs.js';
 import { DescShardManager, DocSearch } from 'querylib/search/index.js';
 
+const stdSearcher = new DocSearch(
+    "std",
+    structuredClone(searchIndex),
+    "https://doc.rust-lang.org/",
+    await DescShardManager.create(stdDescShards),
+);
+
 /**
  * This function behaves as a suggestion provider for the search queries.
  * 
@@ -50,14 +57,6 @@ export async function GET({ params }) {
  * @param {number} maxCount 
  */
 async function stdSearch(query, completions, desc, urls, maxCount) {
-    const descShards = await DescShardManager.create(stdDescShards);
-    let stdSearcher = new DocSearch(
-        "std",
-        structuredClone(searchIndex),
-        "https://doc.rust-lang.org/",
-        descShards,
-    );
-
     let response = await stdSearcher.search(query);
 
     let count = 0;
@@ -68,8 +67,7 @@ async function stdSearch(query, completions, desc, urls, maxCount) {
             count += 1;
         }
 
-        let entryDisplay = "std: " + entry["path"] + "::" + entry["name"];
-        entryDisplay = entryDisplay //+ " - " + entry["href"];
+        let entryDisplay = entry["path"] + "::" + entry["name"];
         completions.push(entryDisplay);
         desc.push(entry["desc"]);
         urls.push(entry["href"]);
