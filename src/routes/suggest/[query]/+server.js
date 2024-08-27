@@ -36,7 +36,8 @@ export async function GET({ params }) {
     result.push(urls);
 
     let res = Response.json(result);
-    res.headers.set("Content-Type", "application/x-suggestions+json")
+    res.headers.set("Content-Type", "application/x-suggestions+json");
+    res.headers.set("Cache-Control", "public, max-age=3600");
     return res;
 }
 
