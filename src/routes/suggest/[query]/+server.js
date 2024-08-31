@@ -67,7 +67,8 @@ async function stdSearch(query, completions, desc, urls, maxCount) {
             count += 1;
         }
 
-        let entryDisplay = entry["path"] + "::" + entry["name"];
+        let entryDisplay = "std: " + entry["path"] + "::" + entry["name"];
+
         completions.push(entryDisplay);
         desc.push(entry["desc"]);
         urls.push(entry["href"]);
