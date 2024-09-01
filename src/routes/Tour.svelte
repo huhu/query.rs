@@ -70,7 +70,7 @@
           queries: ["?", "?const", "?slice"],
         },
         {
-          title: "Query parameters: <a href='/?q=cell' target='_blank'>?q=cell</a>",
+          title: "<a href='/?q=cell' target='_blank'>Query parameters</a> and <a href='/opensearch' target='_blank'>Opensearch support</a>",
           queries: [],
         },
       ],
