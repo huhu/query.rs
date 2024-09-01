@@ -1,4 +1,3 @@
-import stdDescShards from 'querylib/index/desc-shards/std';
 import searchIndex from 'querylib/index/std-docs.js';
 import { DescShardManager, DocSearch } from 'querylib/search/index.js';
 
@@ -6,7 +5,7 @@ const stdSearcher = new DocSearch(
     "std",
     structuredClone(searchIndex),
     "https://doc.rust-lang.org/",
-    await DescShardManager.create(stdDescShards),
+    new DescShardManager(),
 );
 
 /**
@@ -58,7 +57,6 @@ export async function GET({ params }) {
  */
 async function stdSearch(query, completions, desc, urls, maxCount) {
     let response = await stdSearcher.search(query);
-
     let count = 0;
     for (const entry of response) {
         if (maxCount && count >= maxCount) {
@@ -67,11 +65,13 @@ async function stdSearch(query, completions, desc, urls, maxCount) {
             count += 1;
         }
 
-        let entryDisplay = "std: " + entry["path"] + "::" + entry["name"];
-
-        completions.push(entryDisplay);
-        desc.push(entry["desc"]);
-        urls.push(entry["href"]);
+        // Suggest format like this: <doc> - <url>
+        // The /redirect api will redirect the user to the url.
+        completions.push(`${entry["path"]}::${entry["name"]} - ${entry["href"]}`);
+        // Due to no browser support descript and url in suggestions,
+        // we simply set it to empty right now.
+        desc.push("");
+        urls.push("");
     }
 }
 
