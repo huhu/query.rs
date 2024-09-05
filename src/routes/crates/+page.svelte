@@ -31,6 +31,45 @@
   let cratesData = {};
 
   let selectedIndex = -1;
+  /**
+   * @type {NodeJS.Timeout | undefined}
+   */
+  let searchTimeout;
+
+  /**
+   * @param {Function} func
+   * @param {number} delay
+   * @returns {Function}
+   */
+  function debounce(func, delay) {
+    /**
+     * @param {any[]} args
+     */
+    return (...args) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => func(...args), delay);
+    };
+  }
+
+  const debouncedSearchCrates = debounce(async () => {
+    if (searchKeyword.length < 1) {
+      searchResults = [];
+      selectedIndex = -1;
+      return;
+    }
+    const response = await fetch(
+      `https://crates.io/api/v1/crates?q=${encodeURIComponent(searchKeyword)}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      searchResults = data.crates.slice(0, 5);
+      selectedIndex = -1;
+    }
+  }, 200);
+
+  function handleInput() {
+    debouncedSearchCrates();
+  }
 
   $: if (browser && crates.length >= 0) {
     let keys = Object.keys(localStorage);
@@ -63,16 +102,20 @@
     crates = await getCrates();
   }
 
+  /**
+   * @param {KeyboardEvent} event
+   */
   function handleKeydown(event) {
     if (searchResults.length === 0) return;
 
-    if (event.key === 'ArrowDown') {
+    if (event.key === "ArrowDown") {
       event.preventDefault();
       selectedIndex = (selectedIndex + 1) % searchResults.length;
-    } else if (event.key === 'ArrowUp') {
+    } else if (event.key === "ArrowUp") {
       event.preventDefault();
-      selectedIndex = (selectedIndex - 1 + searchResults.length) % searchResults.length;
-    } else if (event.key === 'Enter' && selectedIndex !== -1) {
+      selectedIndex =
+        (selectedIndex - 1 + searchResults.length) % searchResults.length;
+    } else if (event.key === "Enter" && selectedIndex !== -1) {
       event.preventDefault();
       selectCrate(searchResults[selectedIndex]);
     }
@@ -173,10 +216,10 @@
 <div
   class="my-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
 >
-  <div class="relative w-full md:w-[480px]">
+  <div class="relative w-full md:w-[420px]">
     <input
       bind:value={searchKeyword}
-      on:input={searchCrates}
+      on:input={handleInput}
       on:keydown={handleKeydown}
       autofocus
       type="text"
@@ -191,13 +234,15 @@
             class="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
             class:bg-gray-100={index === selectedIndex}
           >
-            <button 
+            <button
               on:click={async () => await selectCrate(crate)}
               class="w-full text-left"
             >
               <div class="flex items-center">
-                <span class="font-bold truncate mr-2">{crate.name} v{crate.max_stable_version}</span>
-                <span class="truncate flex-1">- {crate.description}</span>
+                <span class="font-bold truncate mr-2">{crate.name}</span>
+                <span class="truncate flex-1"
+                  >v{crate.max_stable_version} - {crate.description}</span
+                >
               </div>
             </button>
           </li>
