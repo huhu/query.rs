@@ -173,7 +173,7 @@
 <div
   class="my-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
 >
-  <div class="relative w-full md:w-[420px]">
+  <div class="relative w-full md:w-[480px]">
     <input
       bind:value={searchKeyword}
       on:input={searchCrates}
@@ -188,11 +188,17 @@
       >
         {#each searchResults as crate, index}
           <li
-            class="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer line-clamp-1 text-nowrap"
+            class="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
             class:bg-gray-100={index === selectedIndex}
           >
-            <button on:click={async () => await selectCrate(crate)}>
-              <b>{crate.name} v{crate.max_stable_version}</b> - {crate.description}
+            <button 
+              on:click={async () => await selectCrate(crate)}
+              class="w-full text-left"
+            >
+              <div class="flex items-center">
+                <span class="font-bold truncate mr-2">{crate.name} v{crate.max_stable_version}</span>
+                <span class="truncate flex-1">- {crate.description}</span>
+              </div>
             </button>
           </li>
         {/each}
