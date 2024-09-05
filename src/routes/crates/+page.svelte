@@ -7,7 +7,15 @@
   /**
    * @type {string}
    */
-  let searchCrate;
+  let searchKeyword;
+  /**
+   * @type {{ name: string; max_stable_version: string; description: string; } | null}
+   */
+  let selectedCrate = null;
+  /**
+   * @type {{ name: string; max_stable_version: string; description: string; }[]}
+   */
+  let searchResults = [];
   /**
    * @type {any[]}
    */
@@ -21,6 +29,8 @@
    * @type {{ [x: string]: any; }}
    */
   let cratesData = {};
+
+  let selectedIndex = -1;
 
   $: if (browser && crates.length >= 0) {
     let keys = Object.keys(localStorage);
@@ -53,38 +63,65 @@
     crates = await getCrates();
   }
 
-  async function addCrate() {
-    if (!searchCrate) {
+  function handleKeydown(event) {
+    if (searchResults.length === 0) return;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      selectedIndex = (selectedIndex + 1) % searchResults.length;
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      selectedIndex = (selectedIndex - 1 + searchResults.length) % searchResults.length;
+    } else if (event.key === 'Enter' && selectedIndex !== -1) {
+      event.preventDefault();
+      selectCrate(searchResults[selectedIndex]);
+    }
+  }
+
+  async function searchCrates() {
+    if (searchKeyword.length < 1) {
+      searchResults = [];
+      selectedIndex = -1;
+      return;
+    }
+    const response = await fetch(
+      `https://crates.io/api/v1/crates?q=${encodeURIComponent(searchKeyword)}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      searchResults = data.crates.slice(0, 5);
+      selectedIndex = -1;
+    }
+  }
+
+  /**
+   * @param {{ name: string; max_stable_version: string; description: string; }} crate
+   */
+  async function selectCrate(crate) {
+    if (!crate.name) {
       toast.error("Please input crate name");
       return;
     }
 
-    if (searchCrate in (await CrateDocManager.getCrates())) {
-      toast.error(`Crate ${searchCrate} already exists`);
+    if (crate.name in (await CrateDocManager.getCrates())) {
+      toast.error(`Crate ${crate.name} already exists`);
       return;
     }
 
+    selectedCrate = crate;
+    searchResults = [];
     let toastId = toast("Loading crate...", {
       icon: "👏",
     });
     console.log(toastId);
-    let response = await fetch(
-      `https://crates.io/api/v1/crates/${searchCrate}`
-    );
-    if (response.status !== 200) {
-      toast.dismiss(toastId);
-      toast.error(`Crate ${searchCrate} not found`);
-      return;
-    }
 
     try {
-      let data = await response.json();
-      response = await fetch(
-        `https://query.rs/index/${data.crate.name}/${data.crate.newest_version}`
+      let response = await fetch(
+        `https://query.rs/index/${crate.name}/${crate.max_stable_version}`
       );
       toast.dismiss(toastId);
 
-      data = await response.json();
+      let data = await response.json();
       if (response.status !== 200) {
         toast.error(data.error);
         return;
@@ -92,8 +129,9 @@
 
       await CrateDocManager.addCrate(data);
       crates = await getCrates();
-      toast.success(`Crate ${searchCrate} added`);
-      searchCrate = "";
+      toast.success(`Crate ${crate.name} added`);
+      searchKeyword = "";
+      selectedCrate = null;
     } catch (e) {
       toast.dismiss(toastId);
       toast.error(e.message);
@@ -114,15 +152,6 @@
     return crates;
   }
 
-  /**
-   * @param {{ key: string; }} event
-   */
-  async function handleKeydown(event) {
-    if (event.key === "Enter" && searchCrate) {
-      await addCrate();
-    }
-  }
-
   onMount(async () => {
     crates = await getCrates();
     const { timeline } = await Statistics.load();
@@ -135,7 +164,6 @@
   });
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
 <Toaster />
 <div class="text-center text-sm max-w-screen-md mx-auto px-4">
   You can add the crate you search most to local, this allows you to search that
@@ -143,15 +171,34 @@
   example: <a href="https://query.rs/?q=@tokio%20spawn">@tokio spawn</a>
 </div>
 <div
-  class="m-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
+  class="my-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
 >
-  <input
-    bind:value={searchCrate}
-    autofocus
-    type="text"
-    class="w-full md:w-[400px] h-8 px-2 py-0 rounded border border-solid border-[#f9bb2daa] focus:outline-none"
-  />
-  <button class="btn btn-primary m-4" on:click={addCrate}> Add crate </button>
+  <div class="relative w-full md:w-[420px]">
+    <input
+      bind:value={searchKeyword}
+      on:input={searchCrates}
+      on:keydown={handleKeydown}
+      autofocus
+      type="text"
+      class="w-full h-8 px-2 py-0 rounded border border-solid border-[#f9bb2daa] focus:outline-none"
+    />
+    {#if searchResults.length > 0}
+      <ul
+        class="absolute z-10 w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg"
+      >
+        {#each searchResults as crate, index}
+          <li
+            class="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer line-clamp-1 text-nowrap"
+            class:bg-gray-100={index === selectedIndex}
+          >
+            <button on:click={async () => await selectCrate(crate)}>
+              <b>{crate.name} v{crate.max_stable_version}</b> - {crate.description}
+            </button>
+          </li>
+        {/each}
+      </ul>
+    {/if}
+  </div>
 </div>
 <div class="subtext flex justify-between my-4">
   <span>
