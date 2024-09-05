@@ -1,6 +1,7 @@
 <script>
   import { browser } from "$app/environment";
   import { Statistics, CrateDocManager, Compat } from "querylib";
+  import { searchCrates } from "querylib/utils";
   import { onMount } from "svelte";
   import toast, { Toaster } from "svelte-french-toast";
 
@@ -19,7 +20,7 @@
   /**
    * @type {any[]}
    */
-  let crates = [];
+  let localCrates = [];
   let orderBy = "time";
   /**
    * @type {String}
@@ -57,21 +58,15 @@
       selectedIndex = -1;
       return;
     }
-    const response = await fetch(
-      `https://crates.io/api/v1/crates?q=${encodeURIComponent(searchKeyword)}`
-    );
-    if (response.ok) {
-      const data = await response.json();
-      searchResults = data.crates.slice(0, 5);
-      selectedIndex = -1;
-    }
+    selectedIndex = -1;
+    searchResults = (await searchCrates(searchKeyword)).slice(0, 8);
   }, 200);
 
   function handleInput() {
     debouncedSearchCrates();
   }
 
-  $: if (browser && crates.length >= 0) {
+  $: if (browser && localCrates.length >= 0) {
     let keys = Object.keys(localStorage);
     if (keys.length > 0) {
       let size = Object.keys(localStorage)
@@ -85,13 +80,13 @@
 
   $: {
     if (orderBy === "time") {
-      crates.sort((a, b) => b.time - a.time);
+      localCrates.sort((a, b) => b.time - a.time);
     } else if (orderBy === "alphanumeric") {
-      crates.sort((a, b) => a.name.localeCompare(b.name));
+      localCrates.sort((a, b) => a.name.localeCompare(b.name));
     } else if (orderBy === "searches") {
-      crates.sort((a, b) => b.searchs - a.searchs);
+      localCrates.sort((a, b) => b.searchs - a.searchs);
     }
-    crates = crates;
+    localCrates = localCrates;
   }
 
   /**
@@ -99,7 +94,7 @@
    */
   async function removeCrate(name) {
     await CrateDocManager.removeCrate(name);
-    crates = await getCrates();
+    localCrates = await getLocalCrates();
   }
 
   /**
@@ -118,22 +113,6 @@
     } else if (event.key === "Enter" && selectedIndex !== -1) {
       event.preventDefault();
       selectCrate(searchResults[selectedIndex]);
-    }
-  }
-
-  async function searchCrates() {
-    if (searchKeyword.length < 1) {
-      searchResults = [];
-      selectedIndex = -1;
-      return;
-    }
-    const response = await fetch(
-      `https://crates.io/api/v1/crates?q=${encodeURIComponent(searchKeyword)}`
-    );
-    if (response.ok) {
-      const data = await response.json();
-      searchResults = data.crates.slice(0, 5);
-      selectedIndex = -1;
     }
   }
 
@@ -171,7 +150,7 @@
       }
 
       await CrateDocManager.addCrate(data);
-      crates = await getCrates();
+      localCrates = await getLocalCrates();
       toast.success(`Crate ${crate.name} added`);
       searchKeyword = "";
       selectedCrate = null;
@@ -179,9 +158,11 @@
       toast.dismiss(toastId);
       toast.error(e.message);
     }
+
+    searchKeyword = crate.name;
   }
 
-  async function getCrates() {
+  async function getLocalCrates() {
     let crates = Object.entries(await CrateDocManager.getCrates()).map(
       ([name, crate]) => {
         return {
@@ -196,7 +177,7 @@
   }
 
   onMount(async () => {
-    crates = await getCrates();
+    localCrates = await getLocalCrates();
     const { timeline } = await Statistics.load();
     cratesData = timeline.reduce((pre, [_time, _type, crate]) => {
       if (crate) {
@@ -253,8 +234,8 @@
 </div>
 <div class="subtext flex justify-between my-4">
   <span>
-    You have indexed <span>{crates.length}</span>
-    {crates.length > 0 ? "crates" : "crate"}, disk usage:
+    You have indexed <span>{localCrates.length}</span>
+    {localCrates.length > 0 ? "crates" : "crate"}, disk usage:
     <span>{usageSize}</span>
     /10 MB
   </span>
@@ -268,7 +249,7 @@
   </span>
 </div>
 <ul class="text">
-  {#each crates as crate}
+  {#each localCrates as crate}
     <li class="crate-list-item" style="padding: 15px;">
       <div class="flex flex-col">
         <div>
