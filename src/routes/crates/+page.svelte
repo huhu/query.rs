@@ -114,6 +114,7 @@
       event.preventDefault();
       selectCrate(searchResults[selectedIndex]);
     }
+    searchKeyword = searchResults[selectedIndex].name;
   }
 
   /**
@@ -158,8 +159,6 @@
       toast.dismiss(toastId);
       toast.error(e.message);
     }
-
-    searchKeyword = crate.name;
   }
 
   async function getLocalCrates() {

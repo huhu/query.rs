@@ -32,7 +32,7 @@
       color: "#f7927b7d",
       tips: [
         {
-          title: "Search top 20K crates",
+          title: "Search docs.rs crates",
           queries: ["!", "!tokio", "!axum"],
         },
         {
