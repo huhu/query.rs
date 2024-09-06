@@ -1,4 +1,4 @@
-@import "./omnibox.css";
+@import "omnibox-js/omnibox.css";
 
 @tailwind base;
 @tailwind components;
