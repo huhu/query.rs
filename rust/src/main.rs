@@ -27,6 +27,7 @@ enum Subcommand {
     Labels(LabelsTask),
     Rfcs(RfcsTask),
     Rustc(RustcTask),
+    Std(StdTask),
     Targets(TargetsTask),
 }
 
@@ -42,6 +43,7 @@ fn main() -> Result<()> {
         Subcommand::Labels(cmd) => cmd.execute()?,
         Subcommand::Rfcs(cmd) => cmd.execute()?,
         Subcommand::Rustc(cmd) => cmd.execute()?,
+        Subcommand::Std(cmd) => cmd.execute()?,
         Subcommand::Targets(cmd) => cmd.execute()?,
     }
     Ok(())
