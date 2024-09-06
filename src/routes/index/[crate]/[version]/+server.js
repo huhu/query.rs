@@ -106,7 +106,7 @@ class VlqHexDecoder {
     }
 }
 
-export async function GET({params, platform}) {
+export async function GET({ params, platform }) {
     let crate = params.crate;
     let version = params.version;
 
@@ -117,7 +117,10 @@ export async function GET({params, platform}) {
     }
 
     let docUrl = `https://docs.rs/${crate}/${version}`;
-    console.log(docUrl);
+    if (crate === "std") {
+        docUrl = `https://doc.rust-lang.org/${version}/std`;
+    }
+    console.log('docUrl:', docUrl);
 
     let metaHandler = new MetaHandler();
     let rewriter = new HTMLRewriter().on('meta', metaHandler);
@@ -137,8 +140,12 @@ export async function GET({params, platform}) {
     }
 
     // Step 1: load search-index.js
+    if (crate === "std") {
+        docUrl = `https://doc.rust-lang.org/${version}`;
+        libName = "std";
+    }
     let searchIndexUrl = new URL(`${docUrl}/${metaHandler.searchIndexJs()}`);
-    console.log(searchIndexUrl.href);
+    console.log("searchIndexUrl:", searchIndexUrl.href);
     response = await fetch(searchIndexUrl);
     let text = await response.text();
     let start = text.indexOf("parse('") + 7;
@@ -151,45 +158,59 @@ export async function GET({params, platform}) {
             error: `This crate version: ${libName}/${crateVersion} is not supported`
         }, { status: 400 });
     }
-    // Get desc shards number from search index
-    let vlqHex = searchIndex[0][1]["D"];
-    let decoder = new VlqHexDecoder(vlqHex, (/** @type {any} */ noop) => noop);
-    let shardNum = 0;
 
-    let shards = {};
-    while (decoder.next() > 0) {
-        let descShardJsUrl = new URL(`${docUrl}/${metaHandler.descShardJs(libName, shardNum)}`);
-        console.log(descShardJsUrl.href);
-        response = await fetch(descShardJsUrl);
-        text = await response.text();
-        let result = text.substring("searchState.loadedDescShard(".length, text.length - 1);
-        let [_crate, shard, ...descs] = result.split(',');
-        descs = descs.join("").trim();
-        // Trim the first and last `"`
-        descs = descs.substring(1, descs.length);
+    let descShards = [];
+    for (let crateIndex of searchIndex) {
+        let crate = crateIndex[0];
+        console.log("searchIndex: ", crate);
+        // Get desc shards number from search index
+        let vlqHex = crateIndex[1]["D"];
+        let decoder = new VlqHexDecoder(vlqHex, (/** @type {any} */ noop) => noop);
+        let shardNum = 0;
 
-        descs = descs.split("\\n").map((/** @type {string} */ desc) => {
-            return desc.replace(/<\/?(code|span)>/g, "");
-        });
-        // trim and parse shard into int
-        shards[parseInt(shard.trim())] = descs;
-        shardNum += 1;
+        let shards = {};
+        while (decoder.next() > 0) {
+            let descShardJsUrl = new URL(`${docUrl}/${metaHandler.descShardJs(crate, shardNum)}`);
+            console.log("descShardJsUrl:", descShardJsUrl.href);
+            response = await fetch(descShardJsUrl);
+            text = await response.text();
+            let result = text.substring("searchState.loadedDescShard(".length, text.length - 1);
+            let [_crate, shard, ...descs] = result.split(',');
+            descs = descs.join("").trim();
+            // Trim the first and last `"`
+            descs = descs.substring(1, descs.length);
+
+            descs = descs.split("\\n").map((/** @type {string} */ desc) => {
+                return desc.replace(/<\/?(code|span)>/g, "");
+            });
+            // trim and parse shard into int
+            shards[parseInt(shard.trim())] = descs;
+            shardNum += 1;
+        }
+
+        descShards.push([crate, shards]);
     }
 
+
     // Step 3: get crate detail
-    response = await fetch(`https://crates.io/api/v1/crates/${crate}`, {
-        headers: {
-            "User-Agent": "Query.rs on Cloudflare Pages function",
-        }
-    });
-    let data = await response.json();
+    let crateTitle = "";
+    if (crate !== "std") {
+        response = await fetch(`https://crates.io/api/v1/crates/${crate}`, {
+            headers: {
+                "User-Agent": "Query.rs on Cloudflare Pages function",
+            }
+        });
+        let data = await response.json();
+        crateTitle = data.crate.description;
+    }
+
     let index = {
         libName,
         crateName,
         crateVersion,
-        crateTitle: data.crate.description,
+        crateTitle,
         searchIndex,
-        descShards: [[libName, shards]],
+        descShards,
     };
 
     // cache the index
