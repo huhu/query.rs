@@ -3,6 +3,7 @@ use rayon::prelude::*;
 use serde::Deserialize;
 use std::clone::Clone;
 use std::collections::HashMap;
+use std::fmt::{self, Formatter};
 use std::fs;
 use std::path::Path;
 use tokio::runtime::Runtime;
@@ -32,14 +33,14 @@ enum LintLevel {
     None,
 }
 
-impl ToString for LintLevel {
-    fn to_string(&self) -> String {
+impl fmt::Display for LintLevel {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
-            Self::Allow => "Allow".to_string(),
-            Self::Warn => "Warn".to_string(),
-            Self::Deny => "Deny".to_string(),
-            Self::Deprecated => "Deprecated".to_string(),
-            Self::None => "None".to_string(),
+            Self::Allow => write!(f, "Allow"),
+            Self::Warn => write!(f, "Warn"),
+            Self::Deny => write!(f, "Deny"),
+            Self::Deprecated => write!(f, "Deprecated"),
+            Self::None => write!(f, "None"),
         }
     }
 }
@@ -90,7 +91,10 @@ impl LintsTask {
             })
             .collect();
 
-        let contents = format!("const lintsIndex={};export default lintsIndex;", serde_json::to_string(&lints)?);
+        let contents = format!(
+            "const lintsIndex={};export default lintsIndex;",
+            serde_json::to_string(&lints)?
+        );
         let path = Path::new(&self.dest_path);
         fs::write(path, Minifier::minify_js(&contents))?;
         println!("\nGenerate javascript lints index successful!");

@@ -1,5 +1,4 @@
 use argh::FromArgs;
-use reqwest;
 use serde_json::Value;
 use std::fs;
 use std::path::Path;
