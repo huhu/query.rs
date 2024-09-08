@@ -1,91 +1,135 @@
 import { ActionPanel, Action, List } from "@raycast/api";
-import { useFetch, Response } from "@raycast/utils";
-import { useState } from "react";
-import { URLSearchParams } from "node:url";
+import { useState, useEffect } from "react";
+import { HeadlessOmnibox } from "omnibox-js";
+import DescShardManager from "../../lib/search/docs/desc-shard.js";
+import DocSearch from "../../lib/search/docs/base.js";
+import searchIndex from "../../lib/index/std-docs.js";
+import stdDescShards from "../../lib/index/desc-shards/std.js";
+
+const RESULTS_PER_PAGE = 20;
+
+async function initHeadlessOmnibox() {
+    let stdSearcher = new DocSearch(
+        "std",
+        searchIndex,
+        "https://doc.rust-lang.org/",
+        await DescShardManager.create(stdDescShards),
+    );
+    const headless = new HeadlessOmnibox({
+        onSearch: async (query) => {
+            return await stdSearcher.search(query);
+        },
+        onFormat: formatDoc,
+        onAppend: async (query) => {
+            return [{
+                content: await stdSearcher.getSearchUrl(query),
+                description: `Search Rust docs ${query} on https://doc.rust-lang.org/`,
+            }];
+        },
+    });
+    return headless;
+}
+
+function formatDoc(index, doc) {
+    let content = doc.href;
+    let description = doc.displayPath + `${doc.name}`;
+    if (doc.desc) {
+        description += ` - ${doc.desc}`;
+    }
+
+    return { content, description };
+}
 
 export default function Command() {
-  const [searchText, setSearchText] = useState("");
-  const { data, isLoading } = useFetch(
-    "https://api.npms.io/v2/search?" +
-      // send the search query to the API
-      new URLSearchParams({ q: searchText.length === 0 ? "@raycast/api" : searchText }),
-    {
-      parseResponse: parseFetchResponse,
-    }
-  );
+    const [searchText, setSearchText] = useState("");
+    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [headless, setHeadless] = useState<HeadlessOmnibox | null>(null);
+    const [page, setPage] = useState(1);
 
-  return (
-    <List
-      isLoading={isLoading}
-      onSearchTextChange={setSearchText}
-      searchBarPlaceholder="Search npm packages..."
-      throttle
-    >
-      <List.Section title="Results" subtitle={data?.length + ""}>
-        {data?.map((searchResult) => (
-          <SearchListItem key={searchResult.name} searchResult={searchResult} />
-        ))}
-      </List.Section>
-    </List>
-  );
+    useEffect(() => {
+        async function initialize() {
+            const initializedHeadless = await initHeadlessOmnibox();
+            setHeadless(initializedHeadless);
+            setIsLoading(false);
+        }
+        initialize();
+    }, []);
+
+    const handleSearch = async (text: string) => {
+        if (!headless) return;
+
+        setIsLoading(true);
+        setSearchText(text);
+        setPage(1);
+        const { results } = await headless.search(text);
+        setSearchResults(results.slice(0, RESULTS_PER_PAGE).map(result => ({
+            name: result.content,
+            description: result.description,
+            url: result.content
+        })));
+        setIsLoading(false);
+    };
+
+    const loadMore = async () => {
+        if (!headless) return;
+
+        const nextPage = page + 1;
+        const results = await headless.search(searchText);
+        const newResults = results.slice((nextPage - 1) * RESULTS_PER_PAGE, nextPage * RESULTS_PER_PAGE)
+            .map(result => ({
+                name: result.content,
+                description: result.description,
+                url: result.content
+            }));
+        setSearchResults(prevResults => [...prevResults, ...newResults]);
+        setPage(nextPage);
+    };
+
+    return (
+        <List
+            isLoading={isLoading}
+            onSearchTextChange={handleSearch}
+            searchBarPlaceholder="Search..."
+            throttle
+        >
+            <List.Section title="Results" subtitle={searchResults.length + ""}>
+                {searchResults.map((searchResult) => (
+                    <SearchListItem key={searchResult.name} searchResult={searchResult} />
+                ))}
+            </List.Section>
+            {searchResults.length % RESULTS_PER_PAGE === 0 && (
+                <List.Item
+                    title="Load More"
+                    actions={
+                        <ActionPanel>
+                            <Action title="Load More" onAction={loadMore} />
+                        </ActionPanel>
+                    }
+                />
+            )}
+        </List>
+    );
 }
 
 function SearchListItem({ searchResult }: { searchResult: SearchResult }) {
-  return (
-    <List.Item
-      title={searchResult.name}
-      subtitle={searchResult.description}
-      accessories={[{ text: searchResult.username }]}
-      actions={
-        <ActionPanel>
-          <ActionPanel.Section>
-            <Action.OpenInBrowser title="Open in Browser" url={searchResult.url} />
-          </ActionPanel.Section>
-          <ActionPanel.Section>
-            <Action.CopyToClipboard
-              title="Copy Install Command"
-              content={`npm install ${searchResult.name}`}
-              shortcut={{ modifiers: ["cmd"], key: "." }}
-            />
-          </ActionPanel.Section>
-        </ActionPanel>
-      }
-    />
-  );
-}
-
-/** Parse the response from the fetch query into something we can display */
-async function parseFetchResponse(response: Response) {
-  const json = (await response.json()) as
-    | {
-        results: {
-          package: {
-            name: string;
-            description?: string;
-            publisher?: { username: string };
-            links: { npm: string };
-          };
-        }[];
-      }
-    | { code: string; message: string };
-
-  if (!response.ok || "message" in json) {
-    throw new Error("message" in json ? json.message : response.statusText);
-  }
-
-  return json.results.map((result) => {
-    return {
-      name: result.package.name,
-      description: result.package.description,
-      username: result.package.publisher?.username,
-      url: result.package.links.npm,
-    } as SearchResult;
-  });
+    return (
+        <List.Item
+            title={searchResult.url}
+            subtitle={searchResult.description}
+            actions={
+                <ActionPanel>
+                    <ActionPanel.Section>
+                        <Action.OpenInBrowser title="Open in Browser" url={searchResult.url} />
+                    </ActionPanel.Section>
+                </ActionPanel>
+            }
+        />
+    );
 }
 
 interface SearchResult {
-  name: string;
-  description?: string;
-  username?: string;
-  url: string;
+    //   name: string;
+    description?: string;
+    url: string;
 }
