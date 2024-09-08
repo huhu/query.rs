@@ -1,30 +1,19 @@
-import { useFetch } from "@raycast/utils";
+import fetch from 'node-fetch';
 
-export function useCrateSearch(query: string) {
-    const { data, isLoading, error } = useFetch<CratesResponse>(
-        `https://crates.io/api/v1/crates?q=${encodeURIComponent(query)}`,
-        {
-            method: "GET",
+export async function searchCrates(query: string): Promise<any[]> {
+    try {
+        const response = await fetch(`https://crates.io/api/v1/crates?q=${encodeURIComponent(query)}`, {
+            headers: {
+                "User-Agent": "Query.rs Raycast Extension",
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    );
-
-    return {
-        crates: data?.crates ?? [],
-        isLoading,
-        error,
-    };
-}
-
-// Define the types for the API response
-interface CratesResponse {
-    crates: Crate[];
-    meta: {
-        total: number;
-    };
-}
-
-interface Crate {
-    id: string;
-    name: string;
-    description: string;
+        const data = await response.json();
+        return data.crates || [];
+    } catch (error) {
+        console.error('Error searching crates:', error);
+        return [];
+    }
 }

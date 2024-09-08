@@ -1,11 +1,9 @@
 import { HeadlessOmnibox, Compat } from "omnibox-js";
 import DescShardManager from "../../lib/search/docs/desc-shard.js";
 import DocSearch from "../../lib/search/docs/base.js";
-import CrateSearch from "../../lib/search/crate.js";
 import searchIndex from "../../lib/index/std-docs.js";
 import stdDescShards from "../../lib/index/desc-shards/std.js";
-import { mapping, crateIndex } from "../../lib/index/crates.js";
-import { searchCrates } from "../../lib/utils.js";
+import { searchCrates } from "./crates.ts";
 
 export async function initHeadlessOmnibox() {
     let stdSearcher = new DocSearch(
@@ -14,7 +12,6 @@ export async function initHeadlessOmnibox() {
         "https://doc.rust-lang.org/",
         await DescShardManager.create(stdDescShards),
     );
-    const crateSearcher = new CrateSearch(mapping, crateIndex);
     const headless = new HeadlessOmnibox({
         onSearch: async (query) => {
             return await stdSearcher.search(query);
@@ -36,24 +33,20 @@ export async function initHeadlessOmnibox() {
         },
     });
 
-    /** @param {*} query */
+    /**
+     * Search crates on crates.io directly
+     * @param {string} query 
+     */
     async function onSearchCrates(query) {
-        let results = crateSearcher.search(query);
-        const seenIds = new Set(results.map(crate => crate.id.replace(/-/g, "_")));
-        if (results.length < headless.maxSuggestionSize) {
-            let keyword = query.replace(/[!\s]/g, "");
-            let crates = await searchCrates(keyword);
-            for (const crate of crates) {
-                let crateId = crate.id.replace(/-/g, "_");
-                if (!seenIds.has(crateId)) {
-                    results.push({
-                        id: crate.id,
-                        version: crate.max_stable_version,
-                        description: crate.description,
-                    });
-                    seenIds.add(crateId);
-                }
-            }
+        let results = [];
+        let keyword = query.replace(/[!\s]/g, "");
+        let crates = await searchCrates(keyword);
+        for (const crate of crates) {
+            results.push({
+                id: crate.id,
+                version: crate.max_stable_version,
+                description: crate.description,
+            });
         }
         return results;
     }
