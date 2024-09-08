@@ -3,7 +3,7 @@
   "name": "query-rs",
   "title": "Query.rs",
   "description": "A search engine for Rust",
-  "icon": "command-icon.png",
+  "icon": "icon.png",
   "author": "folyd",
   "categories": [
     "Developer Tools"

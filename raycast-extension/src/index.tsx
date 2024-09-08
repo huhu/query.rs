@@ -42,6 +42,14 @@ export default function Command() {
             {searchResults.map((searchResult) => (
                 <SearchListItem key={searchResult.url} searchResult={searchResult} />
             ))}
+            <List.EmptyView icon={{ source: "icon.png" }} title="Query.rs" description="A search engine for Rust"
+                actions={
+                    <ActionPanel>
+                        <ActionPanel.Section>
+                            <Action.OpenInBrowser title="Open in Browser" url={"https://query.rs"} />
+                        </ActionPanel.Section>
+                    </ActionPanel>
+                } />
         </List>
     );
 }
@@ -50,7 +58,7 @@ function SearchListItem({ searchResult }: { searchResult: SearchResult }) {
     return (
         <List.Item
             title={searchResult.description}
-            icon={{ source: "icon.png" }}
+            icon={{ source: "rust.png" }}
             actions={
                 <ActionPanel>
                     <ActionPanel.Section>
