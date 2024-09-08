@@ -20,7 +20,7 @@
   "dependencies": {
     "@raycast/api": "^1.69.0",
     "@raycast/utils": "^1.4.8",
-    "omnibox-js": "^0.6.3"
+    "omnibox-js": "^0.6.4"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^1.0.6",
