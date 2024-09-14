@@ -55,8 +55,6 @@ export async function initHeadlessOmnibox() {
 
   headless.addPrefixQueryEvent("!", {
     name: "docs.rs",
-    defaultSearch: true,
-    searchPriority: 2,
     onSearch: onSearchCrates,
     onFormat: (index, crate) => {
       return {
