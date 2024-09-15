@@ -64,7 +64,7 @@ export async function initHeadlessOmnibox() {
         onFormat: (index, crate) => {
             return {
                 content: `https://docs.rs/${crate.id}`,
-                description: `${Compat.capitalize("docs.rs")}: <match>${crate.id}</match> v${crate.version} - <dim>${Compat.escape(Compat.eliminateTags(crate.description))}</dim>`,
+                description: `Docs.rs: <match>${crate.id}</match> v${crate.version} - <dim>${Compat.escape(Compat.eliminateTags(crate.description))}</dim>`,
             };
         },
         onAppend: (query) => {
@@ -84,7 +84,7 @@ export async function initHeadlessOmnibox() {
         onFormat: async (index, crate) => {
             return {
                 content: `https://crates.io/crates/${crate.id}`,
-                description: `crates.io: <match>${crate.id}</match> v${crate.version} - <dim>${Compat.escape(Compat.eliminateTags(crate.description))}</dim>`,
+                description: `Crates.io: ${crate.id} v${crate.version} - <dim>${Compat.escape(Compat.eliminateTags(crate.description))}</dim>`,
             };
         },
         onAppend: async (query) => {
