@@ -6,6 +6,7 @@ import stdDescShards from "../../lib/index/desc-shards/std.js";
 import { searchCrates } from "./crates.ts";
 
 export async function initHeadlessOmnibox() {
+    let crateSearchCache = null;
     let stdSearcher = new DocSearch(
         "std",
         searchIndex,
@@ -42,6 +43,9 @@ export async function initHeadlessOmnibox() {
     async function onSearchCrates(query) {
         let results = [];
         let keyword = query.replace(/[!\s]/g, "");
+        if (crateSearchCache && crateSearchCache.keyword === keyword) {
+            return crateSearchCache.results;
+        }
         let crates = await searchCrates(keyword);
         for (const crate of crates) {
             results.push({
@@ -50,6 +54,7 @@ export async function initHeadlessOmnibox() {
                 description: crate.description,
             });
         }
+        crateSearchCache = { keyword, results };
         return results;
     }
 
