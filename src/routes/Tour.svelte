@@ -6,7 +6,8 @@
   const helpTips = [
     {
       type: "Docs",
-      color: "#f2b9ebaa",
+      color: "bg-[#f2b9eb]",
+      darkColor: "dark:bg-[#ff74eecc]",
       tips: [
         {
           title: "Search stable std docs",
@@ -22,14 +23,15 @@
         },
         {
           title:
-            "Search docs by type signature, <a href='https://doc.rust-lang.org/1.79.0/rustdoc/read-documentation/search.html'>full search features</a>",
+            "Search docs by type signature, <a class='dark:text-darkTextPrimary dark:visited:text-darkTextPrimary' href='https://doc.rust-lang.org/1.79.0/rustdoc/read-documentation/search.html'>full search features</a>",
           queries: ["vec -> usize", "[] -> bool"],
         },
       ],
     },
     {
       type: "Crates",
-      color: "#f7927b7d",
+      color: "bg-[#f7927b7d]",
+      darkColor: "dark:bg-[#f47457d6]",
       tips: [
         {
           title: "Search docs.rs crates",
@@ -40,7 +42,8 @@
           queries: ["!!", "!!sqlx", "!!reqwest"],
         },
         {
-          title: "<a href='/crates'>Add crate</a> to search docs",
+          title:
+            "<a href='/crates' class='dark:visited:text-darkTextPrimary'>Add crate</a> to search docs",
           queries: ["@tokio spawn", "@tokio int -> bool"],
         },
         {
@@ -51,7 +54,8 @@
     },
     {
       type: "Others",
-      color: "#8bbdf494",
+      color: "bg-[#8bbdf494]",
+      darkColor: "dark:bg-[#56a6ffb8]",
       tips: [
         {
           title: "Search error code",
@@ -77,7 +81,8 @@
     },
     {
       type: "Misc",
-      color: "#86e7f1a1",
+      color: "bg-[#86e7f1a1]",
+      darkColor: "dark:bg-[#0ce5fcc2]",
       tips: [
         {
           title: "Commands",
@@ -137,20 +142,21 @@
 </script>
 
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 md:mt-16">
-  {#each helpTips as { type, color, tips }}
+  {#each helpTips as { type, color, darkColor, tips }}
     <div class="rounded border m-2">
-      <div class="px-4 text-base font-bold" style:background-color={color}>
+      <div
+        class="px-4 text-base font-bold {color} {darkColor} dark:text-darkTextPrimary"
+      >
         {type}
       </div>
-      <ul class="px-5 p-2 text-sm list-disc list-outside">
+      <ul class="px-5 p-2 text-sm list-disc list-outside dark:text-darkTextPrimary">
         {#each tips as tip, index}
           <li class="py-1">
             <div>{@html tip.title}</div>
             <div>
               {#each tip.queries as q}
                 <button
-                  class="rounded hover:!bg-[#f9bc2d59] px-1 text-xs mr-1"
-                  style:background-color={color}
+                  class="rounded hover:!bg-[#f9bc2d59] hover:dark:!bg-[#c8541ac7] px-1 text-xs mr-1 {color} {darkColor}"
                   on:click={() => pushState("", { q })}
                 >
                   <code>{q}</code>
@@ -159,10 +165,10 @@
               {#if index === 0}
                 <span class="relative inline-flex h-3 w-3">
                   <span
-                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f9bb2d] opacity-75"
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f9bb2d] dark:bg-[#fac038d1] opacity-75"
                   ></span>
                   <span
-                    class="relative inline-flex rounded-full h-3 w-3 bg-[#f9bc2d46]"
+                    class="relative inline-flex rounded-full h-3 w-3 bg-[#f9bc2d46] dark:bg-[#fac038d1]"
                   ></span>
                 </span>
               {/if}
