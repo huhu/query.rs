@@ -11,7 +11,7 @@
         "lint": "eslint ."
     },
     "dependencies": {
-        "omnibox-js": "^0.6.4"
+        "omnibox-js": "^0.7.2"
     },
     "devDependencies": {
         "@types/eslint": "^8.56.7",
