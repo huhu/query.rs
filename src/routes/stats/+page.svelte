@@ -148,7 +148,7 @@
   <div class="mb-9 w-full hidden md:block">
     <HeatMapChart {dateRange} data={heatMapData} />
   </div>
-  <div class="search-time w-full text-center text-xl">
+  <div class="search-time w-full text-center text-xl dark:text-darkTextPrimary">
     <b>{yearSearchTotal}</b> searches in <b>{searchTime}</b>, approximately
     saved <b>{calculateSavedTime(yearSearchTotal)}</b>.
     <b
@@ -165,15 +165,17 @@
     <div class="py-12 w-full mx-auto md:w-[85%]">
       <div class="h-[8px] flex">
         {#each searchStats as item}
-          <span
-            class="percent-bar"
-            style="width: {item.percent}%"
-            style:background-color={item.color}
-          ></span>
+          {#if Number(item.percent) > 0}
+            <span
+              class="percent-bar"
+              style="width: {item.percent}%"
+              style:background-color={item.color}
+            ></span>
+          {/if}
         {/each}
       </div>
       <div class="search-stats-text p-2">
-        <ol class="flex justify-around flex-wrap">
+        <ol class="flex justify-around flex-wrap dark:text-darkTextPrimary">
           {#each searchStats as item}
             <div
               aria-label="${item.description}"
@@ -191,7 +193,7 @@
         </ol>
       </div>
     </div>
-    <div class="flex flex-col md:flex-row-reverse md:justify-around pt-16">
+    <div class="flex flex-col md:flex-row-reverse md:justify-around pt-16 dark:text-darkTextPrimary">
       <div>
         <div>
           <h3>Searches per weekday</h3>
@@ -214,7 +216,7 @@
     </div>
   </div>
 </div>
-<div class="hidden md:block filter-list">
+<div class="hidden md:flex flex-col filter-list">
   {#each yearList as year}
     <button
       class:selected={year === currentYear}

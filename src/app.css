@@ -1,4 +1,5 @@
 @import "omnibox-js/omnibox.css";
+@import "./omnibox.css";
 
 @tailwind base;
 @tailwind components;
@@ -45,6 +46,7 @@ h2,
   font-size: 20px;
   font-weight: 500;
   color: var(--primary-text-color);
+  @apply dark:text-[#f8fafc];
 }
 .text {
   font-family: "Fira Sans", sans-serif;
@@ -70,19 +72,23 @@ h2,
 }
 .crate-list-item:hover {
   background-color: #f5f3f1;
+  @apply dark:bg-darkHoverColor;
 }
 .crate-list-item .crate-attr {
   margin: 0 8px;
   font-size: 16px;
+  @apply dark:text-darkTextPrimary;
 }
 .crate-list-item .crate-desc {
   color: #565656;
   padding: 10px 0;
   font-size: 16px;
+  @apply dark:text-[#8d8d8d];
 }
 .crate-list-item .crate-extra {
   color: #565656;
   font-size: 15px;
+  @apply dark:text-[#8d8d8d];
 }
 .btn-remove {
   color: #dd4814;
@@ -172,9 +178,11 @@ input:checked + .slider:before {
 }
 .btn-primary {
   background-color: #f9bb2daa;
+  @apply dark:bg-[#f9bb2d];
 }
 .btn-primary:hover {
   background-color: #f9bb2d;
+  @apply dark:bg-[#f9bb2daa];
 }
 .btn-secondary {
   background-color: #121212bb;
@@ -267,4 +275,5 @@ h3 {
 
 .selected {
   background-color: var(--primary-color);
+  @apply dark:!text-black
 }

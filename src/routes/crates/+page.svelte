@@ -188,10 +188,16 @@
 </script>
 
 <Toaster />
-<div class="text-center text-sm max-w-screen-md mx-auto px-4">
+<div
+  class="text-center text-sm max-w-screen-md mx-auto px-4 dark:text-darkTextPrimary"
+>
   You can add the crate you search most to local, this allows you to search that
   crate's docs via <code class="text-[#f9bb2d]">@crate-name keyword</code>, for
-  example: <a href="https://query.rs/?q=@tokio%20spawn">@tokio spawn</a>
+  example:
+  <a
+    href="https://query.rs/?q=@tokio%20spawn"
+    class="dark:text-darkTextPrimary">@tokio spawn</a
+  >
 </div>
 <div
   class="my-8 mb-16 flex flex-col items-center md:flex-row md:justify-center md:items-center"
@@ -231,7 +237,7 @@
     {/if}
   </div>
 </div>
-<div class="subtext flex justify-between my-4">
+<div class="subtext flex justify-between my-4 dark:text-darkTextPrimary">
   <span>
     You have indexed <span>{localCrates.length}</span>
     {localCrates.length > 0 ? "crates" : "crate"}, disk usage:
@@ -240,7 +246,7 @@
   </span>
   <span>
     Sort by:
-    <select bind:value={orderBy} class="border">
+    <select bind:value={orderBy} class="border dark:bg-darkBgPrimary">
       <option value="time">Indexed time</option>
       <option value="alphanumeric">Alphanumeric</option>
       <option value="searches">Searches</option>
