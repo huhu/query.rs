@@ -17,8 +17,8 @@ export async function GET({ url, platform }) {
       }
   
       // Convert dates to Unix timestamps
-      const startTimestamp = Math.floor(new Date(startDate).getTime());
-      const endTimestamp = Math.floor(new Date(endDate).getTime());
+      const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000);
+      const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
   
       // Validate date range
       if (isNaN(startTimestamp) || isNaN(endTimestamp)) {
