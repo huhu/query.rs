@@ -9,3 +9,8 @@ local_protocol = "http"
 [[r2_buckets]]
 binding = "QUERY_INDEX"
 bucket_name = "query-index"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "query-rs"
+database_id = "7efa9665-3a10-4a55-880b-7fb06e10841e"
