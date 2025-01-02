@@ -3,7 +3,7 @@ export async function GET({ url, platform }) {
       // Get and validate parameters
       const startDate = url.searchParams.get('start');
       const endDate = url.searchParams.get('end');
-      const limit = parseInt(url.searchParams.get('limit') || '10');
+      const limit = parseInt(url.searchParams.get('limit') || '20');
   
       if (!startDate || !endDate) {
         return new Response(JSON.stringify({ 
