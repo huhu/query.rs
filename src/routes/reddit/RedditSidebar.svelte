@@ -21,7 +21,7 @@
     const currentMonth = now.getMonth();
     
     // Start with current year
-    let yearCount = 2; // Number of years to show
+    let yearCount = 3; // Number of years to show
     let year = currentYear;
     
     while (yearCount > 0) {
@@ -69,7 +69,7 @@
     const currentYear = now.getFullYear();
     
     // Generate for current and previous year
-    for (let year = currentYear; year >= currentYear - 1; year--) {
+    for (let year = currentYear; year >= currentYear - 2; year--) {
       const yearData = { 
         year,
         weeks: []

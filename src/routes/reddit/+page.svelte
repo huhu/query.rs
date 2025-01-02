@@ -1,42 +1,42 @@
 <script>
   import RedditSidebar from "./RedditSidebar.svelte";
   import PostList from "./PostList.svelte";
-  import { onMount } from 'svelte';
+  import PostDetail from "./PostDetail.svelte";
+  import { onMount } from "svelte";
 
   let posts = [];
   let loading = false;
   let error = null;
+  let selectedPost = null;
 
   async function fetchPosts(start, end) {
     loading = true;
     error = null;
-    
+    selectedPost = null;
+
     try {
       const params = new URLSearchParams({
         start,
-        end: end || start // if end is not provided, use start date (for single day view)
+        end: end || start,
       });
-      
+
       const response = await fetch(`/posts?${params}`);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
-      const data = await response.json();
-      posts = data.map(post => ({
-        title: post.title,
-        link: `https://reddit.com${post.permalink}`,
-        score: post.score,
-        hasMedia: post.url.match(/\.(gif|jpe?g|png|mp4)$/i) !== null,
-        hasEmoji: false
-      }));
+
+      posts = await response.json();
     } catch (e) {
       error = e.message;
       posts = [];
     } finally {
       loading = false;
     }
+  }
+
+  function handleSelectPost(post) {
+    selectedPost = post;
   }
 
   async function handleDateSelect(date) {
@@ -48,38 +48,47 @@
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
 
-    const start = weekStart.toISOString().split('T')[0];
-    const end = weekEnd.toISOString().split('T')[0];
-    
+    const start = weekStart.toISOString().split("T")[0];
+    const end = weekEnd.toISOString().split("T")[0];
+
     await fetchPosts(start, end);
   }
 
   onMount(async () => {
-    // Fetch today's posts by default
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     await fetchPosts(today);
   });
 </script>
 
 <div class="min-h-screen bg-gray-50">
-  <div class="flex flex-row gap-4">
-    <RedditSidebar 
+  <div class="flex flex-row gap-4 p-4">
+    <RedditSidebar
       onDateSelect={handleDateSelect}
       onWeekSelect={handleWeekSelect}
     />
-    
-    <div class="flex-1">
+
+    <div class="flex-1 max-w-xl">
       {#if loading}
         <div class="flex justify-center items-center h-32">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <div
+            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"
+          ></div>
         </div>
       {:else if error}
         <div class="p-4 text-red-500 bg-red-50 rounded-lg">
           Error loading posts: {error}
         </div>
       {:else}
-        <PostList {posts} />
+        <PostList
+          {posts}
+          onSelectPost={handleSelectPost}
+          selectedPostId={selectedPost?.postId}
+        />
       {/if}
+    </div>
+
+    <div class="flex-1 max-w-xl">
+      <PostDetail post={selectedPost} />
     </div>
   </div>
 </div>
