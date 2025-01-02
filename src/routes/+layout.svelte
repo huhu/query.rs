@@ -8,7 +8,7 @@
       path: "/",
     },
     {
-      name: "Reddit Posts",
+      name: "Reddit Posts 🔥",
       path: "/reddit",
     },
     {
@@ -42,7 +42,7 @@
     <slot />
   </div>
   <footer class="pb-6 text-center px-4">
-    © 2024 Query.rs, built by
+    © 2025 Query.rs, built by
     <a href="https://github.com/folyd" target="_blank">Folyd</a>
     with ❤️❤️, see <a href="/about">about</a> page to learn more.
   </footer>
