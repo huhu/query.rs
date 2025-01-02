@@ -10,6 +10,10 @@
       name: "Reddit Posts",
       path: "/reddit",
     },
+    {
+      name: "GitHub",
+      path: "https://github.com/huhu/query.rs",
+    },
   ];
 </script>
 
