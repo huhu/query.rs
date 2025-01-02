@@ -3,8 +3,18 @@
   import { storage, Statistics, CrateDocManager } from "querylib";
   import "../app.css";
 
-  let hiddenMenu = true;
   const menus = [
+    {
+      name: "Search",
+      path: "/",
+    },
+    {
+      name: "Reddit Posts",
+      path: "/reddit",
+    },
+  ];
+  let hiddenMenu = true;
+  const searchMenus = [
     {
       name: "Home",
       path: "/",
@@ -70,6 +80,19 @@
           class:opacity-0={hiddenMenu}
           class:opacity-100={!hiddenMenu}
         />
+      </div>
+    </div>
+    <div
+      class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_180px)]"
+    >
+      <a href="/" class="no-underline hover:no-underline">
+        <img
+          src="/assets/logo.svg"
+          alt="logo"
+          class="block mx-auto w-60 md:w-80 mt-8 mb-12"
+        />
+      </a>
+      <div class="absolute top-2 right-2">
         <button
           on:click={() => (hiddenMenu = !hiddenMenu)}
           class="z-50 p-4 inline-block"
@@ -90,28 +113,12 @@
             />
           </svg>
         </button>
+        <div class="absolute top-12 right-4 z-50 bg-[#fcfaf6] rounded-md shadow-md" on:click={() => (hiddenMenu = true)} class:hidden={hiddenMenu}>
+          {#each searchMenus as menu}
+            <a class="p-3 px-6 block hover:bg-[#f9bc2d46]" href={menu.path}>{menu.name}</a>
+          {/each}
+        </div>
       </div>
-      <button
-        on:click={() => (hiddenMenu = true)}
-        class="transition ease-in-out duration-700 z-10 right-0 text-left list-none absolute flex-col target:flex shadow-md text-base bg-[#fcfaf6] rounded-md w-full"
-        class:-translate-y-72={hiddenMenu}
-        class:translate-y-0={!hiddenMenu}
-      >
-        {#each menus as menu}
-          <a class="p-3 px-6 block" href={menu.path}>{menu.name}</a>
-        {/each}
-      </button>
-    </div>
-    <div
-      class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_180px)]"
-    >
-      <a href="/" class="no-underline hover:no-underline">
-        <img
-          src="/assets/logo.svg"
-          alt="logo"
-          class="block mx-auto w-60 md:w-80 mt-8 mb-12"
-        />
-      </a>
       <slot />
     </div>
   </div>
