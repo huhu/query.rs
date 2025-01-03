@@ -16,41 +16,15 @@ export async function GET({ url, platform }) {
         });
       }
   
-      // Convert dates to Unix timestamps
-      const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000);
-      const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000);
-  
-      // Validate date range
-      if (isNaN(startTimestamp) || isNaN(endTimestamp)) {
-        return new Response(JSON.stringify({ 
-          error: 'Invalid date format. Use YYYY-MM-DD format' 
-        }), {
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-      }
-  
-      if (startTimestamp > endTimestamp) {
-        return new Response(JSON.stringify({ 
-          error: 'Start date must be before end date' 
-        }), {
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-      }
-  
       const posts = await platform.env.DB.prepare(`
         SELECT *
         FROM reddit_posts
-        WHERE createdAt >= ? AND createdAt <= ?
+        WHERE date(createdAt) >= date(?)
+        AND date(createdAt) <= date(?)
         ORDER BY score DESC
         LIMIT ?
       `)
-      .bind(startTimestamp, endTimestamp, limit)
+      .bind(startDate, endDate, limit)
       .all();
   
       return new Response(JSON.stringify(posts.results), {
