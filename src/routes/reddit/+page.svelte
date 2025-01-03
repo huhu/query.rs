@@ -60,35 +60,33 @@
   });
 </script>
 
-<div class="min-h-screen bg-gray-50">
-  <div class="flex flex-row gap-4 p-4">
-    <RedditSidebar
-      onDateSelect={handleDateSelect}
-      onWeekSelect={handleWeekSelect}
-    />
+<div class="flex flex-row">
+  <RedditSidebar
+    onDateSelect={handleDateSelect}
+    onWeekSelect={handleWeekSelect}
+  />
 
-    <div class="flex-1 max-w-xl">
-      {#if loading}
-        <div class="flex justify-center items-center h-32">
-          <div
-            class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"
-          ></div>
-        </div>
-      {:else if error}
-        <div class="p-4 text-red-500 bg-red-50 rounded-lg">
-          Error loading posts: {error}
-        </div>
-      {:else}
-        <PostList
-          {posts}
-          onSelectPost={handleSelectPost}
-          selectedPostId={selectedPost?.postId}
-        />
-      {/if}
-    </div>
+  <div class="flex-1 max-w-xl">
+    {#if loading}
+      <div class="flex justify-center items-center h-32">
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"
+        ></div>
+      </div>
+    {:else if error}
+      <div class="p-4 text-red-500 bg-red-50">
+        Error loading posts: {error}
+      </div>
+    {:else}
+      <PostList
+        {posts}
+        onSelectPost={handleSelectPost}
+        selectedPostId={selectedPost?.postId}
+      />
+    {/if}
+  </div>
 
-    <div class="flex-1 max-w-xl">
-      <PostDetail post={selectedPost} />
-    </div>
+  <div class="flex-1 max-w-xl">
+    <PostDetail post={selectedPost} />
   </div>
 </div>

@@ -1,15 +1,9 @@
 <script>
   export let post = null;
-
-  function formatDate(timestamp) {
-    if (!timestamp) return "";
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleString();
-  }
 </script>
 
 {#if post}
-  <div class="bg-white rounded-lg shadow-sm p-6 space-y-4">
+  <div class="bg-white p-6 space-y-4">
     <div class="space-y-2">
       <h2 class="text-xl font-bold">{post.title}</h2>
 
@@ -22,7 +16,7 @@
           by <span class="font-medium">{post.author}</span>
         </div>
         <div>
-          {formatDate(post.createdAt)}
+          {post.createdAt}
         </div>
       </div>
     </div>
@@ -61,7 +55,7 @@
     </div>
   </div>
 {:else}
-  <div class="bg-white rounded-lg shadow-sm p-6 text-center text-gray-500">
+  <div class="bg-white p-6 text-center text-gray-500">
     Select a post to view details
   </div>
 {/if}
