@@ -209,11 +209,27 @@
   onMount(() => {
     generateTimeStructure();
 
-    // Auto expand current year
+    // Auto expand current year and select current week
     const now = new Date();
     const currentYear = now.getFullYear();
+    const currentWeek = getWeekNumber(now);
     expandedYears.add(currentYear);
     expandedYears = expandedYears;
+
+    // Set initial selection for week view
+    if (weeksByYear.length > 0) {
+      const yearWeeks = weeksByYear.find((w) => w.year === currentYear);
+      if (yearWeeks && yearWeeks.weeks.length > 0) {
+        const currentWeekData =
+          yearWeeks.weeks.find((w) => w.week === currentWeek) ||
+          yearWeeks.weeks[0];
+        selectedId = `${currentYear}-${currentWeekData.week}`;
+        onWeekSelect(
+          currentWeekData.weekDates.start,
+          currentWeekData.weekDates.end
+        );
+      }
+    }
 
     // Wait for DOM update then scroll to current week
     setTimeout(() => {
@@ -227,7 +243,7 @@
   });
 </script>
 
-<div class="w-64 bg-white border-r border-gray-200 min-h-screen">
+<div class="w-64">
   <div class="p-4">
     <select
       class="w-full p-2 border rounded-md mb-4"
