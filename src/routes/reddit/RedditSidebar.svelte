@@ -15,11 +15,12 @@
     { id: "year", label: "By Year" },
   ];
 
-  let selectedView = "date";
+  let selectedView = "week";
   let expandedYears = new Set();
   let expandedMonths = new Set();
+  // Added reference to current week element
+  let currentWeekElement;
 
-  // Store structure
   let years = [];
   let weeksByYear = [];
   // Constants for oldest data
@@ -27,6 +28,12 @@
   const OLDEST_YEAR = OLDEST_DATE.getFullYear();
   const OLDEST_MONTH = OLDEST_DATE.getMonth();
   const OLDEST_DAY = OLDEST_DATE.getDate();
+
+  function isCurrentWeek(weekNum, year) {
+    const now = new Date();
+    return weekNum === getWeekNumber(now) && year === now.getFullYear();
+  }
+
   // Generate dates for past months and years
   function generateTimeStructure() {
     const now = new Date();
@@ -174,6 +181,21 @@
 
   onMount(() => {
     generateTimeStructure();
+
+    // Auto expand current year
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    expandedYears.add(currentYear);
+
+    // Scroll to current week
+    setTimeout(() => {
+      if (currentWeekElement) {
+        currentWeekElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 100);
   });
 
   $: if (selectedView) {
@@ -181,7 +203,7 @@
   }
 </script>
 
-<div class="w-64 bg-white border-r border-gray-200 min-h-screen">
+<div class="w-64 bg-white text-sm">
   <div class="p-4">
     <select
       class="w-full p-2 border rounded-md mb-4"
@@ -258,7 +280,9 @@
               {#each weeksByYear.find((w) => w.year === year)?.weeks || [] as { week, weekDates }}
                 <div class="ml-6">
                   <button
+                    bind:this={currentWeekElement}
                     class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm flex items-center justify-between"
+                    class:bg-blue-50={isCurrentWeek(week, year)}
                     on:click={() =>
                       onWeekSelect(weekDates.start, weekDates.end)}
                   >

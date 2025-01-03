@@ -70,7 +70,7 @@
 </script>
 
 <div class="flex flex-row h-[80vh]">
-  <div class="h-[80vh] overflow-y-auto">
+  <div class="h-[80vh] overflow-y-auto border-r border-gray-200">
     <RedditSidebar
       onDateSelect={handleDateSelect}
       onWeekSelect={handleWeekSelect}
@@ -79,7 +79,7 @@
     />
   </div>
 
-  <div class="flex-1 max-w-xl h-[80vh] overflow-y-auto">
+  <div class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-gray-200">
     {#if loading}
       <div class="flex justify-center items-center h-32">
         <div
