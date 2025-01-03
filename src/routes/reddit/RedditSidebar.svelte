@@ -1,27 +1,40 @@
 <script>
   import { onMount } from 'svelte';
-  import { ChevronDown, ChevronRight, Calendar, Clock } from 'lucide-svelte';
+  import { ChevronDown, ChevronRight } from 'lucide-svelte';
 
   // Props
   export let onDateSelect = (date) => {};
   export let onWeekSelect = (weekNum, year) => {};
+  export let onMonthSelect = (year, month) => {};
+  export let onYearSelect = (year) => {};
   
-  let selectedTab = 'date'; // 'date' or 'week'
+  const viewOptions = [
+    { id: 'date', label: 'By Date' },
+    { id: 'week', label: 'By Week' },
+    { id: 'month', label: 'By Month' },
+    { id: 'year', label: 'By Year' }
+  ];
+  
+  let selectedView = 'date';
   let expandedYears = new Set();
   let expandedMonths = new Set();
   
-  // Store structure for dates and weeks
+  // Store structure
   let years = [];
   let weeksByYear = [];
   
   // Generate dates for past months and years
-  function generateDates() {
+  function generateTimeStructure() {
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
+    const currentDate = now.getDate();
+    
+    years = [];
+    weeksByYear = [];
     
     // Start with current year
-    let yearCount = 3; // Number of years to show
+    let yearCount = 3; // Show 3 years
     let year = currentYear;
     
     while (yearCount > 0) {
@@ -31,25 +44,24 @@
       const startMonth = (year === currentYear) ? currentMonth : 11;
       
       for (let month = startMonth; month >= 0; month--) {
-        // Skip future months in current year
-        if (year === currentYear && month > currentMonth) continue;
-        
         const monthData = {
           month,
           monthName: new Date(year, month).toLocaleString('default', { month: 'long' }),
           dates: []
         };
         
-        // Determine the range of days to process
-        const lastDay = new Date(year, month + 1, 0).getDate();
-        const startDay = (year === currentYear && month === currentMonth) ? now.getDate() : lastDay;
-        
-        for (let day = startDay; day >= 1; day--) {
-          const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-          monthData.dates.push(dateStr);
+        // Only add dates for date view
+        if (selectedView === 'date') {
+          const lastDay = new Date(year, month + 1, 0).getDate();
+          const startDay = (year === currentYear && month === currentMonth) ? currentDate : lastDay;
+          
+          for (let day = startDay; day >= 1; day--) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            monthData.dates.push(dateStr);
+          }
         }
         
-        if (monthData.dates.length > 0) {
+        if (selectedView !== 'date' || monthData.dates.length > 0) {
           yearData.months.push(monthData);
         }
       }
@@ -58,34 +70,23 @@
         years.push(yearData);
       }
       
-      year--;
-      yearCount--;
-    }
-  }
-  
-  // Generate weeks grouped by year
-  function generateWeeks() {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    
-    // Generate for current and previous year
-    for (let year = currentYear; year >= currentYear - 2; year--) {
-      const yearData = { 
-        year,
-        weeks: []
-      };
-      
-      // For current year, only include up to current week
-      const maxWeeks = year === currentYear ? getWeekNumber(now) : 52;
-      
-      for (let week = maxWeeks; week >= 1; week--) {
-        yearData.weeks.push({
-          week,
-          weekDates: getWeekDates(week, year)
-        });
+      // Generate weeks for week view
+      if (selectedView === 'week') {
+        const yearWeeks = { year, weeks: [] };
+        const maxWeeks = year === currentYear ? getWeekNumber(now) : 52;
+        
+        for (let week = maxWeeks; week >= 1; week--) {
+          yearWeeks.weeks.push({
+            week,
+            weekDates: getWeekDates(week, year)
+          });
+        }
+        
+        weeksByYear.push(yearWeeks);
       }
       
-      weeksByYear.push(yearData);
+      year--;
+      yearCount--;
     }
   }
   
@@ -98,14 +99,10 @@
   }
   
   function getWeekDates(weekNum, year) {
-    // Get the first day of the year
     const yearStart = new Date(year, 0, 1);
-    // Get the first day of week 1
     const week1Start = new Date(year, 0, 1 + (1 - yearStart.getDay()));
-    // Calculate the start of the requested week
     const weekStart = new Date(week1Start);
     weekStart.setDate(week1Start.getDate() + (weekNum - 1) * 7);
-    // Calculate the end of the week
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekStart.getDate() + 6);
     
@@ -121,7 +118,7 @@
     } else {
       expandedYears.add(year);
     }
-    expandedYears = expandedYears; // trigger reactivity
+    expandedYears = expandedYears;
   }
   
   function toggleMonth(yearMonth) {
@@ -130,67 +127,104 @@
     } else {
       expandedMonths.add(yearMonth);
     }
-    expandedMonths = expandedMonths; // trigger reactivity
+    expandedMonths = expandedMonths;
+  }
+  
+  function handleViewChange(event) {
+    selectedView = event.target.value;
+    expandedYears.clear();
+    expandedMonths.clear();
+    generateTimeStructure();
+  }
+
+  function handleMonthClick(year, month) {
+    if (selectedView === 'month') {
+      const startDate = new Date(year, month, 1);
+      const endDate = new Date(year, month + 1, 0);
+      onMonthSelect(
+        startDate.toISOString().split('T')[0],
+        endDate.toISOString().split('T')[0]
+      );
+    }
+  }
+
+  function handleYearClick(year) {
+    if (selectedView === 'year') {
+      const startDate = `${year}-01-01`;
+      const endDate = `${year}-12-31`;
+      onYearSelect(startDate, endDate);
+    }
   }
   
   onMount(() => {
-    generateDates();
-    generateWeeks();
+    generateTimeStructure();
   });
+
+  $: if (selectedView) {
+    generateTimeStructure();
+  }
 </script>
 
 <div class="w-64 bg-white border-r border-gray-200 min-h-screen">
   <div class="p-4">
-    <div class="flex space-x-4 mb-4">
-      <button
-        class={`flex items-center space-x-1 px-3 py-2 rounded-md ${selectedTab === 'date' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
-        on:click={() => selectedTab = 'date'}
-      >
-        <Calendar class="w-4 h-4" />
-        <span>By Date</span>
-      </button>
-      
-      <button
-        class={`flex items-center space-x-1 px-3 py-2 rounded-md ${selectedTab === 'week' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
-        on:click={() => selectedTab = 'week'}
-      >
-        <Clock class="w-4 h-4" />
-        <span>By Week</span>
-      </button>
-    </div>
+    <select
+      class="w-full p-2 border rounded-md mb-4"
+      value={selectedView}
+      on:change={handleViewChange}
+    >
+      {#each viewOptions as option}
+        <option value={option.id}>{option.label}</option>
+      {/each}
+    </select>
     
-    {#if selectedTab === 'date'}
-      <div class="space-y-2">
-        {#each years as { year, months }}
-          <div class="border-b border-gray-100 last:border-0">
-            <button
-              class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
-              on:click={() => toggleYear(year)}
-            >
+    <div class="space-y-2">
+      {#each years as { year, months }}
+        <div class="border-b border-gray-100 last:border-0">
+          <button
+            class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
+            on:click={() => {
+              if (selectedView === 'year') {
+                handleYearClick(year);
+              } else {
+                toggleYear(year);
+              }
+            }}
+          >
+            {#if selectedView !== 'year'}
               {#if expandedYears.has(year)}
                 <ChevronDown class="w-4 h-4" />
               {:else}
                 <ChevronRight class="w-4 h-4" />
               {/if}
-              <span class="font-medium">{year}</span>
-            </button>
-            
-            {#if expandedYears.has(year)}
+            {/if}
+            <span class="font-medium">{year}</span>
+          </button>
+          
+          {#if expandedYears.has(year)}
+            {#if selectedView === 'date' || selectedView === 'month'}
               {#each months as { month, monthName, dates }}
                 <div class="ml-4">
                   <button
                     class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
-                    on:click={() => toggleMonth(`${year}-${month}`)}
+                    on:click={() => {
+                      if (selectedView === 'month') {
+                        handleMonthClick(year, month);
+                      } else {
+                        toggleMonth(`${year}-${month}`);
+                      }
+                    }}
                   >
-                    {#if expandedMonths.has(`${year}-${month}`)}
-                      <ChevronDown class="w-4 h-4" />
-                    {:else}
-                      <ChevronRight class="w-4 h-4" />
+                    {#if selectedView === 'date'}
+                      {#if expandedMonths.has(`${year}-${month}`)}
+                        <ChevronDown class="w-4 h-4" />
+                      {:else}
+                        <ChevronRight class="w-4 h-4" />
+                      {/if}
                     {/if}
                     <span>{monthName}</span>
                   </button>
                   
-                  {#if expandedMonths.has(`${year}-${month}`)}
+                  {#if selectedView === 'date' && expandedMonths.has(`${year}-${month}`)}
                     <div class="ml-6 space-y-1">
                       {#each dates as date}
                         <button
@@ -204,44 +238,24 @@
                   {/if}
                 </div>
               {/each}
-            {/if}
-          </div>
-        {/each}
-      </div>
-    {:else}
-      <div class="space-y-2">
-        {#each weeksByYear as { year, weeks }}
-          <div class="border-b border-gray-100 last:border-0">
-            <button
-              class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
-              on:click={() => toggleYear(year)}
-            >
-              {#if expandedYears.has(year)}
-                <ChevronDown class="w-4 h-4" />
-              {:else}
-                <ChevronRight class="w-4 h-4" />
-              {/if}
-              <span class="font-medium">{year}</span>
-            </button>
-            
-            {#if expandedYears.has(year)}
-              <div class="ml-6 space-y-1">
-                {#each weeks as { week, weekDates }}
+            {:else if selectedView === 'week'}
+              {#each weeksByYear.find(w => w.year === year)?.weeks || [] as { week, weekDates }}
+                <div class="ml-6">
                   <button
                     class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm flex items-center justify-between"
-                    on:click={() => onWeekSelect(week, year)}
+                    on:click={() => onWeekSelect(weekDates.start, weekDates.end)}
                   >
                     <span>Week {week}</span>
                     <span class="text-xs text-gray-500">
                       {weekDates.start} to {weekDates.end}
                     </span>
                   </button>
-                {/each}
-              </div>
+                </div>
+              {/each}
             {/if}
-          </div>
-        {/each}
-      </div>
-    {/if}
+          {/if}
+        </div>
+      {/each}
+    </div>
   </div>
 </div>
