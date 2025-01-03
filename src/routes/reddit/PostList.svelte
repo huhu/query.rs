@@ -15,7 +15,7 @@
   }
 </script>
 
-<div class="p-6 rounded-lg bg-white shadow-sm">
+<div class="p-6 overflow-y-scroll">
   {#if posts.length === 0}
     <div class="text-center text-gray-500 py-8">
       No posts found for this period
@@ -24,7 +24,7 @@
     <ol class="space-y-4">
       {#each posts as post, i}
         <li
-          class="flex items-start gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
+          class="flex items-start gap-2 p-2 hover:bg-gray-50 cursor-pointer"
           class:bg-blue-50={selectedPostId === post.postId}
           on:click={() => onSelectPost(post)}
         >

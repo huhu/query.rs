@@ -65,8 +65,8 @@
   });
 </script>
 
-<div class="min-h-screen bg-gray-50">
-  <div class="flex flex-row gap-4 p-4">
+<div class="min-h-screen">
+  <div class="flex flex-row">
     <RedditSidebar
       onDateSelect={handleDateSelect}
       onWeekSelect={handleWeekSelect}
@@ -82,7 +82,7 @@
           ></div>
         </div>
       {:else if error}
-        <div class="p-4 text-red-500 bg-red-50 rounded-lg">
+        <div class="p-4 text-red-500 bg-red-50">
           Error loading posts: {error}
         </div>
       {:else}
