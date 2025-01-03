@@ -20,17 +20,17 @@
 
 <div class="flex-layout" style="flex-direction: column;">
   <div class="max-w-[1160px] w-full flex flex-col">
-    <div class="flex flex-row justify-between items-center">
+    <div class="flex flex-col md:flex-row md:justify-between items-center">
       <a href="/"
         ><img
           src="/assets/logo.svg"
           alt="logo"
-          class="w-32 mx-6"
+          class="w-32 m-4"
           class:hidden={$page.url.pathname !== "/reddit"}
         />
       </a>
       <ul
-        class="hidden list-none flex-row overflow-auto md:flex self-end py-5 text-base md:text-xl"
+        class="flex list-none flex-row justify-center overflow-auto md:self-end py-5 text-base md:text-xl"
       >
         {#each menus as menu}
           <li class="px-5 rounded-md hover:bg-[#f9bc2d46]">
