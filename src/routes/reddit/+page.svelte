@@ -27,6 +27,10 @@
       }
 
       posts = await response.json();
+      // Select the first post by default if available
+      if (posts.length > 0) {
+        selectedPost = posts[0];
+      }
     } catch (e) {
       error = e.message;
       posts = [];

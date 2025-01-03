@@ -44,10 +44,12 @@
     {/if}
 
     <div class="flex items-center gap-4 text-sm">
-      <div class="flex items-center gap-1">
-        <span role="img" aria-label="comments">💬</span>
-        <span>{post.numComments} comments</span>
-      </div>
+      {#if post.numComments !== null}
+        <div class="flex items-center gap-1">
+          <span role="img" aria-label="comments">💬</span>
+          <span>{post.numComments} comments</span>
+        </div>
+      {/if}
 
       <a
         href={`https://reddit.com${post.permalink}`}
