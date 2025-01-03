@@ -14,8 +14,10 @@
     },
     "dependencies": {
         "dayjs": "^1.11.12",
+        "dompurify": "^3.2.3",
         "echarts": "^5.5.1",
         "lucide-svelte": "^0.469.0",
+        "marked": "^15.0.5",
         "querylib": "./lib",
         "svelte-french-toast": "^1.2.0"
     },
