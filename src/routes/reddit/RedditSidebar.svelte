@@ -4,8 +4,8 @@
 
   // Props
   export let onDateSelect = (date) => {};
-  export let onWeekSelect = (weekNum, year) => {};
-  export let onMonthSelect = (year, month) => {};
+  export let onWeekSelect = (start, end) => {};
+  export let onMonthSelect = (start, end) => {};
   export let onYearSelect = (year) => {};
 
   const viewOptions = [
@@ -16,13 +16,15 @@
   ];
 
   let selectedView = "week";
+  let selectedId = "";
   let expandedYears = new Set();
   let expandedMonths = new Set();
-  // Added reference to current week element
   let currentWeekElement;
 
+  // Store structure
   let years = [];
   let weeksByYear = [];
+
   // Constants for oldest data
   const OLDEST_DATE = new Date("2021-11-23T13:16:37");
   const OLDEST_YEAR = OLDEST_DATE.getFullYear();
@@ -158,24 +160,49 @@
     expandedYears.clear();
     expandedMonths.clear();
     generateTimeStructure();
-  }
 
-  function handleMonthClick(year, month) {
-    if (selectedView === "month") {
-      const startDate = new Date(year, month, 1);
-      const endDate = new Date(year, month + 1, 0);
-      onMonthSelect(
-        startDate.toISOString().split("T")[0],
-        endDate.toISOString().split("T")[0]
-      );
-    }
-  }
+    if (years.length > 0) {
+      const firstYear = years[0];
+      expandedYears.add(firstYear.year);
 
-  function handleYearClick(year) {
-    if (selectedView === "year") {
-      const startDate = `${year}-01-01`;
-      const endDate = `${year}-12-31`;
-      onYearSelect(startDate, endDate);
+      switch (selectedView) {
+        case "date":
+          if (firstYear.months.length > 0) {
+            const firstMonth = firstYear.months[0];
+            expandedMonths.add(`${firstYear.year}-${firstMonth.month}`);
+            if (firstMonth.dates.length > 0) {
+              selectedId = firstMonth.dates[0];
+              onDateSelect(firstMonth.dates[0]);
+            }
+          }
+          break;
+
+        case "week":
+          if (weeksByYear.length > 0 && weeksByYear[0].weeks.length > 0) {
+            const firstWeek = weeksByYear[0].weeks[0];
+            selectedId = `${firstYear.year}-${firstWeek.week}`;
+            onWeekSelect(firstWeek.weekDates.start, firstWeek.weekDates.end);
+          }
+          break;
+
+        case "month":
+          if (firstYear.months.length > 0) {
+            const firstMonth = firstYear.months[0];
+            selectedId = `${firstYear.year}-${firstMonth.month}`;
+            const startDate = new Date(firstYear.year, firstMonth.month, 1);
+            const endDate = new Date(firstYear.year, firstMonth.month + 1, 0);
+            onMonthSelect(
+              startDate.toISOString().split("T")[0],
+              endDate.toISOString().split("T")[0]
+            );
+          }
+          break;
+
+        case "year":
+          selectedId = firstYear.year.toString();
+          onYearSelect(firstYear.year.toString());
+          break;
+      }
     }
   }
 
@@ -186,8 +213,9 @@
     const now = new Date();
     const currentYear = now.getFullYear();
     expandedYears.add(currentYear);
+    expandedYears = expandedYears;
 
-    // Scroll to current week
+    // Wait for DOM update then scroll to current week
     setTimeout(() => {
       if (currentWeekElement) {
         currentWeekElement.scrollIntoView({
@@ -197,13 +225,9 @@
       }
     }, 100);
   });
-
-  $: if (selectedView) {
-    generateTimeStructure();
-  }
 </script>
 
-<div class="w-64 bg-white text-sm">
+<div class="w-64 bg-white border-r border-gray-200 min-h-screen">
   <div class="p-4">
     <select
       class="w-full p-2 border rounded-md mb-4"
@@ -220,9 +244,12 @@
         <div class="border-b border-gray-100 last:border-0">
           <button
             class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
+            class:bg-blue-50={selectedView === "year" &&
+              selectedId === year.toString()}
             on:click={() => {
               if (selectedView === "year") {
-                handleYearClick(year);
+                selectedId = year.toString();
+                onYearSelect(year.toString());
               } else {
                 toggleYear(year);
               }
@@ -244,9 +271,17 @@
                 <div class="ml-4">
                   <button
                     class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
+                    class:bg-blue-50={selectedView === "month" &&
+                      selectedId === `${year}-${month}`}
                     on:click={() => {
                       if (selectedView === "month") {
-                        handleMonthClick(year, month);
+                        selectedId = `${year}-${month}`;
+                        const startDate = new Date(year, month, 1);
+                        const endDate = new Date(year, month + 1, 0);
+                        onMonthSelect(
+                          startDate.toISOString().split("T")[0],
+                          endDate.toISOString().split("T")[0]
+                        );
                       } else {
                         toggleMonth(`${year}-${month}`);
                       }
@@ -267,7 +302,12 @@
                       {#each dates as date}
                         <button
                           class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm"
-                          on:click={() => onDateSelect(date)}
+                          class:bg-blue-50={selectedView === "date" &&
+                            selectedId === date}
+                          on:click={() => {
+                            selectedId = date;
+                            onDateSelect(date);
+                          }}
                         >
                           {date}
                         </button>
@@ -282,9 +322,12 @@
                   <button
                     bind:this={currentWeekElement}
                     class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm flex items-center justify-between"
-                    class:bg-blue-50={isCurrentWeek(week, year)}
-                    on:click={() =>
-                      onWeekSelect(weekDates.start, weekDates.end)}
+                    class:bg-blue-50={selectedView === "week" &&
+                      selectedId === `${year}-${week}`}
+                    on:click={() => {
+                      selectedId = `${year}-${week}`;
+                      onWeekSelect(weekDates.start, weekDates.end);
+                    }}
                   >
                     <span>Week {week}</span>
                     <span class="text-xs text-gray-500">
