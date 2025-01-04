@@ -7,7 +7,7 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: "Fira Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 html {
@@ -24,7 +24,7 @@ img {
   align-items: center;
 }
 .heading-text {
-  font-family: "Fira Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 32px;
   font-weight: 600;
   padding: 10px 0 25px 0;
@@ -32,7 +32,7 @@ img {
 }
 h1,
 .title-text {
-  font-family: "Fira Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 25px;
   font-weight: 500;
   color: var(--primary-text-color);
@@ -41,13 +41,13 @@ h1,
 }
 h2,
 .subtitle-text {
-  font-family: "Fira Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
   font-weight: 500;
   color: var(--primary-text-color);
 }
 .text {
-  font-family: "Fira Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 18px;
   font-weight: 400;
   line-height: 26px;
@@ -55,7 +55,7 @@ h2,
   color: var(--primary-text-color);
 }
 .subtext {
-  font-family: "Fira Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.1px;
