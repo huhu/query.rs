@@ -6,8 +6,10 @@
 
   function renderMarkdown(text) {
     if (!text) return "";
+    // Replace \n with actual newlines before parsing markdown
+    const processedText = text.replace(/\\n/g, "\n");
     // Convert markdown to HTML and sanitize it
-    const html = marked.parse(text);
+    const html = marked.parse(processedText);
     return DOMPurify.sanitize(html);
   }
 
@@ -23,16 +25,22 @@
     <div class="space-y-2">
       <h2 class="text-xl font-bold">{post.title}</h2>
 
-      <div class="flex items-center gap-4 text-sm text-gray-600">
+      <div
+        class="flex justify-between items-center gap-4 text-sm text-gray-600"
+      >
         <div class="flex items-center gap-1">
           <span role="img" aria-label="fire" class="text-orange-500">🔥</span>
           <span class="font-medium">{post.score} points</span>
         </div>
         <div>
-          by <span class="font-medium">{post.author}</span>
+          by <a
+            href={`https://reddit.com/user/${post.author}`}
+            rel="noopener noreferrer"
+            class="hover:underline">{post.author}</a
+          >
         </div>
         <div>
-          {post.createdAt}
+          {post.createdAt.replace("T", " ")}
         </div>
       </div>
     </div>
