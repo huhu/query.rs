@@ -8,6 +8,7 @@
   let loading = false;
   let error = null;
   let selectedPost = null;
+  let headerTitle = "";
 
   async function fetchPosts(start, end) {
     loading = true;
@@ -45,21 +46,33 @@
 
   // Single date selection
   async function handleDateSelect(date) {
+    const selectedDate = new Date(date);
+    headerTitle = `Top Posts on ${selectedDate.toLocaleDateString()}`;
     await fetchPosts(date);
   }
 
   // Week selection (start and end dates provided)
   async function handleWeekSelect(start, end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    headerTitle = `Top Posts for Week ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
     await fetchPosts(start, end);
   }
 
   // Month selection (start and end dates provided)
   async function handleMonthSelect(start, end) {
+    const [year, month] = start.split('-').map(Number);
+    const startDate = new Date(year, month - 1);  // Subtract 1 from month to convert to 0-based
+    
     await fetchPosts(start, end);
+    headerTitle = `Top ${posts.length} Posts in ${startDate.toLocaleString('default', { month: 'long', year: 'numeric' })}`;
   }
 
-  // Year selection (start and end dates provided)
-  async function handleYearSelect(start, end) {
+  // Year selection
+  async function handleYearSelect(year) {
+    const start = `${year}-01-01`;
+    const end = `${year}-12-31`;
+    headerTitle = `Top Posts in ${year}`;
     await fetchPosts(start, end);
   }
 
@@ -79,7 +92,9 @@
     />
   </div>
 
-  <div class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-gray-200">
+  <div
+    class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-gray-200"
+  >
     {#if loading}
       <div class="flex justify-center items-center h-32">
         <div
@@ -93,6 +108,7 @@
     {:else}
       <PostList
         {posts}
+        {headerTitle}
         onSelectPost={handleSelectPost}
         selectedPostId={selectedPost?.postId}
       />

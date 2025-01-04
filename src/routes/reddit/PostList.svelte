@@ -5,6 +5,7 @@
   export let posts = [];
   export let onSelectPost = (post) => {};
   export let selectedPostId = null;
+  export let headerTitle = "";
 
   function formatTitle(post) {
     let title = post.title;
@@ -15,34 +16,40 @@
   }
 </script>
 
-<div class="p-6 overflow-y-scroll">
-  {#if posts.length === 0}
-    <div class="text-center text-gray-500 py-8">
-      No posts found for this period
-    </div>
-  {:else}
-    <ol class="space-y-4">
-      {#each posts as post, i}
-        <li
-          class="flex items-start gap-2 p-2 hover:bg-gray-50 cursor-pointer"
-          class:bg-blue-50={selectedPostId === post.postId}
-          on:click={() => onSelectPost(post)}
-        >
-          <span class="text-gray-700 font-medium">{i + 1}.</span>
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-blue-500 font-medium">
-              {formatTitle(post)}
-            </span>
-
-            <div class="flex items-center gap-1">
-              <span role="img" aria-label="fire" class="text-orange-500"
-                >🔥</span
-              >
-              <span class="font-medium">{post.score}</span>
-            </div>
-          </div>
-        </li>
-      {/each}
-    </ol>
+<div class="relative">
+  {#if headerTitle}
+    <h2
+      class=" font-semibold text-[#2759e7] p-3 bg-[#e6ecfd] sticky top-0 z-10"
+    >
+      {headerTitle}
+    </h2>
   {/if}
+  <div class="overflow-y-scroll">
+    {#if posts.length === 0}
+      <div class="text-center text-gray-500 py-4">
+        No posts found for this period
+      </div>
+    {:else}
+      <ol class="space-y-1">
+        {#each posts as post, i}
+          <li
+            class="flex items-start px-4 py-2 hover:bg-gray-50 cursor-pointer"
+            class:bg-blue-50={selectedPostId === post.postId}
+            on:click={() => onSelectPost(post)}
+          >
+            <span class="text-gray-400 w-6">{i + 1}.</span>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class=" text-blue-500">
+                {formatTitle(post)}
+                <span role="img" aria-label="fire" class="text-orange-500">
+                  🔥
+                </span>
+                <span class="text-gray-500">{post.score}</span>
+              </span>
+            </div>
+          </li>
+        {/each}
+      </ol>
+    {/if}
+  </div>
 </div>

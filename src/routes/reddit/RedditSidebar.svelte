@@ -19,10 +19,18 @@
   let selectedId = "";
   let expandedYears = new Set();
   let expandedMonths = new Set();
+  /**
+   * @type {HTMLButtonElement}
+   */
   let currentWeekElement;
 
-  // Store structure
+  /**
+   * @type {any[]}
+   */
   let years = [];
+  /**
+   * @type {any[]}
+   */
   let weeksByYear = [];
 
   // Constants for oldest data
@@ -30,11 +38,6 @@
   const OLDEST_YEAR = OLDEST_DATE.getFullYear();
   const OLDEST_MONTH = OLDEST_DATE.getMonth();
   const OLDEST_DAY = OLDEST_DATE.getDate();
-
-  function isCurrentWeek(weekNum, year) {
-    const now = new Date();
-    return weekNum === getWeekNumber(now) && year === now.getFullYear();
-  }
 
   // Generate dates for past months and years
   function generateTimeStructure() {
@@ -292,12 +295,13 @@
                     on:click={() => {
                       if (selectedView === "month") {
                         selectedId = `${year}-${month}`;
-                        const startDate = new Date(year, month, 1);
-                        const endDate = new Date(year, month + 1, 0);
-                        onMonthSelect(
-                          startDate.toISOString().split("T")[0],
-                          endDate.toISOString().split("T")[0]
-                        );
+                        const lastDay = new Date(year, month + 1, 0);
+
+                        // Format dates with correct month (add 1 to month when padding)
+                        const startDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+                        const endDate = `${year}-${String(month + 1).padStart(2, "0")}-${lastDay.getDate().toString().padStart(2, "0")}`;
+
+                        onMonthSelect(startDate, endDate);
                       } else {
                         toggleMonth(`${year}-${month}`);
                       }
