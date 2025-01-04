@@ -1,5 +1,5 @@
 <script>
-  import RedditSidebar from "./RedditSidebar.svelte";
+  import RedditSidebar from "./Sidebar.svelte";
   import PostList from "./PostList.svelte";
   import PostDetail from "./PostDetail.svelte";
   import { onMount } from "svelte";
@@ -61,11 +61,11 @@
 
   // Month selection (start and end dates provided)
   async function handleMonthSelect(start, end) {
-    const [year, month] = start.split('-').map(Number);
-    const startDate = new Date(year, month - 1);  // Subtract 1 from month to convert to 0-based
-    
+    const [year, month] = start.split("-").map(Number);
+    const startDate = new Date(year, month - 1); // Subtract 1 from month to convert to 0-based
+
     await fetchPosts(start, end);
-    headerTitle = `Top ${posts.length} Posts in ${startDate.toLocaleString('default', { month: 'long', year: 'numeric' })}`;
+    headerTitle = `Top ${posts.length} Posts in ${startDate.toLocaleString("default", { month: "long", year: "numeric" })}`;
   }
 
   // Year selection
@@ -83,13 +83,20 @@
 </script>
 
 <div class="flex flex-row h-[80vh]">
-  <div class="h-[80vh] overflow-y-auto border-r border-gray-200">
-    <RedditSidebar
-      onDateSelect={handleDateSelect}
-      onWeekSelect={handleWeekSelect}
-      onMonthSelect={handleMonthSelect}
-      onYearSelect={handleYearSelect}
-    />
+  <div class="relative border-r border-gray-200">
+    <div class="h-full overflow-y-auto pb-10">
+      <RedditSidebar
+        onDateSelect={handleDateSelect}
+        onWeekSelect={handleWeekSelect}
+        onMonthSelect={handleMonthSelect}
+        onYearSelect={handleYearSelect}
+      />
+    </div>
+    <div
+      class="absolute bg-white bottom-0 left-0 right-0 p-2 text-xs text-gray-400 border-t"
+    >
+      Note: Only posts with score ≥ 50 are collected. Data cutoff: 2021-11-23
+    </div>
   </div>
 
   <div

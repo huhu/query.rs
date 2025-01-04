@@ -246,8 +246,8 @@
   });
 </script>
 
-<div class="w-64">
-  <div class="p-4">
+<div class="w-52">
+  <div class="p-2">
     <select
       class="w-full p-2 border rounded-md mb-4"
       value={selectedView}
