@@ -9,7 +9,10 @@
 
   function formatTitle(post) {
     let title = post.title;
-    if (post.url.match(/\.(gif|jpe?g|png|mp4)$/i)) {
+    if (
+      post.url.match(/\.(gif|jpe?g|png|mp4)$/i) &&
+      title.indexOf("[Media]") === -1
+    ) {
       title = `[Media] ${title}`;
     }
     return title;

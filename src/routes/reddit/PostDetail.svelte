@@ -13,6 +13,13 @@
     return DOMPurify.sanitize(html);
   }
 
+  function isMediaUrl(url) {
+    if (!url) return false;
+    return /\.(jpg|jpeg|png|gif|webp|mp4|webm)$/i.test(url) || 
+           url.includes('i.imgur.com') ||
+           url.includes('i.redd.it');
+  }
+
   // Configure marked options for Reddit-style markdown
   marked.use({
     breaks: true, // Convert line breaks to <br>
@@ -44,6 +51,26 @@
         </div>
       </div>
     </div>
+
+    {#if post.url && isMediaUrl(post.url)}
+      <div class="media-container">
+        {#if post.url.match(/\.(mp4|webm)$/i)}
+          <video controls class="max-w-full">
+            <source
+              src={post.url}
+              type="video/{post.url.split('.').pop().toLowerCase()}"
+            />
+            Your browser does not support the video tag.
+          </video>
+        {:else}
+          <img
+            src={post.url}
+            alt="Post content"
+            class="max-w-full h-auto rounded"
+          />
+        {/if}
+      </div>
+    {/if}
 
     {#if post.selftext}
       <div class="prose max-w-none">
