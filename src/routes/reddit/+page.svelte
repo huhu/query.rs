@@ -53,35 +53,39 @@
     }
   }
 
+  async function performSearch(query) {
+    loading = true;
+    error = null;
+    selectedPost = null;
+    isSearching = true;
+
+    try {
+      const response = await fetch(
+        `/posts/search?q=${encodeURIComponent(query)}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      posts = await response.json();
+      if (posts.length > 0) {
+        selectedPost = posts[0];
+      }
+      headerTitle = `Search Results: "${query}" (${posts.length} results)`;
+    } catch (e) {
+      error = e.message;
+      posts = [];
+    } finally {
+      loading = false;
+    }
+  }
+
   async function handleSearch(event) {
     if (event.key === "Enter" && searchQuery.trim()) {
-      loading = true;
-      error = null;
-      selectedPost = null;
-      isSearching = true;
-
-      try {
-        const response = await fetch(
-          `/posts/search?q=${encodeURIComponent(searchQuery.trim())}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        posts = await response.json();
-        if (posts.length > 0) {
-          selectedPost = posts[0];
-        }
-        headerTitle = `Search Results: "${searchQuery}" (${posts.length} results)`;
-      } catch (e) {
-        error = e.message;
-        posts = [];
-      } finally {
-        loading = false;
-      }
+      updateSearchParam(searchQuery.trim());
+      await performSearch(searchQuery.trim());
     } else if (event.key === "Enter" && !searchQuery.trim()) {
-      // If search is cleared, reset to normal view
+      updateSearchParam("");
       isSearching = false;
       const today = new Date().toISOString().split("T")[0];
       await fetchPosts(today);
@@ -145,15 +149,33 @@
     await fetchPosts(start, end);
   }
 
+  function updateSearchParam(query) {
+    const url = new URL(window.location);
+    if (query) {
+      url.searchParams.set("q", query);
+    } else {
+      url.searchParams.delete("q");
+    }
+    window.history.pushState({}, "", url);
+  }
+
   onMount(async () => {
-    const today = new Date().toISOString().split("T")[0];
-    await fetchPosts(today);
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryParam = urlParams.get("q");
+
+    if (queryParam) {
+      searchQuery = queryParam;
+      await performSearch(queryParam);
+    } else {
+      const today = new Date().toISOString().split("T")[0];
+      await fetchPosts(today);
+    }
   });
 </script>
 
 <div class="flex flex-row h-[80vh]">
   <div class="relative w-52 border-r border-gray-200">
-    <div class="p-2 overflow-y-auto pb-10">
+    <div class="h-full p-2 overflow-y-auto pb-10">
       <div class="flex items-center relative">
         <input
           type="text"
