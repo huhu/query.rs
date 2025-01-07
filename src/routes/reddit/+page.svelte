@@ -28,6 +28,14 @@
       }
 
       posts = await response.json();
+      posts = posts.map((post) => {
+        return {
+          ...post,
+          title: formatTitle(post),
+          createdAt: post.createdAt.replace("T", " "),
+        };
+      });
+
       // Select the first post by default if available
       if (posts.length > 0) {
         selectedPost = posts[0];
@@ -38,6 +46,23 @@
     } finally {
       loading = false;
     }
+  }
+
+  function formatTitle(post) {
+    let title = post.title
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, "&")
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">");
+
+    if (
+      post.url.match(/\.(gif|jpe?g|png|mp4)$/i) &&
+      title.indexOf("[Media]") === -1
+    ) {
+      title = `[Media] ${title}`;
+    }
+    return title;
   }
 
   function handleSelectPost(post) {

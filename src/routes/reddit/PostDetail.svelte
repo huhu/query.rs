@@ -28,9 +28,9 @@
 </script>
 
 {#if post}
-  <div class="bg-white p-6 space-y-4">
+  <div class="bg-white p-4 space-y-4 prose">
     <div class="space-y-2">
-      <h2 class="text-xl font-bold">{post.title}</h2>
+      <div class="text-2xl font-bold">{post.title}</div>
 
       <div
         class="flex justify-between items-center gap-4 text-sm text-gray-600"
@@ -47,7 +47,7 @@
           >
         </div>
         <div>
-          {post.createdAt.replace("T", " ")}
+          {post.createdAt}
         </div>
       </div>
     </div>
@@ -73,7 +73,7 @@
     {/if}
 
     {#if post.selftext}
-      <div class="prose max-w-none">
+      <div class="max-w-none">
         {@html renderMarkdown(post.selftext)}
       </div>
     {/if}
@@ -120,6 +120,7 @@
   }
 
   :global(.prose h1) {
+    border-left: none !important;
     @apply text-2xl font-bold mt-6 mb-4;
   }
 

@@ -6,17 +6,6 @@
   export let onSelectPost = (post) => {};
   export let selectedPostId = null;
   export let headerTitle = "";
-
-  function formatTitle(post) {
-    let title = post.title;
-    if (
-      post.url.match(/\.(gif|jpe?g|png|mp4)$/i) &&
-      title.indexOf("[Media]") === -1
-    ) {
-      title = `[Media] ${title}`;
-    }
-    return title;
-  }
 </script>
 
 <div class="relative">
@@ -43,11 +32,8 @@
             <span class="text-gray-400 w-6">{i + 1}.</span>
             <div class="flex items-center gap-2 flex-wrap">
               <span class=" text-blue-500">
-                {formatTitle(post)}
-                <span role="img" aria-label="fire" class="text-orange-500">
-                  🔥
-                </span>
-                <span class="text-gray-500">{post.score}</span>
+                {post.title}
+                <span class="text-gray-500">🔥{post.score}</span>
               </span>
             </div>
           </li>
