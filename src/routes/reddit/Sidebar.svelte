@@ -9,10 +9,10 @@
   export let onYearSelect = (year) => {};
 
   const viewOptions = [
-    { id: "date", label: "By Date" },
-    { id: "week", label: "By Week" },
-    { id: "month", label: "By Month" },
-    { id: "year", label: "By Year" },
+    { id: "date", label: "Date" },
+    { id: "week", label: "Week" },
+    { id: "month", label: "Month" },
+    { id: "year", label: "Year" },
   ];
 
   let selectedView = "week";
@@ -246,123 +246,128 @@
   });
 </script>
 
-<div class="w-52">
-  <div class="p-2">
-    <select
-      class="w-full p-2 border rounded-md mb-4"
-      value={selectedView}
-      on:change={handleViewChange}
-    >
-      {#each viewOptions as option}
-        <option value={option.id}>{option.label}</option>
-      {/each}
-    </select>
+<div class="py-3">
+  <div class="flex w-full bg-gray-100 p-1 rounded-lg mb-4">
+    {#each viewOptions as option}
+      <button
+        class="flex-1 px-2 py-1.5 text-xs font-medium rounded-md transition-colors"
+        class:bg-white={selectedView === option.id}
+        class:shadow-sm={selectedView === option.id}
+        class:text-gray-600={selectedView !== option.id}
+        on:click={() => {
+          selectedView = option.id;
+          handleViewChange({ target: { value: option.id } });
+        }}
+      >
+        {option.label}
+      </button>
+    {/each}
+  </div>
 
-    <div class="space-y-2">
-      {#each years as { year, months }}
-        <div class="border-b border-gray-100 last:border-0">
-          <button
-            class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
-            class:bg-blue-50={selectedView === "year" &&
-              selectedId === year.toString()}
-            on:click={() => {
-              if (selectedView === "year") {
-                selectedId = year.toString();
-                onYearSelect(year.toString());
-              } else {
-                toggleYear(year);
-              }
-            }}
-          >
-            {#if selectedView !== "year"}
-              {#if expandedYears.has(year)}
-                <ChevronDown class="w-4 h-4" />
-              {:else}
-                <ChevronRight class="w-4 h-4" />
-              {/if}
-            {/if}
-            <span class="font-medium">{year}</span>
-          </button>
-
-          {#if expandedYears.has(year)}
-            {#if selectedView === "date" || selectedView === "month"}
-              {#each months as { month, monthName, dates }}
-                <div class="ml-4">
-                  <button
-                    class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
-                    class:bg-blue-50={selectedView === "month" &&
-                      selectedId === `${year}-${month}`}
-                    on:click={() => {
-                      if (selectedView === "month") {
-                        selectedId = `${year}-${month}`;
-                        const lastDay = new Date(year, month + 1, 0);
-
-                        // Format dates with correct month (add 1 to month when padding)
-                        const startDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
-                        const endDate = `${year}-${String(month + 1).padStart(2, "0")}-${lastDay.getDate().toString().padStart(2, "0")}`;
-
-                        onMonthSelect(startDate, endDate);
-                      } else {
-                        toggleMonth(`${year}-${month}`);
-                      }
-                    }}
-                  >
-                    {#if selectedView === "date"}
-                      {#if expandedMonths.has(`${year}-${month}`)}
-                        <ChevronDown class="w-4 h-4" />
-                      {:else}
-                        <ChevronRight class="w-4 h-4" />
-                      {/if}
-                    {/if}
-                    <span>{monthName}</span>
-                  </button>
-
-                  {#if selectedView === "date" && expandedMonths.has(`${year}-${month}`)}
-                    <div class="ml-6 space-y-1">
-                      {#each dates as date}
-                        <button
-                          class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm"
-                          class:bg-blue-50={selectedView === "date" &&
-                            selectedId === date}
-                          on:click={() => {
-                            selectedId = date;
-                            onDateSelect(date);
-                          }}
-                        >
-                          {date}
-                        </button>
-                      {/each}
-                    </div>
-                  {/if}
-                </div>
-              {/each}
-            {:else if selectedView === "week"}
-              {#each weeksByYear.find((w) => w.year === year)?.weeks || [] as { week, weekDates }}
-                <div class="ml-6">
-                  <button
-                    bind:this={currentWeekElement}
-                    class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm flex items-center justify-between"
-                    class:bg-blue-50={selectedView === "week" &&
-                      selectedId === `${year}-${week}`}
-                    on:click={() => {
-                      selectedId = `${year}-${week}`;
-                      onWeekSelect(weekDates.start, weekDates.end);
-                    }}
-                  >
-                    <span>Week {week}</span>
-                    <span class="text-xs text-gray-500">
-                      {weekDates.start.split("-").slice(1).join("-")} to {weekDates.end
-                        .split("-")
-                        .slice(1)
-                        .join("-")}
-                    </span>
-                  </button>
-                </div>
-              {/each}
+  <div class="space-y-2">
+    {#each years as { year, months }}
+      <div class="border-b border-gray-100 last:border-0">
+        <button
+          class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
+          class:bg-blue-50={selectedView === "year" &&
+            selectedId === year.toString()}
+          on:click={() => {
+            if (selectedView === "year") {
+              selectedId = year.toString();
+              onYearSelect(year.toString());
+            } else {
+              toggleYear(year);
+            }
+          }}
+        >
+          {#if selectedView !== "year"}
+            {#if expandedYears.has(year)}
+              <ChevronDown class="w-4 h-4" />
+            {:else}
+              <ChevronRight class="w-4 h-4" />
             {/if}
           {/if}
-        </div>
-      {/each}
-    </div>
+          <span class="font-medium">{year}</span>
+        </button>
+
+        {#if expandedYears.has(year)}
+          {#if selectedView === "date" || selectedView === "month"}
+            {#each months as { month, monthName, dates }}
+              <div class="ml-4">
+                <button
+                  class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
+                  class:bg-blue-50={selectedView === "month" &&
+                    selectedId === `${year}-${month}`}
+                  on:click={() => {
+                    if (selectedView === "month") {
+                      selectedId = `${year}-${month}`;
+                      const lastDay = new Date(year, month + 1, 0);
+
+                      // Format dates with correct month (add 1 to month when padding)
+                      const startDate = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+                      const endDate = `${year}-${String(month + 1).padStart(2, "0")}-${lastDay.getDate().toString().padStart(2, "0")}`;
+
+                      onMonthSelect(startDate, endDate);
+                    } else {
+                      toggleMonth(`${year}-${month}`);
+                    }
+                  }}
+                >
+                  {#if selectedView === "date"}
+                    {#if expandedMonths.has(`${year}-${month}`)}
+                      <ChevronDown class="w-4 h-4" />
+                    {:else}
+                      <ChevronRight class="w-4 h-4" />
+                    {/if}
+                  {/if}
+                  <span>{monthName}</span>
+                </button>
+
+                {#if selectedView === "date" && expandedMonths.has(`${year}-${month}`)}
+                  <div class="ml-6 space-y-1">
+                    {#each dates as date}
+                      <button
+                        class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm"
+                        class:bg-blue-50={selectedView === "date" &&
+                          selectedId === date}
+                        on:click={() => {
+                          selectedId = date;
+                          onDateSelect(date);
+                        }}
+                      >
+                        {date}
+                      </button>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            {/each}
+          {:else if selectedView === "week"}
+            {#each weeksByYear.find((w) => w.year === year)?.weeks || [] as { week, weekDates }}
+              <div class="ml-6">
+                <button
+                  bind:this={currentWeekElement}
+                  class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm flex items-center justify-between"
+                  class:bg-blue-50={selectedView === "week" &&
+                    selectedId === `${year}-${week}`}
+                  on:click={() => {
+                    selectedId = `${year}-${week}`;
+                    onWeekSelect(weekDates.start, weekDates.end);
+                  }}
+                >
+                  <span>Week {week}</span>
+                  <span class="text-xs text-gray-500">
+                    {weekDates.start.split("-").slice(1).join("-")} to {weekDates.end
+                      .split("-")
+                      .slice(1)
+                      .join("-")}
+                  </span>
+                </button>
+              </div>
+            {/each}
+          {/if}
+        {/if}
+      </div>
+    {/each}
   </div>
 </div>

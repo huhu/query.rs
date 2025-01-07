@@ -73,6 +73,7 @@
         if (posts.length > 0) {
           selectedPost = posts[0];
         }
+        headerTitle = `Search Results: "${searchQuery}" (${posts.length} results)`;
       } catch (e) {
         error = e.message;
         posts = [];
@@ -151,15 +152,15 @@
 </script>
 
 <div class="flex flex-row h-[80vh]">
-  <div class="relative border-r border-gray-200">
-    <div class="h-full overflow-y-auto pb-10">
-      <div class="m-2 flex items-center relative">
+  <div class="relative w-52 border-r border-gray-200">
+    <div class="p-2 overflow-y-auto pb-10">
+      <div class="flex items-center relative">
         <input
           type="text"
           bind:value={searchQuery}
           on:keydown={handleSearch}
           placeholder="Search posts..."
-          class="w-52 p-1 px-2 border rounded-md"
+          class="w-full p-1 px-2 border rounded-md"
         />
         <Search class="w-5 h-5 absolute right-3 text-gray-400" />
       </div>
