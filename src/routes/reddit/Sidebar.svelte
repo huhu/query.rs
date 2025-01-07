@@ -9,7 +9,7 @@
   export let onYearSelect = (year) => {};
 
   const viewOptions = [
-    { id: "date", label: "Date" },
+    { id: "day", label: "Day" },
     { id: "week", label: "Week" },
     { id: "month", label: "Month" },
     { id: "year", label: "Year" },
@@ -66,8 +66,8 @@
           dates: [],
         };
 
-        // Only add dates for date view
-        if (selectedView === "date") {
+        // Only add dates for day view
+        if (selectedView === "day") {
           const lastDay = new Date(year, month + 1, 0).getDate();
           let startDay = lastDay;
 
@@ -86,7 +86,7 @@
           }
         }
 
-        if (selectedView !== "date" || monthData.dates.length > 0) {
+        if (selectedView !== "day" || monthData.dates.length > 0) {
           yearData.months.push(monthData);
         }
       }
@@ -169,7 +169,7 @@
       expandedYears.add(firstYear.year);
 
       switch (selectedView) {
-        case "date":
+        case "day":
           if (firstYear.months.length > 0) {
             const firstMonth = firstYear.months[0];
             expandedMonths.add(`${firstYear.year}-${firstMonth.month}`);
@@ -291,7 +291,7 @@
         </button>
 
         {#if expandedYears.has(year)}
-          {#if selectedView === "date" || selectedView === "month"}
+          {#if selectedView === "day" || selectedView === "month"}
             {#each months as { month, monthName, dates }}
               <div class="ml-4">
                 <button
@@ -313,7 +313,7 @@
                     }
                   }}
                 >
-                  {#if selectedView === "date"}
+                  {#if selectedView === "day"}
                     {#if expandedMonths.has(`${year}-${month}`)}
                       <ChevronDown class="w-4 h-4" />
                     {:else}
@@ -323,12 +323,12 @@
                   <span>{monthName}</span>
                 </button>
 
-                {#if selectedView === "date" && expandedMonths.has(`${year}-${month}`)}
+                {#if selectedView === "day" && expandedMonths.has(`${year}-${month}`)}
                   <div class="ml-6 space-y-1">
                     {#each dates as date}
                       <button
                         class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm"
-                        class:bg-blue-50={selectedView === "date" &&
+                        class:bg-blue-50={selectedView === "day" &&
                           selectedId === date}
                         on:click={() => {
                           selectedId = date;
