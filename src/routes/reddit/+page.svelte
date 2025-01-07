@@ -15,6 +15,11 @@
   let isSearching = false;
   let showDetail = false;
   let isMobile = false;
+  let showMobileSidebar = false;
+
+  function toggleMobileSidebar() {
+    showMobileSidebar = !showMobileSidebar;
+  }
 
   function checkMobile() {
     isMobile = browser && window.innerWidth < 768;
@@ -195,7 +200,17 @@
 </script>
 
 <div class="flex flex-row h-[80vh]">
-  <div class="relative w-52 border-r border-gray-200 hidden md:block">
+  <div
+    class="relative {isMobile
+      ? 'fixed inset-y-0 left-0 z-50'
+      : ''} w-52 bg-white border-r border-gray-200 transform transition-transform duration-300"
+    class:translate-x-0={showMobileSidebar}
+    class:-translate-x-full={isMobile && !showMobileSidebar}
+    class:hidden={!showMobileSidebar && isMobile}
+    class:md:block={true}
+    class:md:translate-x-0={true}
+  >
+    <!-- Existing sidebar content -->
     <div class="h-full p-2 overflow-y-auto pb-10">
       <div class="flex items-center relative">
         <input
@@ -271,10 +286,8 @@
   <!-- Mobile search/filter button -->
   {#if isMobile}
     <button
-      class="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg"
-      on:click={() => {
-        /* Add mobile filter/search modal logic */
-      }}
+      class="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg z-20"
+      on:click={toggleMobileSidebar}
     >
       <Search class="w-6 h-6" />
     </button>
