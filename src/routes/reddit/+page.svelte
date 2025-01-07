@@ -1,4 +1,5 @@
 <script>
+  import { browser } from "$app/environment";
   import RedditSidebar from "./Sidebar.svelte";
   import PostList from "./PostList.svelte";
   import PostDetail from "./PostDetail.svelte";
@@ -12,6 +13,12 @@
   let headerTitle = "";
   let searchQuery = "";
   let isSearching = false;
+  let showDetail = false;
+  let isMobile = false;
+
+  function checkMobile() {
+    isMobile = browser && window.innerWidth < 768;
+  }
 
   async function fetchPosts(start, end) {
     if (isSearching) return; // Don't fetch if we're in search mode
@@ -111,6 +118,13 @@
 
   function handleSelectPost(post) {
     selectedPost = post;
+    if (isMobile) {
+      showDetail = true;
+    }
+  }
+
+  function closeDetail() {
+    showDetail = false;
   }
 
   // Single date selection
@@ -160,6 +174,9 @@
   }
 
   onMount(async () => {
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
     const urlParams = new URLSearchParams(window.location.search);
     const queryParam = urlParams.get("q");
 
@@ -170,11 +187,15 @@
       const today = new Date().toISOString().split("T")[0];
       await fetchPosts(today);
     }
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
   });
 </script>
 
 <div class="flex flex-row h-[80vh]">
-  <div class="relative w-52 border-r border-gray-200">
+  <div class="relative w-52 border-r border-gray-200 hidden md:block">
     <div class="h-full p-2 overflow-y-auto pb-10">
       <div class="flex items-center relative">
         <input
@@ -184,7 +205,7 @@
           placeholder="Search posts..."
           class="w-full p-1 px-2 border rounded-md"
         />
-        <Search class="w-5 h-5 absolute right-3 text-gray-400" />
+        <Search class="w-4 h-4 absolute right-3 text-gray-400" />
       </div>
       <RedditSidebar
         onDateSelect={handleDateSelect}
@@ -196,12 +217,15 @@
     <div
       class="absolute bg-white bottom-0 left-0 right-0 p-2 text-xs text-gray-400 border-t"
     >
-      Note: Only posts with score ≥ 50 are collected. Data cutoff: 2021-11-23
+      Only posts with score ≥ 50 are collected. Data cutoff: 2021-11-23
     </div>
   </div>
 
   <div
-    class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-gray-200"
+    class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-gray-200 {isMobile &&
+    showDetail
+      ? 'hidden'
+      : ''}"
   >
     {#if loading}
       <div class="flex justify-center items-center h-32">
@@ -223,7 +247,36 @@
     {/if}
   </div>
 
-  <div class="flex-1 max-w-xl h-[80vh] overflow-y-auto">
-    <PostDetail post={selectedPost} />
+  <!-- PostDetail - slide in from right on mobile -->
+  <div
+    class="flex-1 max-w-xl h-[80vh] overflow-y-auto {isMobile
+      ? 'fixed inset-0 z-50 bg-white transform transition-transform duration-300'
+      : ''}"
+    class:translate-x-full={isMobile && !showDetail}
+    class:translate-x-0={isMobile && showDetail}
+    class:hidden={isMobile && !showDetail}
+  >
+    {#if isMobile}
+      <button
+        on:click={closeDetail}
+        class="absolute top-4 left-4 p-2 rounded-full hover:bg-gray-100"
+      >
+        ← Back
+      </button>
+    {/if}
+    <div class={isMobile ? "pt-16" : ""}>
+      <PostDetail post={selectedPost} />
+    </div>
   </div>
+  <!-- Mobile search/filter button -->
+  {#if isMobile}
+    <button
+      class="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg"
+      on:click={() => {
+        /* Add mobile filter/search modal logic */
+      }}
+    >
+      <Search class="w-6 h-6" />
+    </button>
+  {/if}
 </div>
