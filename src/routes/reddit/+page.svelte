@@ -19,6 +19,9 @@
 
   function toggleMobileSidebar() {
     showMobileSidebar = !showMobileSidebar;
+    if (showMobileSidebar && showDetail) {
+      showDetail = false; // Also close detail when opening sidebar
+    }
   }
 
   function checkMobile() {
@@ -124,6 +127,8 @@
     selectedPost = post;
     if (isMobile) {
       showDetail = true;
+      // Close sidebar when showing detail
+      showMobileSidebar = false;
     }
   }
 

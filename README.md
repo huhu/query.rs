@@ -13,6 +13,7 @@ https://query.rs
 
 ## Future plan
 
+- [x] Top Reddit posts search [https://query.rs/reddit](https://query.rs/reddit)
 - [ ] Full-text docs search
 - [ ] Rust articles/blogs search
 - [ ] Rust jobs search
