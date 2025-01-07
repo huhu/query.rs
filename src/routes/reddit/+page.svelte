@@ -52,7 +52,6 @@
           createdAt: post.createdAt.replace("T", " "),
         };
       });
-
       // Select the first post by default if available
       if (posts.length > 0) {
         selectedPost = posts[0];
@@ -237,10 +236,7 @@
   </div>
 
   <div
-    class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-gray-200 {isMobile &&
-    showDetail
-      ? 'hidden'
-      : ''}"
+    class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-gray-200"
   >
     {#if loading}
       <div class="flex justify-center items-center h-32">
@@ -262,27 +258,41 @@
     {/if}
   </div>
 
-  <!-- PostDetail - slide in from right on mobile -->
+  <!-- PostDetail - slide in from right, overlay on mobile -->
   <div
-    class="flex-1 max-w-xl h-[80vh] overflow-y-auto {isMobile
-      ? 'fixed inset-0 z-50 bg-white transform transition-transform duration-300'
+    class="flex-1 max-w-xl overflow-y-auto {isMobile
+      ? 'fixed left-0 right-0 bottom-0 top-[header-height] md:right-auto md:w-[32rem] z-30 bg-white shadow-lg'
       : ''}"
     class:translate-x-full={isMobile && !showDetail}
     class:translate-x-0={isMobile && showDetail}
     class:hidden={isMobile && !showDetail}
+    style="top: var(--header-height, 60px);"
   >
     {#if isMobile}
-      <button
-        on:click={closeDetail}
-        class="absolute top-4 left-4 p-2 rounded-full hover:bg-gray-100"
+      <div
+        class="sticky top-0 bg-white border-b px-4 py-3 flex items-center gap-3"
       >
-        ← Back
-      </button>
+        <button
+          on:click={closeDetail}
+          class="p-2 hover:bg-gray-100 rounded-full"
+        >
+          ← Back
+        </button>
+        <div class="font-medium">Post Detail</div>
+      </div>
     {/if}
-    <div class={isMobile ? "pt-16" : ""}>
+    <div class="h-full overflow-y-auto">
       <PostDetail post={selectedPost} />
     </div>
   </div>
+
+  <!-- Add semi-transparent overlay behind detail view -->
+  {#if isMobile && showDetail}
+    <div
+      class="fixed inset-0 bg-black bg-opacity-25 z-20"
+      on:click={closeDetail}
+    />
+  {/if}
   <!-- Mobile search/filter button -->
   {#if isMobile}
     <button
@@ -293,3 +303,9 @@
     </button>
   {/if}
 </div>
+
+<style>
+  :global(:root) {
+    --header-height: 130px;
+  }
+</style>
