@@ -7,7 +7,14 @@
   function renderMarkdown(text) {
     if (!text) return "";
     // Replace \n with actual newlines before parsing markdown
-    const processedText = text.replace(/\\n/g, "\n");
+    const processedText = text
+      .replace(/\\n/g, "\n")
+      .replace(/\\\"/g, "\"")
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, "&")
+      .replace(/&#39;/g, "'")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">");
     // Convert markdown to HTML and sanitize it
     const html = marked.parse(processedText);
     return DOMPurify.sanitize(html);
@@ -15,9 +22,11 @@
 
   function isMediaUrl(url) {
     if (!url) return false;
-    return /\.(jpg|jpeg|png|gif|webp|mp4|webm)$/i.test(url) || 
-           url.includes('i.imgur.com') ||
-           url.includes('i.redd.it');
+    return (
+      /\.(jpg|jpeg|png|gif|webp|mp4|webm)$/i.test(url) ||
+      url.includes("i.imgur.com") ||
+      url.includes("i.redd.it")
+    );
   }
 
   // Configure marked options for Reddit-style markdown
@@ -34,7 +43,7 @@
       <!-- Title and metadata -->
       <div class="space-y-3">
         <div class="text-2xl font-bold">{post.title}</div>
-        
+
         <div class="flex justify-between items-center gap-x-4 gap-y-2 text-sm">
           <div class="flex items-center gap-1.5">
             <span role="img" aria-label="fire" class="text-orange-500">🔥</span>
@@ -63,7 +72,6 @@
           class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"
         >
           <span>View on Reddit <span class="text-xs">↗</span></span>
-          
         </a>
         {#if post.url && !post.url.includes("reddit.com")}
           <a
@@ -91,11 +99,7 @@
               Your browser does not support the video tag.
             </video>
           {:else}
-            <img
-              src={post.url}
-              alt="Post content"
-              class="w-full h-auto"
-            />
+            <img src={post.url} alt="Post content" class="w-full h-auto" />
           {/if}
         </div>
       </div>
