@@ -28,87 +28,100 @@
 </script>
 
 {#if post}
-  <div class="bg-white p-4 space-y-4 prose">
-    <div class="space-y-2">
-      <div class="text-2xl font-bold">{post.title}</div>
+  <div class="bg-white divide-y divide-gray-100 prose">
+    <!-- Header section -->
+    <div class=" p-4 space-y-4">
+      <!-- Title and metadata -->
+      <div class="space-y-3">
+        <div class="text-2xl font-bold">{post.title}</div>
+        
+        <div class="flex justify-between items-center gap-x-4 gap-y-2 text-sm">
+          <div class="flex items-center gap-1.5">
+            <span role="img" aria-label="fire" class="text-orange-500">🔥</span>
+            <span class="font-medium">{post.score} points</span>
+          </div>
+          <div class="text-gray-600">
+            by <a
+              href={`https://reddit.com/user/${post.author}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-medium text-blue-600 hover:underline">{post.author}</a
+            >
+          </div>
+          <div class="text-gray-500">
+            {post.createdAt}
+          </div>
+        </div>
+      </div>
 
-      <div
-        class="flex justify-between items-center gap-4 text-sm text-gray-600"
-      >
-        <div class="flex items-center gap-1">
-          <span role="img" aria-label="fire" class="text-orange-500">🔥</span>
-          <span class="font-medium">{post.score} points</span>
-        </div>
-        <div>
-          by <a
-            href={`https://reddit.com/user/${post.author}`}
+      <!-- Links -->
+      <div class="flex flex-wrap gap-3 text-sm">
+        <a
+          href={`https://reddit.com${post.permalink}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"
+        >
+          <span>View on Reddit <span class="text-xs">↗</span></span>
+          
+        </a>
+        {#if post.url && !post.url.includes("reddit.com")}
+          <a
+            href={post.url}
+            target="_blank"
             rel="noopener noreferrer"
-            class="hover:underline">{post.author}</a
+            class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"
           >
-        </div>
-        <div>
-          {post.createdAt}
-        </div>
+            <span>External Link <span class="text-xs">↗</span></span>
+          </a>
+        {/if}
       </div>
     </div>
 
+    <!-- Media content -->
     {#if post.url && isMediaUrl(post.url)}
-      <div class="media-container">
-        {#if post.url.match(/\.(mp4|webm)$/i)}
-          <video controls class="max-w-full">
-            <source
+      <div class="p-4">
+        <div class="rounded-lg overflow-hidden bg-gray-50">
+          {#if post.url.match(/\.(mp4|webm)$/i)}
+            <video controls class="w-full">
+              <source
+                src={post.url}
+                type="video/{post.url.split('.').pop().toLowerCase()}"
+              />
+              Your browser does not support the video tag.
+            </video>
+          {:else}
+            <img
               src={post.url}
-              type="video/{post.url.split('.').pop().toLowerCase()}"
+              alt="Post content"
+              class="w-full h-auto"
             />
-            Your browser does not support the video tag.
-          </video>
-        {:else}
-          <img
-            src={post.url}
-            alt="Post content"
-            class="max-w-full h-auto rounded"
-          />
-        {/if}
+          {/if}
+        </div>
       </div>
     {/if}
 
+    <!-- Text content -->
     {#if post.selftext}
-      <div class="max-w-none">
+      <div class="p-4 prose prose-sm max-w-none">
         {@html renderMarkdown(post.selftext)}
       </div>
     {/if}
 
-    <div class="flex items-center gap-4 text-sm">
-      {#if post.numComments !== null}
-        <div class="flex items-center gap-1">
-          <span role="img" aria-label="comments">💬</span>
-          <span>{post.numComments} comments</span>
-        </div>
-      {/if}
-
-      <a
-        href={`https://reddit.com${post.permalink}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-blue-500 hover:underline"
-      >
-        View on Reddit
-      </a>
-
-      {#if post.url && !post.url.includes("reddit.com")}
-        <a
-          href={post.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-blue-500 hover:underline"
-        >
-          External Link
-        </a>
-      {/if}
+    <!-- Footer -->
+    <div class="p-4">
+      <div class="flex items-center gap-3 text-sm text-gray-600">
+        {#if post.numComments !== null}
+          <div class="flex items-center gap-1.5">
+            <span role="img" aria-label="comments">💬</span>
+            <span>{post.numComments} comments</span>
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 {:else}
-  <div class="bg-white p-6 text-center text-gray-500">
+  <div class="flex items-center justify-center h-full text-gray-500">
     Select a post to view details
   </div>
 {/if}
