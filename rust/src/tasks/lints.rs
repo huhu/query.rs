@@ -1,7 +1,7 @@
 use argh::FromArgs;
 use rayon::prelude::*;
-use serde::Deserialize;
-use std::clone::Clone;
+use select::document::Document;
+use select::predicate::{Class, Name, Predicate};
 use std::collections::HashMap;
 use std::fmt::{self, Formatter};
 use std::fs;
@@ -11,7 +11,7 @@ use tokio::runtime::Runtime;
 use crate::minify::Minifier;
 use crate::tasks::Task;
 
-const LINT_URL: &str = "https://rust-lang.github.io/rust-clippy/stable/lints.json";
+const LINT_URL: &str = "https://rust-lang.github.io/rust-clippy/stable/index.html";
 const LINTS_INDEX_PATH: &str = "../lib/index/lints.js";
 
 /// Lint task
@@ -23,8 +23,7 @@ pub struct LintsTask {
     dest_path: String,
 }
 
-#[derive(Deserialize, Debug)]
-#[serde(rename_all = "lowercase")]
+#[derive(Debug)]
 enum LintLevel {
     Allow,
     Warn,
@@ -45,7 +44,6 @@ impl fmt::Display for LintLevel {
     }
 }
 
-#[derive(Deserialize, Debug)]
 struct Lint {
     id: String,
     level: LintLevel,
@@ -53,7 +51,51 @@ struct Lint {
 }
 
 async fn fetch_clippy_lints() -> crate::Result<Vec<Lint>> {
-    let lints = reqwest::get(LINT_URL).await?.json().await?;
+    let html = reqwest::get(LINT_URL).await?.text().await?;
+    let document = Document::from(html.as_str());
+
+    // Define custom predicate for articles that have panel class
+    let article_panel = Name("article").and(Class("panel"));
+
+    let lints: Vec<Lint> = document
+        .find(article_panel)
+        .filter_map(|article| {
+            // Get lint ID from the panel-title-name span
+            let id = article
+                .find(Class("panel-title-name"))
+                .next()?
+                .find(Name("span"))
+                .next()?
+                .text()
+                .trim()
+                .to_string();
+
+            // Get lint level from label-lint-level class
+            let level = article
+                .find(Class("label-lint-level"))
+                .next()?
+                .text()
+                .trim()
+                .to_lowercase();
+
+            let level = match level.as_str() {
+                "allow" => LintLevel::Allow,
+                "warn" => LintLevel::Warn,
+                "deny" => LintLevel::Deny,
+                "deprecated" => LintLevel::Deprecated,
+                _ => LintLevel::None,
+            };
+
+            // Get full documentation from lint-doc-md class
+            let docs = article
+                .find(Class("lint-doc-md"))
+                .next()
+                .map(|doc| doc.text());
+
+            Some(Lint { id, level, docs })
+        })
+        .collect();
+
     Ok(lints)
 }
 
@@ -71,10 +113,11 @@ impl LintsTask {
             .await?
             .par_iter()
             .filter_map(|lint| {
+                println!("{}", lint.id);
                 if let Some(docs) = lint
                     .docs
                     .as_ref()
-                    .and_then(|d| d.trim().strip_prefix("### What it does"))
+                    .and_then(|d| d.trim().strip_prefix("What it does"))
                 {
                     let mut desc = docs.replace(['`', '#'], "");
                     desc.truncate(100);
