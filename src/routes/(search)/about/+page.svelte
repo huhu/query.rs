@@ -1,8 +1,9 @@
 <div class="max-w-screen-md mx-auto pt-6">
   <h2 class="pb-6">About @Folyd</h2>
   <p>
-    I'm Folyd, a Rust enthusiast from Beijing, China. I used to live in
-    Sunnyvale, CA. I'm the creator of <a href="https://query.rs">Query.rs</a>,
+    I'm Folyd, a Rust enthusiast from Beijing, China. 
+    I'm the creator of <a href="https://aiscript.rs">AIScript</a>,
+    <a href="https://query.rs">Query.rs</a>,
     <a href="https://rust.extension.sh">Rust Search Extension</a>,
     <a href="https://rustmagazine.org">Rust Magazine</a>, and
     <a href="https://github.com/zineland/zine">Zine</a>. I love to build
