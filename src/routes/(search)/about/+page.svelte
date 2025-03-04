@@ -2,7 +2,7 @@
   <h2 class="pb-6">About @Folyd</h2>
   <p>
     I'm Folyd, a Rust enthusiast from Beijing, China. 
-    I'm the creator of <a href="https://aiscript.rs">AIScript</a>,
+    I'm the creator of <a href="https://aiscript.dev">AIScript</a>,
     <a href="https://query.rs">Query.rs</a>,
     <a href="https://rust.extension.sh">Rust Search Extension</a>,
     <a href="https://rustmagazine.org">Rust Magazine</a>, and
