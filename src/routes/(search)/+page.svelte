@@ -105,4 +105,7 @@
   Love query.rs?
   <a href="https://github.com/huhu/query.rs">Star us on GitHub</a>, or
   <a href="https://discord.gg/rPWWBqxBhp">Join our Discord!</a>
+  <div>
+      Thanks the <a href="https://geddle.com">Geddle</a> team for sponsoring query.rs!
+  </div>
 </div>
