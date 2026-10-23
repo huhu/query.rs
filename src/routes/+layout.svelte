@@ -48,6 +48,7 @@
   <footer class="pb-6 text-center px-4">
     © 2025 Query.rs, built by
     <a href="https://github.com/folyd" target="_blank">Folyd</a>
-    with ❤️❤️, see <a href="/about">about</a> page to learn more.
+    with ❤️❤️, see <a href="/about">about</a> page to learn more ·
+    <a href="https://meiguo.app" target="_blank">meiguo.app</a>
   </footer>
 </div>
