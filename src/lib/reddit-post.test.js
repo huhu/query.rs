@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  archivePageCount,
+  archivePageLinks,
+  archivePath,
   externalUrl,
   formatTitle,
   isPostId,
@@ -98,6 +101,17 @@ describe("reddit post helpers", () => {
     });
     expect(link).toContain("The Borrow Checker Within");
     expect(link).toContain("Query.rs");
+  });
+
+  it("builds archive paths and a short page window", () => {
+    expect(archivePath(1)).toBe("/posts/archive");
+    expect(archivePath(0)).toBe("/posts/archive");
+    expect(archivePath(2)).toBe("/posts/archive/2");
+    expect(archivePageCount(0)).toBe(1);
+    expect(archivePageCount(50)).toBe(1);
+    expect(archivePageCount(51)).toBe(2);
+    expect(archivePageLinks(1, 1)).toEqual([1]);
+    expect(archivePageLinks(10, 40)).toEqual([1, 8, 9, 10, 11, 12, 40]);
   });
 
   it("rejects non-http external urls", () => {

@@ -1,4 +1,10 @@
-import { isPostId, postPath, SITE_ORIGIN } from "./reddit-post.js";
+import {
+  archivePageCount,
+  archivePath,
+  isPostId,
+  postPath,
+  SITE_ORIGIN,
+} from "./reddit-post.js";
 
 export const STATIC_PATHS = [
   "/",
@@ -11,16 +17,37 @@ export const STATIC_PATHS = [
 ];
 
 const SITEMAP_URL_LIMIT = 50000;
-export const MAX_POST_URLS = SITEMAP_URL_LIMIT - STATIC_PATHS.length;
+
+/**
+ * How many archive pages and post URLs fit in one sitemap.
+ * Archive pages come first so crawlers can walk the index.
+ * @param {number} totalPosts
+ */
+export function sitemapBudgets(totalPosts) {
+  const room = Math.max(0, SITEMAP_URL_LIMIT - STATIC_PATHS.length);
+  const archiveCount = Math.min(archivePageCount(totalPosts), room);
+  const postCount = Math.max(0, room - archiveCount);
+  return { archiveCount, postCount };
+}
 
 /**
  * @param {{ postId?: string | null, title?: string | null, createdAt?: string | null }[]} posts
+ * @param {{ totalPosts?: number }} [options]
  */
-export function renderSitemap(posts) {
+export function renderSitemap(posts, options = {}) {
+  const totalPosts = options.totalPosts ?? posts.length;
+  const { archiveCount, postCount } = sitemapBudgets(totalPosts);
+  /** @type {string[]} */
+  const archive = [];
+  for (let page = 1; page <= archiveCount; page += 1) {
+    archive.push(archivePath(page));
+  }
+
   /** @type {{ loc: string, lastmod?: string }[]} */
   const urls = [
     ...STATIC_PATHS.map((path) => ({ loc: `${SITE_ORIGIN}${path}` })),
-    ...posts.slice(0, MAX_POST_URLS).flatMap((post) => {
+    ...archive.map((path) => ({ loc: `${SITE_ORIGIN}${path}` })),
+    ...posts.slice(0, postCount).flatMap((post) => {
       const id = String(post?.postId || "").toLowerCase();
       if (!isPostId(id)) return [];
       const lastmod = dateOnly(post.createdAt);

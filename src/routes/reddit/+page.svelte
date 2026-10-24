@@ -221,6 +221,7 @@
       class="absolute bg-white bottom-0 left-0 right-0 p-2 text-xs text-gray-400 border-t"
     >
       Only posts with score ≥ 50 are collected. Data cutoff: 2021-11-23
+      <a href="/posts/archive" class="block mt-1 text-blue-600 hover:underline">All posts</a>
     </div>
   </div>
 

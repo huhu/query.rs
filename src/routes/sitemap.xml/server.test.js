@@ -14,6 +14,9 @@ describe("sitemap endpoint", () => {
               return {
                 bind() {
                   return {
+                    async first() {
+                      return { total: 1 };
+                    },
                     async all() {
                       calls += 1;
                       if (calls > 1) return { results: [] };
@@ -38,6 +41,7 @@ describe("sitemap endpoint", () => {
 
     const xml = await response.text();
     expect(response.headers.get("content-type")).toContain("application/xml");
+    expect(xml).toContain("https://query.rs/posts/archive</loc>");
     expect(xml).toContain(
       "https://query.rs/posts/2024-01-02/abc123/hello-world"
     );
@@ -50,6 +54,7 @@ describe("sitemap endpoint", () => {
     const xml = await response.text();
     expect(response.status).toBe(200);
     expect(xml).toContain("https://query.rs/reddit");
-    expect(xml).not.toContain("/posts/");
+    expect(xml).toContain("https://query.rs/posts/archive</loc>");
+    expect(xml).not.toContain("/posts/archive/2");
   });
 });

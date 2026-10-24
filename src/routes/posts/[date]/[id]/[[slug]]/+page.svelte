@@ -39,7 +39,9 @@
 >
   <article class="max-w-3xl mx-auto px-4 py-6 md:px-8 md:py-8">
     <p class="mb-4 text-sm">
-      <a href="/reddit" class="text-blue-600 hover:underline">Reddit posts</a>
+      <a href="/reddit" class="text-blue-600 hover:underline">Reader</a>
+      ·
+      <a href="/posts/archive" class="text-blue-600 hover:underline">All posts</a>
     </p>
 
     <h1 class="mb-4">{post.title}</h1>

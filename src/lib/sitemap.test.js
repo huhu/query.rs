@@ -15,6 +15,8 @@ describe("sitemap", () => {
     expect(xml).toContain("https://query.rs/</loc>");
     expect(xml).toContain("https://query.rs/reddit");
     expect(xml).toContain("https://query.rs/about");
+    expect(xml).toContain("https://query.rs/posts/archive</loc>");
+    expect(xml).not.toContain("/posts/archive/2");
     expect(xml).toContain(
       "https://query.rs/posts/2024-06-02/1d6d0ng/the-borrow-checker-within"
     );
@@ -23,5 +25,12 @@ describe("sitemap", () => {
     expect(xml).not.toContain("Ignored");
     expect(xml).not.toContain("<lastmod></lastmod>");
     expect(xml).not.toContain("not-a-date");
+  });
+
+  it("lists later archive pages when the catalog spans them", () => {
+    const xml = renderSitemap([], { totalPosts: 51 });
+    expect(xml).toContain("https://query.rs/posts/archive</loc>");
+    expect(xml).toContain("https://query.rs/posts/archive/2</loc>");
+    expect(xml).not.toContain("/posts/archive/3");
   });
 });

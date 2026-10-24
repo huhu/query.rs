@@ -45,6 +45,43 @@ const POST_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 const SLUG_MAX = 80;
 const UNDATED = "1970-01-01";
 
+/** Posts per crawlable archive page. */
+export const ARCHIVE_PAGE_SIZE = 50;
+
+/**
+ * Page 1 is /posts/archive. Later pages are /posts/archive/2, /posts/archive/3, …
+ * @param {number} [page]
+ */
+export function archivePath(page = 1) {
+  const n = Math.floor(Number(page));
+  if (!Number.isInteger(n) || n <= 1) return "/posts/archive";
+  return `/posts/archive/${n}`;
+}
+
+/**
+ * @param {number} totalPosts
+ */
+export function archivePageCount(totalPosts) {
+  const total = Number(totalPosts) || 0;
+  if (total <= 0) return 1;
+  return Math.ceil(total / ARCHIVE_PAGE_SIZE);
+}
+
+/**
+ * Page numbers worth linking: the ends, the current page, and its neighbors.
+ * @param {number} page
+ * @param {number} pageCount
+ * @returns {number[]}
+ */
+export function archivePageLinks(page, pageCount) {
+  /** @type {Set<number>} */
+  const pages = new Set([1, page, pageCount]);
+  for (let n = page - 2; n <= page + 2; n += 1) {
+    if (n >= 1 && n <= pageCount) pages.add(n);
+  }
+  return [...pages].filter((n) => n >= 1 && n <= pageCount).sort((a, b) => a - b);
+}
+
 /**
  * Canonical path: /posts/YYYY-MM-DD/{postId}/{title-slug}
  * @param {{ postId?: string | null, title?: string | null, createdAt?: string | null }} post
