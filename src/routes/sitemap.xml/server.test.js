@@ -52,7 +52,7 @@ describe("sitemap endpoint", () => {
     expect(calls).toBe(1);
     expect(sql.some((statement) => statement.includes("postId DESC"))).toBe(true);
     expect(sql.filter((statement) => statement.includes("CHAR(92)"))).toHaveLength(2);
-    expect(response.headers.get("cache-control")).toContain("max-age=3600");
+    expect(response.headers.get("cache-control")).toContain("max-age=60");
   });
 
   it("lists static pages when the database is empty", async () => {

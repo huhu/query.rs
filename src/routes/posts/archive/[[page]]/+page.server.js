@@ -7,6 +7,7 @@ import {
   DISCUSSION_BODY_SQL,
   formatCreatedAt,
   formatTitle,
+  hasDiscussionBody,
   postPath,
   SITE_ORIGIN,
 } from "$lib/reddit-post.js";
@@ -15,7 +16,7 @@ export const prerender = false;
 export const ssr = true;
 
 const COUNT_SQL = `SELECT COUNT(*) AS total FROM reddit_posts WHERE ${DISCUSSION_BODY_SQL}`;
-const LIST_SQL = `SELECT postId, title, score, author, createdAt, url
+const LIST_SQL = `SELECT postId, title, score, author, createdAt, url, selftext
          FROM reddit_posts
          WHERE ${DISCUSSION_BODY_SQL}
          ORDER BY createdAt DESC, postId DESC
@@ -48,10 +49,11 @@ export async function load({ params, platform, setHeaders }) {
   if (!listed) error(404, "Page not found");
 
   setHeaders({
-    "cache-control": "public, max-age=3600",
+    "cache-control": "public, max-age=60",
   });
 
   const { total, pageCount, rows } = listed;
+  const posts = rows.filter((row) => hasDiscussionBody(row.selftext));
   return {
     page,
     pageCount,
@@ -62,7 +64,7 @@ export async function load({ params, platform, setHeaders }) {
       page: n,
       href: archivePath(n),
     })),
-    posts: rows.map((row) => ({
+    posts: posts.map((row) => ({
       href: postPath(row),
       title: formatTitle(row) || "Reddit post",
       score: row.score ?? 0,
@@ -110,4 +112,5 @@ async function listPage(db, page) {
  * @property {string | null} author
  * @property {string | null} createdAt
  * @property {string | null} url
+ * @property {string | null} [selftext]
  */

@@ -68,7 +68,7 @@ export async function GET({ platform }) {
     return new Response(renderSitemap(posts, { totalPosts }), {
       headers: {
         "content-type": "application/xml; charset=utf-8",
-        "cache-control": "public, max-age=3600",
+        "cache-control": "public, max-age=60",
       },
     });
   } catch (err) {

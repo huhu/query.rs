@@ -114,6 +114,15 @@ describe("archive page load", () => {
         selftext: "Hello\\n\\nthere",
       },
       {
+        postId: "1x9vxq2",
+        title: "Borrow Checking Zero-Cost Cyclic Mutability",
+        score: 108,
+        author: "RndmPrsn11",
+        createdAt: "2026-10-19 12:45:56",
+        url: "https://antelang.org/blog/safe_cyclic_mutability/",
+        selftext: "",
+      },
+      {
         postId: "link",
         title: "Just a link",
         score: 10,
@@ -144,6 +153,7 @@ describe("archive page load", () => {
     expect(data.posts[0].href).toBe("/posts/2024-06-02/disc/a-real-thread");
     expect(data.posts[0].href).not.toContain("example.com");
     expect(data.posts.map((post) => post.title)).not.toContain("Just a link");
+    expect(data.posts.map((post) => post.href).join("\n")).not.toContain("1x9vxq2");
   });
 
   it("serves a later page and an empty first page", async () => {
