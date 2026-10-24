@@ -28,15 +28,14 @@ jobs:
         run: |
           npm install && npm run build
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v4
         with:
-            apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
-            accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-            projectName: query-rs
-            directory: .svelte-kit/cloudflare
-            # Optional: Enable this if you want to have GitHub Deployments triggered
-            gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-            # By default this will be the branch which triggered this workflow
-            branch: main
-            # Change the Wrangler version, allows you to point to a specific version or a tag such as `beta`
-            wranglerVersion: '3'
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Same Pages project, output directory, and production branch as the previous action.
+          # --branch is required: actions/checkout leaves a detached HEAD, so Wrangler cannot infer "main".
+          command: pages deploy .svelte-kit/cloudflare --project-name=query-rs --branch=main
+          # Optional: Enable this if you want to have GitHub Deployments triggered
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          # Stay on Wrangler 3, matching the previous pin and package.json ("wrangler": "^3.99.0").
+          wranglerVersion: "3"
