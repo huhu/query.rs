@@ -176,6 +176,18 @@ export function formatTitle(post) {
 }
 
 /**
+ * Reader display fields. The stored row stays intact for paths and markdown.
+ * @param {Record<string, any>} post
+ */
+export function presentRedditPost(post) {
+  return {
+    ...post,
+    title: formatTitle(post),
+    createdAt: formatCreatedAt(post?.createdAt),
+  };
+}
+
+/**
  * @param {string | null | undefined} createdAt
  */
 export function formatCreatedAt(createdAt) {

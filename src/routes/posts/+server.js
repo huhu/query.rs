@@ -1,3 +1,5 @@
+import { listRedditPostsByDate } from "$lib/server/reddit-posts.js";
+
 export async function GET({ url, platform }) {
     try {
       // Get and validate parameters
@@ -16,18 +18,9 @@ export async function GET({ url, platform }) {
         });
       }
   
-      const posts = await platform.env.DB.prepare(`
-        SELECT *
-        FROM reddit_posts
-        WHERE date(createdAt) >= date(?)
-        AND date(createdAt) <= date(?)
-        ORDER BY score DESC
-        LIMIT ?
-      `)
-      .bind(startDate, endDate, limit)
-      .all();
+      const posts = await listRedditPostsByDate(platform.env.DB, startDate, endDate, limit);
   
-      return new Response(JSON.stringify(posts.results), {
+      return new Response(JSON.stringify(posts), {
         headers: {
           'Content-Type': 'application/json'
         }

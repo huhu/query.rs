@@ -1,3 +1,5 @@
+import { searchRedditPosts } from "$lib/server/reddit-posts.js";
+
 export async function GET({ url, platform }) {
   try {
     const keyword = url.searchParams.get("q");
@@ -13,20 +15,9 @@ export async function GET({ url, platform }) {
       );
     }
 
-    // Use LIKE for case-insensitive search with wildcards
-    const posts = await platform.env.DB.prepare(
-      `
-        SELECT *
-        FROM reddit_posts
-        WHERE title LIKE ?
-        ORDER BY score DESC
-        LIMIT ?
-      `
-    )
-      .bind(`%${keyword}%`, limit)
-      .all();
+    const posts = await searchRedditPosts(platform.env.DB, keyword, limit);
 
-    return new Response(JSON.stringify(posts.results), {
+    return new Response(JSON.stringify(posts), {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
