@@ -21,7 +21,7 @@
             by <a
               href={`https://reddit.com/user/${post.author}`}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="ugc noopener noreferrer"
               class="font-medium text-blue-600 hover:underline">{post.author}</a
             >
           </div>
@@ -44,7 +44,7 @@
         <a
           href={`https://reddit.com${post.permalink}`}
           target="_blank"
-          rel="noopener noreferrer"
+          rel="ugc noopener noreferrer"
           class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"
         >
           <span>View on Reddit <span class="text-xs">↗</span></span>
@@ -53,7 +53,7 @@
           <a
             href={post.url}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="ugc noopener noreferrer"
             class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"
           >
             <span>External Link <span class="text-xs">↗</span></span>

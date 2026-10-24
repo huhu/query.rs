@@ -55,7 +55,7 @@
         <div>
           by <a
             href={`https://reddit.com/user/${encodeURIComponent(post.author)}`}
-            rel="noopener noreferrer"
+            rel="ugc noopener noreferrer"
             class="font-medium text-blue-600 hover:underline">{post.author}</a
           >
         </div>
@@ -69,7 +69,7 @@
       {#if post.redditUrl}
         <a
           href={post.redditUrl}
-          rel="noopener noreferrer"
+          rel="ugc noopener noreferrer"
           class="text-gray-600 hover:text-blue-600"
         >
           View on Reddit <span class="text-xs">↗</span>
@@ -78,7 +78,7 @@
       {#if post.externalUrl}
         <a
           href={post.externalUrl}
-          rel="noopener noreferrer"
+          rel="ugc noopener noreferrer"
           class="text-gray-600 hover:text-blue-600"
         >
           External link <span class="text-xs">↗</span>
@@ -111,7 +111,7 @@
     {:else if post.externalUrl}
       <p class="text-gray-700">
         This r/rust thread points to
-        <a href={post.externalUrl} rel="noopener noreferrer" class="text-blue-600 hover:underline"
+        <a href={post.externalUrl} rel="ugc noopener noreferrer" class="text-blue-600 hover:underline"
           >{post.externalUrl}</a
         >.
       </p>

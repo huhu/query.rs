@@ -129,6 +129,22 @@ describe("post page load", () => {
     expect(data.post.video).toBe(false);
     expect(data.seo.image).toBe("https://i.redd.it/crab.png");
     expect(data.post.bodyHtml).toBe("");
+
+    const scriptUrl = {
+      ...row,
+      postId: "img124",
+      url: "javascript:alert(1).jpg",
+      permalink: "https://reddit.com.evil.com/phish",
+      selftext: "",
+    };
+    const unsafe = await load({
+      ...request(postPath(scriptUrl)),
+      platform: mockPlatform(scriptUrl),
+      setHeaders() {},
+    });
+    expect(unsafe.post.mediaUrl).toBe("");
+    expect(unsafe.seo.image).toBe("https://query.rs/og.png");
+    expect(unsafe.post.redditUrl).toBe("");
   });
 
   it("404s for unknown ids, invalid ids, and invalid dates", async () => {

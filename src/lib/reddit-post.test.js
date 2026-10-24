@@ -5,7 +5,11 @@ import {
   archivePath,
   externalUrl,
   formatTitle,
+  isImageUrl,
+  isMediaUrl,
   isPostId,
+  isVideoUrl,
+  redditUrl,
   metaDescription,
   postCanonical,
   postPath,
@@ -69,6 +73,7 @@ describe("reddit post helpers", () => {
     expect(html).toContain("Hello");
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
+    expect(html).toContain('rel="nofollow ugc noopener noreferrer"');
     expect(html).toContain('href="https://example.com/?a=1&amp;b=2"');
     expect(html).not.toContain("javascript:");
     expect(html).toContain("bad");
@@ -112,6 +117,35 @@ describe("reddit post helpers", () => {
     expect(archivePageCount(51)).toBe(2);
     expect(archivePageLinks(1, 1)).toEqual([1]);
     expect(archivePageLinks(10, 40)).toEqual([1, 8, 9, 10, 11, 12, 40]);
+  });
+
+  it("only links real reddit hosts", () => {
+    expect(redditUrl("/r/rust/comments/18x6uc3/title/")).toBe(
+      "https://reddit.com/r/rust/comments/18x6uc3/title/"
+    );
+    expect(redditUrl("https://old.reddit.com/r/rust/comments/abc/t/")).toBe(
+      "https://old.reddit.com/r/rust/comments/abc/t/"
+    );
+    expect(redditUrl("https://www.reddit.com/r/rust")).toBe(
+      "https://www.reddit.com/r/rust"
+    );
+    expect(redditUrl("https://reddit.com.evil.com/")).toBe("");
+    expect(redditUrl("https://evil.com/phish")).toBe("");
+    expect(redditUrl("javascript:alert(1)")).toBe("");
+  });
+
+  it("treats only http(s) media urls as images", () => {
+    expect(isMediaUrl("https://i.redd.it/crab")).toBe(true);
+    expect(isImageUrl("https://i.redd.it/crab.png")).toBe(true);
+    expect(isImageUrl("https://example.com/photo.jpg")).toBe(true);
+    expect(isVideoUrl("https://example.com/clip.mp4")).toBe(true);
+    expect(isImageUrl("https://example.com/clip.mp4")).toBe(false);
+    expect(isMediaUrl("javascript:alert(1).jpg")).toBe(false);
+    expect(isImageUrl("javascript:alert(1).jpg")).toBe(false);
+    expect(isMediaUrl("data:image/svg+xml,x.jpg")).toBe(false);
+    expect(isMediaUrl("https://evil.com/i.redd.it/x")).toBe(false);
+    expect(isMediaUrl("https://i.redd.it.evil.com/a")).toBe(false);
+    expect(isImageUrl("https://i.redd.it.evil.com/a.png")).toBe(true);
   });
 
   it("rejects non-http external urls", () => {

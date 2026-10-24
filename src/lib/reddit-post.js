@@ -19,7 +19,7 @@ marked.use({
       const safe = safeUrl(href);
       if (!safe) return text;
       const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
-      return `<a href="${escapeHtml(safe)}"${titleAttr} rel="nofollow noopener noreferrer">${text}</a>`;
+      return `<a href="${escapeHtml(safe)}"${titleAttr} rel="nofollow ugc noopener noreferrer">${text}</a>`;
     },
     image({ href, title, text, tokens }) {
       let alt = text || "";
@@ -237,12 +237,32 @@ export function metaDescription(post) {
 }
 
 /**
+ * reddit.com and its real subdomains (www, old, np, …). Not lookalikes.
+ * @param {string} hostname
+ */
+function isRedditHost(hostname) {
+  const host = hostname.toLowerCase().replace(/\.$/, "");
+  return host === "reddit.com" || host.endsWith(".reddit.com");
+}
+
+/**
  * @param {string | null | undefined} permalink
  */
 export function redditUrl(permalink) {
   if (!permalink) return "";
-  if (/^https?:\/\//i.test(permalink)) return permalink;
-  const path = permalink.startsWith("/") ? permalink : `/${permalink}`;
+  const value = permalink.trim();
+  if (/^[a-z][a-z0-9+.-]*:/i.test(value) || value.startsWith("//")) {
+    let url;
+    try {
+      url = new URL(value);
+    } catch {
+      return "";
+    }
+    if (url.protocol !== "http:" && url.protocol !== "https:") return "";
+    if (!isRedditHost(url.hostname)) return "";
+    return url.href;
+  }
+  const path = value.startsWith("/") ? value : `/${value}`;
   return `https://reddit.com${path}`;
 }
 
@@ -254,30 +274,52 @@ export function externalUrl(url) {
   return safeUrl(url);
 }
 
+const MEDIA_EXT = /\.(jpg|jpeg|png|gif|webp|mp4|webm)$/i;
+const VIDEO_EXT = /\.(mp4|webm)$/i;
+const MEDIA_HOSTS = new Set(["i.redd.it", "i.imgur.com"]);
+
+/**
+ * http(s) URLs only. Rejects javascript:, data:, and whitespace-hidden schemes.
+ * @param {string | null | undefined} url
+ */
+function httpUrl(url) {
+  if (!url) return null;
+  const compact = compactUrl(url);
+  if (!compact || compact.startsWith("//")) return null;
+  try {
+    const parsed = new URL(compact);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * @param {string | null | undefined} url
  */
 export function isMediaUrl(url) {
-  if (!url) return false;
-  return (
-    /\.(jpg|jpeg|png|gif|webp|mp4|webm)$/i.test(url) ||
-    url.includes("i.imgur.com") ||
-    url.includes("i.redd.it")
-  );
+  const parsed = httpUrl(url);
+  if (!parsed) return false;
+  const host = parsed.hostname.toLowerCase().replace(/\.$/, "");
+  if (MEDIA_HOSTS.has(host)) return true;
+  return MEDIA_EXT.test(parsed.pathname);
 }
 
 /**
  * @param {string | null | undefined} url
  */
 export function isVideoUrl(url) {
-  return /\.(mp4|webm)$/i.test(url || "");
+  const parsed = httpUrl(url);
+  if (!parsed) return false;
+  return VIDEO_EXT.test(parsed.pathname);
 }
 
 /**
  * @param {string | null | undefined} url
  */
 export function isImageUrl(url) {
-  return !!url && isMediaUrl(url) && !isVideoUrl(url);
+  return isMediaUrl(url) && !isVideoUrl(url);
 }
 
 /**
