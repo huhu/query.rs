@@ -117,14 +117,18 @@
     gap: 0.65rem;
   }
 
-  .posts a {
+  .posts a,
+  .posts a:link,
+  .posts a:visited,
+  .posts a:hover,
+  .posts a:active {
     display: block;
     padding: 0.9rem 1rem;
     border-radius: 10px;
     background: #fcfaf6;
     border: 1px solid transparent;
     text-decoration: none;
-    color: inherit;
+    color: #121212;
   }
 
   .posts a:hover {
@@ -137,7 +141,8 @@
     font-size: 1.05rem;
     font-weight: 500;
     line-height: 1.4;
-    color: #1f1c19;
+    color: #121212;
+    text-decoration: none;
   }
 
   .meta {

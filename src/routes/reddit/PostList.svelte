@@ -48,7 +48,7 @@
             <div class="flex items-start gap-2 flex-wrap">
               <a
                 href={postPath(post)}
-                class="text-blue-500"
+                class="text-[#121212] no-underline hover:no-underline visited:text-[#121212] visited:no-underline"
                 on:click={(event) => openInReader(event, post)}
               >
                 {post.title}
