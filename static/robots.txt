@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# JSON and redirect endpoints are not documents.
+Disallow: /posts/search
+Disallow: /suggest/
+Disallow: /redirect/
+Disallow: /index/
+Disallow: /repo/
+
+Sitemap: https://query.rs/sitemap.xml

@@ -1,11 +1,27 @@
 <script>
+  import { postPath } from "$lib/reddit-post.js";
+
   /**
    * @type {object[]}
    */
   export let posts = [];
-  export let onSelectPost = (post) => {};
+  export let onSelectPost = () => {};
   export let selectedPostId = null;
   export let headerTitle = "";
+
+  function openInReader(event, post) {
+    if (
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      event.button !== 0
+    ) {
+      return;
+    }
+    event.preventDefault();
+    onSelectPost(post);
+  }
 </script>
 
 <div class="relative">
@@ -25,16 +41,25 @@
       <ol class="space-y-1">
         {#each posts as post, i}
           <li
-            class="flex items-start px-4 py-2 hover:bg-gray-50 cursor-pointer"
+            class="flex items-start px-4 py-2 hover:bg-gray-50"
             class:bg-blue-50={selectedPostId === post.postId}
-            on:click={() => onSelectPost(post)}
           >
             <span class="text-gray-400 w-6">{i + 1}.</span>
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class=" text-blue-500">
+            <div class="flex items-start gap-2 flex-wrap">
+              <a
+                href={postPath(post.postId)}
+                class="text-blue-500"
+                on:click={(event) => openInReader(event, post)}
+              >
                 {post.title}
                 <span class="text-gray-500">🔥{post.score}</span>
-              </span>
+              </a>
+              <a
+                href={postPath(post.postId)}
+                class="text-xs text-gray-400 hover:text-blue-600 hover:underline"
+              >
+                page
+              </a>
             </div>
           </li>
         {/each}

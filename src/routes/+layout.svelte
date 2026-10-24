@@ -2,6 +2,15 @@
   import { page } from "$app/stores";
   import "../app.css";
 
+  $: seo = $page.data.seo ?? {};
+  $: title = seo.title || "Query.rs";
+  $: description = seo.description || "A search engine for Rust";
+  $: canonical = seo.canonical || `https://query.rs${$page.url.pathname}`;
+  $: ogType = seo.ogType || "website";
+  $: image = seo.image || "https://query.rs/og.png";
+  $: showLogo =
+    $page.url.pathname === "/reddit" || $page.url.pathname.startsWith("/posts/");
+
   const menus = [
     {
       name: "Search",
@@ -22,6 +31,28 @@
   ];
 </script>
 
+<svelte:head>
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:site_name" content="Query.rs" />
+  <meta property="og:type" content={ogType} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={image} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={image} />
+  {#if seo.publishedTime}
+    <meta property="article:published_time" content={seo.publishedTime} />
+  {/if}
+  {#if seo.author}
+    <meta property="article:author" content={seo.author} />
+  {/if}
+</svelte:head>
+
 <div class="flex-layout" style="flex-direction: column;">
   <div class="max-w-[1160px] w-full flex flex-col">
     <div class="flex flex-col md:flex-row md:justify-between items-center">
@@ -30,7 +61,7 @@
           src="/assets/logo.svg"
           alt="logo"
           class="w-32 m-4"
-          class:hidden={$page.url.pathname !== "/reddit"}
+          class:hidden={!showLogo}
         />
       </a>
       <ul

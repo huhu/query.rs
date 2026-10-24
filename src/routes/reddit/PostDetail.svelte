@@ -1,39 +1,7 @@
 <script>
-  import { marked } from "marked";
-  import DOMPurify from "dompurify";
+  import { isMediaUrl, postPath, renderMarkdown } from "$lib/reddit-post.js";
 
   export let post = null;
-
-  function renderMarkdown(text) {
-    if (!text) return "";
-    // Replace \n with actual newlines before parsing markdown
-    const processedText = text
-      .replace(/\\n/g, "\n")
-      .replace(/\\\"/g, "\"")
-      .replace(/&quot;/g, '"')
-      .replace(/&amp;/g, "&")
-      .replace(/&#39;/g, "'")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">");
-    // Convert markdown to HTML and sanitize it
-    const html = marked.parse(processedText);
-    return DOMPurify.sanitize(html);
-  }
-
-  function isMediaUrl(url) {
-    if (!url) return false;
-    return (
-      /\.(jpg|jpeg|png|gif|webp|mp4|webm)$/i.test(url) ||
-      url.includes("i.imgur.com") ||
-      url.includes("i.redd.it")
-    );
-  }
-
-  // Configure marked options for Reddit-style markdown
-  marked.use({
-    breaks: true, // Convert line breaks to <br>
-    gfm: true, // Enable GitHub Flavored Markdown
-  });
 </script>
 
 {#if post}
@@ -65,6 +33,14 @@
 
       <!-- Links -->
       <div class="flex flex-wrap gap-3 text-sm">
+        {#if post.postId}
+          <a
+            href={postPath(post.postId)}
+            class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"
+          >
+            <span>Permalink</span>
+          </a>
+        {/if}
         <a
           href={`https://reddit.com${post.permalink}`}
           target="_blank"

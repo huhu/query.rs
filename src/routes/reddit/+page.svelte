@@ -5,6 +5,7 @@
   import PostDetail from "./PostDetail.svelte";
   import { Search } from "lucide-svelte";
   import { onMount } from "svelte";
+  import { formatTitle } from "$lib/reddit-post.js";
 
   let posts = [];
   let loading = false;
@@ -104,24 +105,6 @@
       const today = new Date().toISOString().split("T")[0];
       await fetchPosts(today);
     }
-  }
-
-  function formatTitle(post) {
-    let title = post.title
-      .replace(/\\\"/g, "\"")
-      .replace(/&quot;/g, '"')
-      .replace(/&amp;/g, "&")
-      .replace(/&#39;/g, "'")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">");
-
-    if (
-      post.url.match(/\.(gif|jpe?g|png|mp4)$/i) &&
-      title.indexOf("[Media]") === -1
-    ) {
-      title = `[Media] ${title}`;
-    }
-    return title;
   }
 
   function handleSelectPost(post) {

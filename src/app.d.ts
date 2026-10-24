@@ -4,9 +4,30 @@ declare global {
     namespace App {
         interface Error { }
         interface Locals { }
-        interface PageData { }
+        interface PageData {
+            seo?: {
+                title?: string;
+                description?: string;
+                canonical?: string;
+                ogType?: string;
+                image?: string;
+                publishedTime?: string;
+                author?: string;
+            };
+        }
         interface PageState { }
-        interface Platform { }
+        interface Platform {
+            env?: {
+                DB?: {
+                    prepare(sql: string): {
+                        bind(...values: unknown[]): {
+                            first<T = unknown>(): Promise<T | null>;
+                            all<T = unknown>(): Promise<{ results?: T[] }>;
+                        };
+                    };
+                };
+            };
+        }
     }
 }
 
