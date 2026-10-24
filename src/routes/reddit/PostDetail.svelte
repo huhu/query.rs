@@ -38,7 +38,7 @@
             href={postPath(post)}
             class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"
           >
-            <span>Permalink</span>
+            <span>Open page</span>
           </a>
         {/if}
         <a
