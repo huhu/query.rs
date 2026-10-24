@@ -116,6 +116,11 @@
     background: #f9bc2d46;
   }
 
+  h1 {
+    border-left: none;
+    padding-left: 0;
+  }
+
   .subtitle {
     margin-top: 0.75rem;
     color: #6b645b;

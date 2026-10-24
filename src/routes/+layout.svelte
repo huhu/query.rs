@@ -21,6 +21,10 @@
       path: "/reddit",
     },
     {
+      name: "Archive",
+      path: "/posts/archive",
+    },
+    {
       name: "GitHub",
       path: "https://github.com/huhu/query.rs",
     },

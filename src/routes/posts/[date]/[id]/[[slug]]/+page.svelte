@@ -160,6 +160,8 @@
     line-height: 1.25;
     font-weight: 600;
     margin-bottom: 1.1rem;
+    border-left: none;
+    padding-left: 0;
   }
 
   @media (min-width: 768px) {
