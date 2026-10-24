@@ -81,5 +81,7 @@
     <a href="https://github.com/folyd" target="_blank">Folyd</a>
     with ❤️❤️, see <a href="/about">about</a> page to learn more ·
     <a href="https://meiguo.app" target="_blank">meiguo.app</a>
+    ·
+    <a href="https://aiberm.com" target="_blank">aiberm.com</a>
   </footer>
 </div>
