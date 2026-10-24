@@ -5,7 +5,6 @@ import {
   archivePath,
   externalUrl,
   formatTitle,
-  hasDiscussionBody,
   isImageUrl,
   isMediaUrl,
   isPostId,
@@ -14,7 +13,6 @@ import {
   metaDescription,
   postCanonical,
   postPath,
-  postTarget,
   renderMarkdown,
   slugifyTitle,
 } from "./reddit-post.js";
@@ -148,60 +146,6 @@ describe("reddit post helpers", () => {
     expect(isMediaUrl("https://evil.com/i.redd.it/x")).toBe(false);
     expect(isMediaUrl("https://i.redd.it.evil.com/a")).toBe(false);
     expect(isImageUrl("https://i.redd.it.evil.com/a.png")).toBe(true);
-  });
-
-  it("treats blank selftext as link-only and keeps discussion text", () => {
-    expect(hasDiscussionBody("")).toBe(false);
-    expect(hasDiscussionBody(null)).toBe(false);
-    expect(hasDiscussionBody("   \\n\\n  ")).toBe(false);
-    expect(hasDiscussionBody("\\n\\n\\n")).toBe(false);
-    expect(hasDiscussionBody("Yay!")).toBe(true);
-    expect(hasDiscussionBody("See\\n\\nthe borrow checker.")).toBe(true);
-
-    const discussion = {
-      postId: "1d6d0ng",
-      title: "The Borrow Checker Within",
-      createdAt: "2024-06-02T15:20:03",
-      selftext: "A note.",
-      url: "https://www.reddit.com/r/rust/comments/1d6d0ng/the_borrow_checker_within/",
-      permalink: "/r/rust/comments/1d6d0ng/the_borrow_checker_within/",
-    };
-    expect(postTarget(discussion)).toEqual({
-      href: "/posts/2024-06-02/1d6d0ng/the-borrow-checker-within",
-      external: false,
-    });
-
-    expect(
-      postTarget({
-        ...discussion,
-        selftext: "",
-        url: "https://blog.rust-lang.org/release",
-      })
-    ).toEqual({
-      href: "https://blog.rust-lang.org/release",
-      external: true,
-    });
-
-    expect(
-      postTarget({
-        ...discussion,
-        selftext: "\\n",
-        url: "https://www.reddit.com/r/rust/comments/1d6d0ng/the_borrow_checker_within/",
-      })
-    ).toEqual({
-      href: "https://reddit.com/r/rust/comments/1d6d0ng/the_borrow_checker_within/",
-      external: true,
-    });
-
-    expect(
-      postTarget({
-        postId: "abc",
-        title: "Nowhere",
-        selftext: "",
-        url: "javascript:alert(1)",
-        permalink: "https://reddit.com.evil.com/phish",
-      })
-    ).toEqual({ href: "", external: false });
   });
 
   it("rejects non-http external urls", () => {

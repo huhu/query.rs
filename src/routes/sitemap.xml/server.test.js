@@ -51,11 +51,6 @@ describe("sitemap endpoint", () => {
     expect(xml).toContain("<lastmod>2024-01-02</lastmod>");
     expect(calls).toBe(1);
     expect(sql.some((statement) => statement.includes("postId DESC"))).toBe(true);
-    expect(sql.some((statement) => statement.includes("CHAR(92)"))).toBe(true);
-    expect(sql.some((statement) => statement.startsWith("SELECT COUNT"))).toBe(true);
-    expect(sql.find((statement) => statement.startsWith("SELECT COUNT"))).not.toContain(
-      "CHAR(92)"
-    );
     expect(response.headers.get("cache-control")).toContain("max-age=3600");
   });
 

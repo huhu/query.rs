@@ -1,5 +1,5 @@
 <script>
-  import { hasDiscussionBody, isMediaUrl, postPath, renderMarkdown } from "$lib/reddit-post.js";
+  import { isMediaUrl, postPath, renderMarkdown } from "$lib/reddit-post.js";
 
   export let post = null;
 </script>
@@ -33,7 +33,7 @@
 
       <!-- Links -->
       <div class="flex flex-wrap gap-3 text-sm">
-        {#if hasDiscussionBody(post.selftext)}
+        {#if post.postId}
           <a
             href={postPath(post)}
             class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"

@@ -147,33 +147,25 @@ describe("post page load", () => {
     expect(unsafe.post.redditUrl).toBe("");
   });
 
-  it("404s link-only posts instead of serving an empty article", async () => {
+  it("serves a detail page for a link-only post", async () => {
     const linkOnly = {
       ...row,
       postId: "linkonly",
+      title: "A release note",
       selftext: "",
       url: "https://blog.rust-lang.org/release",
+      permalink: "/r/rust/comments/linkonly/a_release_note/",
     };
-    await expect(
-      load({
-        ...request(postPath(linkOnly)),
-        platform: mockPlatform(linkOnly),
-        setHeaders() {},
-      })
-    ).rejects.toMatchObject({ status: 404 });
+    const data = await load({
+      ...request(postPath(linkOnly)),
+      platform: mockPlatform(linkOnly),
+      setHeaders() {},
+    });
 
-    const whitespace = {
-      ...row,
-      postId: "blankbody",
-      selftext: "\\n\\n\\n",
-    };
-    await expect(
-      load({
-        ...request(postPath(whitespace)),
-        platform: mockPlatform(whitespace),
-        setHeaders() {},
-      })
-    ).rejects.toMatchObject({ status: 404 });
+    expect(data.post.bodyHtml).toBe("");
+    expect(data.post.externalUrl).toBe("https://blog.rust-lang.org/release");
+    expect(data.post.redditUrl).toContain("/r/rust/comments/linkonly/");
+    expect(data.seo.canonical).toBe(`https://query.rs${postPath(linkOnly)}`);
   });
 
   it("404s for unknown ids, invalid ids, and invalid dates", async () => {

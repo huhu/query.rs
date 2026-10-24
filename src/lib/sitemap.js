@@ -1,7 +1,6 @@
 import {
   archivePageCount,
   archivePath,
-  hasDiscussionBody,
   isPostId,
   postPath,
   SITE_ORIGIN,
@@ -51,7 +50,6 @@ export function renderSitemap(posts, options = {}) {
     ...posts.slice(0, postCount).flatMap((post) => {
       const id = String(post?.postId || "").toLowerCase();
       if (!isPostId(id)) return [];
-      if ("selftext" in post && !hasDiscussionBody(post.selftext)) return [];
       const lastmod = dateOnly(post.createdAt);
       return [
         {

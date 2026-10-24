@@ -12,14 +12,8 @@ function rows(count) {
     score: 1000 - index,
     author: index === 0 ? "ferris" : "",
     createdAt: "2024-06-02T15:20:03",
-    url:
-      index === 1
-        ? "https://blog.rust-lang.org/release"
-        : index === 0
-          ? "https://i.redd.it/crab.png"
-          : "https://www.reddit.com/r/rust/comments/p/t/",
-    permalink: `/r/rust/comments/p${index}/post/`,
-    discussion: index === 1 ? 0 : 1,
+    url: index === 0 ? "https://i.redd.it/crab.png" : "https://example.com/post",
+    selftext: index === 1 ? "" : "A discussion.",
   }));
 }
 
@@ -83,11 +77,10 @@ describe("archive page load", () => {
     expect(data.posts[0].author).toBe("ferris");
     expect(data.posts[0].href).toBe(postPath(allRows[0]));
     expect(data.posts[0].href).toBe("/posts/2024-06-02/p0/crab-photo");
-    expect(data.posts[0].external).toBe(false);
     expect(data.posts[0].href).not.toContain("media");
-    expect(data.posts[1].href).toBe("https://blog.rust-lang.org/release");
-    expect(data.posts[1].external).toBe(true);
-    expect(data.posts[1].href).not.toContain("/posts/");
+    expect(data.posts[1].href).toBe(postPath(allRows[1]));
+    expect(data.posts[1].href).toBe("/posts/2024-06-02/p1/post-1");
+    expect(data.posts[1].href).not.toContain("example.com");
     expect(data.prev).toBeNull();
     expect(data.next).toBe("/posts/archive/2");
     expect(data.pageLinks.map((link) => link.href)).toEqual([
