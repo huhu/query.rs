@@ -19,7 +19,11 @@ describe("sitemap endpoint", () => {
                       if (calls > 1) return { results: [] };
                       return {
                         results: [
-                          { postId: "abc123", createdAt: "2024-01-02T03:04:05" },
+                          {
+                            postId: "abc123",
+                            title: "Hello World",
+                            createdAt: "2024-01-02T03:04:05",
+                          },
                         ],
                       };
                     },
@@ -34,7 +38,9 @@ describe("sitemap endpoint", () => {
 
     const xml = await response.text();
     expect(response.headers.get("content-type")).toContain("application/xml");
-    expect(xml).toContain("https://query.rs/posts/abc123");
+    expect(xml).toContain(
+      "https://query.rs/posts/2024-01-02/abc123/hello-world"
+    );
     expect(xml).toContain("<lastmod>2024-01-02</lastmod>");
     expect(calls).toBe(1);
   });

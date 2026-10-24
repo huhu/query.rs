@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { postPath } from "$lib/reddit-post.js";
 import { load, prerender, ssr } from "./+page.server.js";
 
 const row = {
@@ -13,6 +14,8 @@ const row = {
   createdAt: "2024-01-03T02:30:04",
   numComments: null,
 };
+
+const canonicalPath = postPath(row);
 
 /**
  * @param {typeof row | null} result
@@ -37,16 +40,27 @@ function mockPlatform(result) {
   };
 }
 
+/**
+ * @param {string} pathname
+ */
+function request(pathname) {
+  const [, , date, id, slug] = pathname.split("/");
+  return {
+    params: { date, id, slug },
+    url: new URL(`https://query.rs${pathname}`),
+  };
+}
+
 describe("post page load", () => {
   it("opts out of prerender and keeps server rendering", () => {
     expect(prerender).toBe(false);
     expect(ssr).toBe(true);
   });
 
-  it("returns article html and seo fields from D1", async () => {
+  it("returns article html and a canonical dated slug url", async () => {
     const headers = new Headers();
     const data = await load({
-      params: { id: "18X6UC3" },
+      ...request(canonicalPath),
       platform: mockPlatform(row),
       setHeaders(next) {
         for (const [key, value] of Object.entries(next)) {
@@ -60,7 +74,10 @@ describe("post page load", () => {
     expect(data.post.bodyHtml).not.toContain("<script>");
     expect(data.post.redditUrl).toContain("reddit.com/r/rust/comments/18x6uc3");
     expect(data.post.externalUrl).toBe("");
-    expect(data.seo.canonical).toBe("https://query.rs/posts/18x6uc3");
+    expect(data.seo.canonical).toBe(`https://query.rs${canonicalPath}`);
+    expect(data.seo.canonical).toBe(
+      "https://query.rs/posts/2024-01-03/18x6uc3/i-dont-even-use-rust-for-the-memory-safety"
+    );
     expect(data.seo.title).toBe(`${row.title} · Query.rs`);
     expect(data.seo.description).toContain("I've written plenty of c++");
     expect(data.seo.ogType).toBe("article");
@@ -69,15 +86,42 @@ describe("post page load", () => {
     expect(headers.get("cache-control")).toContain("max-age=3600");
   });
 
+  it("redirects a stale slug or date to the canonical path", async () => {
+    await expect(
+      load({
+        ...request("/posts/2024-01-03/18x6uc3/wrong-slug"),
+        platform: mockPlatform(row),
+        setHeaders() {},
+      })
+    ).rejects.toMatchObject({ status: 301, location: canonicalPath });
+
+    await expect(
+      load({
+        ...request("/posts/2020-01-01/18x6uc3/i-dont-even-use-rust-for-the-memory-safety"),
+        platform: mockPlatform(row),
+        setHeaders() {},
+      })
+    ).rejects.toMatchObject({ status: 301, location: canonicalPath });
+
+    await expect(
+      load({
+        ...request(canonicalPath.replace("/18x6uc3/", "/18X6UC3/")),
+        platform: mockPlatform(row),
+        setHeaders() {},
+      })
+    ).rejects.toMatchObject({ status: 301, location: canonicalPath });
+  });
+
   it("uses an image url as the social image", async () => {
+    const imagePost = {
+      ...row,
+      postId: "img123",
+      url: "https://i.redd.it/crab.png",
+      selftext: "",
+    };
     const data = await load({
-      params: { id: "img123" },
-      platform: mockPlatform({
-        ...row,
-        postId: "img123",
-        url: "https://i.redd.it/crab.png",
-        selftext: "",
-      }),
+      ...request(postPath(imagePost)),
+      platform: mockPlatform(imagePost),
       setHeaders() {},
     });
 
@@ -87,10 +131,10 @@ describe("post page load", () => {
     expect(data.post.bodyHtml).toBe("");
   });
 
-  it("404s for unknown and invalid ids", async () => {
+  it("404s for unknown ids, invalid ids, and invalid dates", async () => {
     await expect(
       load({
-        params: { id: "missing" },
+        ...request("/posts/2024-01-03/missing/somewhere"),
         platform: mockPlatform(row),
         setHeaders() {},
       })
@@ -98,7 +142,7 @@ describe("post page load", () => {
 
     await expect(
       load({
-        params: { id: "../passwd" },
+        ...request("/posts/2024-02-31/18x6uc3/title"),
         platform: mockPlatform(row),
         setHeaders() {},
       })
@@ -108,7 +152,7 @@ describe("post page load", () => {
   it("fails when D1 is not bound", async () => {
     await expect(
       load({
-        params: { id: "18x6uc3" },
+        ...request(canonicalPath),
         platform: {},
         setHeaders() {},
       })

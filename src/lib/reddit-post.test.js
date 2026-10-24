@@ -5,8 +5,14 @@ import {
   isPostId,
   metaDescription,
   postCanonical,
+  postPath,
   renderMarkdown,
+  slugifyTitle,
 } from "./reddit-post.js";
+
+function postDateFallback() {
+  return postPath({ postId: "abc", title: "   ", createdAt: "nope" });
+}
 
 describe("reddit post helpers", () => {
   it("accepts reddit base36 ids", () => {
@@ -17,8 +23,29 @@ describe("reddit post helpers", () => {
     expect(isPostId("")).toBe(false);
   });
 
-  it("builds a stable canonical url from postId", () => {
-    expect(postCanonical("1d6d0ng")).toBe("https://query.rs/posts/1d6d0ng");
+  it("builds a dated slug path and falls back when the title is empty", () => {
+    expect(
+      postCanonical({
+        postId: "1D6D0NG",
+        title: "The Borrow Checker Within",
+        createdAt: "2024-06-02T15:20:03",
+      })
+    ).toBe(
+      "https://query.rs/posts/2024-06-02/1d6d0ng/the-borrow-checker-within"
+    );
+
+    expect(
+      postPath({
+        postId: "abc",
+        title: "[Media] Don't stop & Café!!",
+        createdAt: "2024-06-02 15:20:03",
+      })
+    ).toBe("/posts/2024-06-02/abc/dont-stop-and-cafe");
+
+    expect(slugifyTitle("")).toBe("post");
+    expect(slugifyTitle("你好")).toBe("post");
+    expect(slugifyTitle("A".repeat(200))).toHaveLength(80);
+    expect(postDateFallback()).toBe("/posts/1970-01-01/abc/post");
   });
 
   it("decodes stored titles and marks media posts", () => {

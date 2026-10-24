@@ -1,4 +1,4 @@
-import { SITE_ORIGIN } from "./reddit-post.js";
+import { isPostId, postPath, SITE_ORIGIN } from "./reddit-post.js";
 
 export const STATIC_PATHS = [
   "/",
@@ -14,18 +14,19 @@ const SITEMAP_URL_LIMIT = 50000;
 export const MAX_POST_URLS = SITEMAP_URL_LIMIT - STATIC_PATHS.length;
 
 /**
- * @param {{ postId?: string | null, createdAt?: string | null }[]} posts
+ * @param {{ postId?: string | null, title?: string | null, createdAt?: string | null }[]} posts
  */
 export function renderSitemap(posts) {
   /** @type {{ loc: string, lastmod?: string }[]} */
   const urls = [
     ...STATIC_PATHS.map((path) => ({ loc: `${SITE_ORIGIN}${path}` })),
     ...posts.slice(0, MAX_POST_URLS).flatMap((post) => {
-      if (!post?.postId) return [];
+      const id = String(post?.postId || "").toLowerCase();
+      if (!isPostId(id)) return [];
       const lastmod = dateOnly(post.createdAt);
       return [
         {
-          loc: `${SITE_ORIGIN}/posts/${encodeURIComponent(post.postId)}`,
+          loc: `${SITE_ORIGIN}${postPath({ ...post, postId: id })}`,
           lastmod,
         },
       ];

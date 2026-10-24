@@ -41,18 +41,66 @@ export function isPostId(id) {
   return typeof id === "string" && POST_ID.test(id);
 }
 
+const POST_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+const SLUG_MAX = 80;
+const UNDATED = "1970-01-01";
+
 /**
- * @param {string} postId
+ * Canonical path: /posts/YYYY-MM-DD/{postId}/{title-slug}
+ * @param {{ postId?: string | null, title?: string | null, createdAt?: string | null }} post
  */
-export function postPath(postId) {
-  return `/posts/${postId}`;
+export function postPath(post) {
+  const id = String(post?.postId || "").toLowerCase();
+  return `/posts/${postDate(post?.createdAt)}/${id}/${slugifyTitle(post?.title)}`;
 }
 
 /**
- * @param {string} postId
+ * @param {{ postId?: string | null, title?: string | null, createdAt?: string | null }} post
  */
-export function postCanonical(postId) {
-  return `${SITE_ORIGIN}${postPath(postId)}`;
+export function postCanonical(post) {
+  return `${SITE_ORIGIN}${postPath(post)}`;
+}
+
+/**
+ * @param {string | null | undefined} value
+ */
+export function isPostDate(value) {
+  const match = POST_DATE.exec(value || "");
+  if (!match) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return (
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day
+  );
+}
+
+/**
+ * @param {string | null | undefined} createdAt
+ */
+export function postDate(createdAt) {
+  const match = /^(\d{4}-\d{2}-\d{2})/.exec(createdAt || "");
+  if (match && isPostDate(match[1])) return match[1];
+  return UNDATED;
+}
+
+/**
+ * ASCII hyphen slug. Empty and non-Latin titles fall back to "post".
+ * A display-only "[Media]" prefix is ignored so list links match the canonical slug.
+ * @param {string | null | undefined} title
+ */
+export function slugifyTitle(title) {
+  let text = decodeTitle(title || "").replace(/^\[media\]\s+/i, "");
+  text = text.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
+  text = text.toLowerCase().replace(/&/g, " and ").replace(/['’]/g, "");
+  text = text.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  if (text.length > SLUG_MAX) {
+    text = text.slice(0, SLUG_MAX).replace(/-+$/g, "");
+  }
+  return text || "post";
 }
 
 /**

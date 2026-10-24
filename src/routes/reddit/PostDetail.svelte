@@ -35,7 +35,7 @@
       <div class="flex flex-wrap gap-3 text-sm">
         {#if post.postId}
           <a
-            href={postPath(post.postId)}
+            href={postPath(post)}
             class="inline-flex items-center gap-1.5 text-gray-600 hover:text-blue-600"
           >
             <span>Permalink</span>

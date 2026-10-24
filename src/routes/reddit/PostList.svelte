@@ -47,7 +47,7 @@
             <span class="text-gray-400 w-6">{i + 1}.</span>
             <div class="flex items-start gap-2 flex-wrap">
               <a
-                href={postPath(post.postId)}
+                href={postPath(post)}
                 class="text-blue-500"
                 on:click={(event) => openInReader(event, post)}
               >
@@ -55,7 +55,7 @@
                 <span class="text-gray-500">🔥{post.score}</span>
               </a>
               <a
-                href={postPath(post.postId)}
+                href={postPath(post)}
                 class="text-xs text-gray-400 hover:text-blue-600 hover:underline"
               >
                 page

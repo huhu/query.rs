@@ -1,56 +1,34 @@
-import { error } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import {
   externalUrl,
   formatCreatedAt,
   formatTitle,
   isImageUrl,
   isMediaUrl,
-  isPostId,
+  isPostDate,
   isVideoUrl,
   metaDescription,
   postCanonical,
+  postPath,
   publishedTime,
   redditUrl,
   renderMarkdown,
   SITE_ORIGIN,
 } from "$lib/reddit-post.js";
+import { fetchRedditPost } from "$lib/server/reddit-posts.js";
 
 export const prerender = false;
 export const ssr = true;
 
-/**
- * @param {App.Platform | undefined} platform
- */
-function database(platform) {
-  const db = platform?.env?.DB;
-  if (!db) error(500, "Database unavailable");
-  return db;
-}
-
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ params, platform, setHeaders }) {
-  const id = (params.id || "").toLowerCase();
-  if (!isPostId(id)) error(404, "Post not found");
+export async function load({ params, platform, setHeaders, url }) {
+  if (!isPostDate(params.date)) error(404, "Post not found");
 
-  const db = database(platform);
-
-  /** @type {RedditPostRow | null} */
-  let row;
-  try {
-    row = await db
-      .prepare(
-        `SELECT postId, score, title, selftext, author, permalink, url, createdAt, numComments
-         FROM reddit_posts
-         WHERE postId = ?`
-      )
-      .bind(id)
-      .first();
-  } catch (err) {
-    console.error("post query failed", err);
-    error(500, "Could not load post");
+  const row = await fetchRedditPost(platform, params.id);
+  const canonicalPath = postPath(row);
+  if (url.pathname !== canonicalPath) {
+    redirect(301, canonicalPath);
   }
-
-  if (!row) error(404, "Post not found");
 
   setHeaders({
     "cache-control": "public, max-age=3600",
@@ -58,7 +36,7 @@ export async function load({ params, platform, setHeaders }) {
 
   const title = formatTitle(row) || "Reddit post";
   const description = metaDescription(row);
-  const canonical = postCanonical(row.postId);
+  const canonical = postCanonical(row);
   const image = isImageUrl(row.url) ? row.url : `${SITE_ORIGIN}/og.png`;
   const published = publishedTime(row.createdAt);
 
@@ -88,16 +66,3 @@ export async function load({ params, platform, setHeaders }) {
     },
   };
 }
-
-/**
- * @typedef {Object} RedditPostRow
- * @property {string} postId
- * @property {number | null} score
- * @property {string | null} title
- * @property {string | null} selftext
- * @property {string | null} author
- * @property {string | null} permalink
- * @property {string | null} url
- * @property {string | null} createdAt
- * @property {number | null} numComments
- */

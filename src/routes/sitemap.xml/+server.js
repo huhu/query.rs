@@ -6,17 +6,17 @@ const PAGE_SIZE = 2000;
 const MAX_URLS = MAX_POST_URLS;
 
 /**
- * @param {{ prepare: (sql: string) => { bind: (...values: unknown[]) => { all: () => Promise<{ results?: { postId: string, createdAt: string }[] }> } } }} db
+ * @param {{ prepare: (sql: string) => { bind: (...values: unknown[]) => { all: () => Promise<{ results?: { postId: string, title: string, createdAt: string }[] }> } } }} db
  */
 async function listPosts(db) {
-  /** @type {{ postId: string, createdAt: string }[]} */
+  /** @type {{ postId: string, title: string, createdAt: string }[]} */
   const posts = [];
   let offset = 0;
 
   while (posts.length < MAX_URLS) {
     const batch = await db
       .prepare(
-        `SELECT postId, createdAt
+        `SELECT postId, title, createdAt
          FROM reddit_posts
          ORDER BY createdAt DESC
          LIMIT ? OFFSET ?`
@@ -33,7 +33,7 @@ async function listPosts(db) {
 }
 
 export async function GET({ platform }) {
-  /** @type {{ postId: string, createdAt: string }[]} */
+  /** @type {{ postId: string, title: string, createdAt: string }[]} */
   let posts = [];
   try {
     if (platform?.env?.DB) {
