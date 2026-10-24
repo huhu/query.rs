@@ -5,14 +5,30 @@
   import PostDetail from "./PostDetail.svelte";
   import { Search } from "lucide-svelte";
   import { onMount } from "svelte";
+  import { presentRedditPost } from "$lib/reddit-post.js";
 
-  let posts = [];
+  /** @type {import('./$types').PageData} */
+  export let data;
+
+  let posts = data.posts ?? [];
   let loading = false;
-  let error = null;
-  let selectedPost = null;
-  let headerTitle = "";
-  let searchQuery = "";
-  let isSearching = false;
+  let error = data.error ?? null;
+  let selectedPost = data.selectedPost ?? null;
+  let headerTitle = data.headerTitle ?? "";
+  let searchQuery = data.query ?? "";
+  let isSearching = data.mode === "search";
+  let seen = data;
+
+  $: if (data !== seen) {
+    seen = data;
+    posts = data.posts ?? [];
+    error = data.error ?? null;
+    selectedPost = data.selectedPost ?? null;
+    headerTitle = data.headerTitle ?? "";
+    searchQuery = data.query ?? "";
+    isSearching = data.mode === "search";
+    loading = false;
+  }
   let showDetail = false;
   let isMobile = false;
   let showMobileSidebar = false;
@@ -47,14 +63,9 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      posts = await response.json();
-      posts = posts.map((post) => {
-        return {
-          ...post,
-          title: formatTitle(post),
-          createdAt: post.createdAt.replace("T", " "),
-        };
-      });
+      const rows = await response.json();
+      if (!Array.isArray(rows)) throw new Error("Could not load posts");
+      posts = rows.map((post) => presentRedditPost(post));
       // Select the first post by default if available
       if (posts.length > 0) {
         selectedPost = posts[0];
@@ -81,7 +92,9 @@
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      posts = await response.json();
+      const rows = await response.json();
+      if (!Array.isArray(rows)) throw new Error("Could not load posts");
+      posts = rows.map((post) => presentRedditPost(post));
       if (posts.length > 0) {
         selectedPost = posts[0];
       }
@@ -104,24 +117,6 @@
       const today = new Date().toISOString().split("T")[0];
       await fetchPosts(today);
     }
-  }
-
-  function formatTitle(post) {
-    let title = post.title
-      .replace(/\\\"/g, "\"")
-      .replace(/&quot;/g, '"')
-      .replace(/&amp;/g, "&")
-      .replace(/&#39;/g, "'")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">");
-
-    if (
-      post.url.match(/\.(gif|jpe?g|png|mp4)$/i) &&
-      title.indexOf("[Media]") === -1
-    ) {
-      title = `[Media] ${title}`;
-    }
-    return title;
   }
 
   function handleSelectPost(post) {
@@ -183,20 +178,9 @@
     window.history.pushState({}, "", url);
   }
 
-  onMount(async () => {
+  onMount(() => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const queryParam = urlParams.get("q");
-
-    if (queryParam) {
-      searchQuery = queryParam;
-      await performSearch(queryParam);
-    } else {
-      const today = new Date().toISOString().split("T")[0];
-      await fetchPosts(today);
-    }
 
     return () => {
       window.removeEventListener("resize", checkMobile);
@@ -238,6 +222,7 @@
       class="absolute bg-white bottom-0 left-0 right-0 p-2 text-xs text-gray-400 border-t"
     >
       Only posts with score ≥ 50 are collected. Data cutoff: 2021-11-23
+      <a href="/posts/archive" class="block mt-1 text-blue-600 hover:underline">All posts</a>
     </div>
   </div>
 

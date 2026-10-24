@@ -10,6 +10,10 @@
       path: "/",
     },
     {
+      name: "Archive",
+      path: "/posts/archive",
+    },
+    {
       name: "Crates",
       path: "/crates",
     },
@@ -60,10 +64,15 @@
       class="block mx-auto w-60 md:w-80 mt-8 mb-12"
     />
   </a>
-  <div class="absolute top-2 right-2">
+  <div class="absolute top-2 right-2 z-50 flex items-center">
+    <a
+      href="/posts/archive"
+      class="px-3 py-2 rounded-md text-sm md:text-base font-medium hover:bg-[#f9bc2d46]"
+    >Archive</a>
     <button
       on:click={() => (hiddenMenu = !hiddenMenu)}
-      class="z-50 p-4 inline-block"
+      class="p-4 inline-block"
+      aria-label="Open menu"
     >
       <svg
         class="w-5 h-5"
