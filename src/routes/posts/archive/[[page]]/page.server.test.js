@@ -10,6 +10,7 @@ function rows(count) {
     postId: `p${index.toString(36)}`,
     title: index === 0 ? "Crab photo" : `Post ${index}`,
     score: 1000 - index,
+    author: index === 0 ? "ferris" : "",
     createdAt: "2024-06-02T15:20:03",
     url: index === 0 ? "https://i.redd.it/crab.png" : "https://example.com/post",
   }));
@@ -72,6 +73,7 @@ describe("archive page load", () => {
 
     expect(data.posts).toHaveLength(ARCHIVE_PAGE_SIZE);
     expect(data.posts[0].title).toBe("[Media] Crab photo");
+    expect(data.posts[0].author).toBe("ferris");
     expect(data.posts[0].href).toBe(postPath(allRows[0]));
     expect(data.posts[0].href).toBe("/posts/2024-06-02/p0/crab-photo");
     expect(data.posts[0].href).not.toContain("media");

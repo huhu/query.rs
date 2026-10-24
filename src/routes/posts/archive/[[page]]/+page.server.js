@@ -14,7 +14,7 @@ export const prerender = false;
 export const ssr = true;
 
 const COUNT_SQL = `SELECT COUNT(*) AS total FROM reddit_posts`;
-const LIST_SQL = `SELECT postId, title, score, createdAt, url
+const LIST_SQL = `SELECT postId, title, score, author, createdAt, url
          FROM reddit_posts
          ORDER BY createdAt DESC, postId DESC
          LIMIT ? OFFSET ?`;
@@ -64,6 +64,7 @@ export async function load({ params, platform, setHeaders }) {
       href: postPath(row),
       title: formatTitle(row) || "Reddit post",
       score: row.score ?? 0,
+      author: row.author || "",
       createdAtLabel: formatCreatedAt(row.createdAt),
     })),
     seo: {
@@ -104,6 +105,7 @@ async function listPage(db, page) {
  * @property {string} postId
  * @property {string | null} title
  * @property {number | null} score
+ * @property {string | null} author
  * @property {string | null} createdAt
  * @property {string | null} url
  */
