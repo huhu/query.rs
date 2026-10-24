@@ -28,10 +28,6 @@
       name: "GitHub",
       path: "https://github.com/huhu/query.rs",
     },
-    {
-      name: "Geddle",
-      path: "https://geddle.com",
-    },
   ];
 </script>
 

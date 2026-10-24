@@ -1,3 +1,4 @@
+import { DISCUSSION_BODY_SQL } from "$lib/reddit-post.js";
 import { renderSitemap, sitemapBudgets } from "$lib/sitemap.js";
 
 export const prerender = false;
@@ -8,7 +9,10 @@ const PAGE_SIZE = 2000;
  * @param {{ prepare: (sql: string) => { bind: (...values: unknown[]) => { first: () => Promise<{ total?: number } | null> } } }} db
  */
 async function countPosts(db) {
-  const row = await db.prepare(`SELECT COUNT(*) AS total FROM reddit_posts`).bind().first();
+  const row = await db
+    .prepare(`SELECT COUNT(*) AS total FROM reddit_posts WHERE ${DISCUSSION_BODY_SQL}`)
+    .bind()
+    .first();
   return Number(row?.total) || 0;
 }
 
@@ -26,6 +30,7 @@ async function listPosts(db, maxUrls) {
       .prepare(
         `SELECT postId, title, createdAt
          FROM reddit_posts
+         WHERE ${DISCUSSION_BODY_SQL}
          ORDER BY createdAt DESC, postId DESC
          LIMIT ? OFFSET ?`
       )

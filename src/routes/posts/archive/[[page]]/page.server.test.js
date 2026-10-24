@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ARCHIVE_PAGE_SIZE, postPath } from "$lib/reddit-post.js";
+import { ARCHIVE_PAGE_SIZE, hasDiscussionBody, postPath } from "$lib/reddit-post.js";
 import { load, prerender, ssr } from "./+page.server.js";
 
 /**
@@ -13,7 +13,7 @@ function rows(count) {
     author: index === 0 ? "ferris" : "",
     createdAt: "2024-06-02T15:20:03",
     url: index === 0 ? "https://i.redd.it/crab.png" : "https://example.com/post",
-    selftext: index === 1 ? "" : "A discussion.",
+    selftext: "A discussion.",
   }));
 }
 
@@ -32,13 +32,13 @@ function mockPlatform(allRows, options = {}) {
                 async first() {
                   if (options.fail) throw new Error("d1 down");
                   if (!String(sql).includes("COUNT")) return null;
-                  return { total: allRows?.length ?? 0 };
+                  return { total: visibleRows(sql, allRows).length };
                 },
                 async all() {
                   if (options.fail) throw new Error("d1 down");
                   const start = Number(offset) || 0;
                   const end = start + (Number(limit) || 0);
-                  return { results: (allRows ?? []).slice(start, end) };
+                  return { results: visibleRows(sql, allRows).slice(start, end) };
                 },
               };
             },
@@ -47,6 +47,17 @@ function mockPlatform(allRows, options = {}) {
       },
     },
   };
+}
+
+/**
+ * Apply the discussion-body predicate when the query includes it.
+ * @param {string} sql
+ * @param {ReturnType<typeof rows> | null} allRows
+ */
+function visibleRows(sql, allRows) {
+  const rows = allRows ?? [];
+  if (!String(sql).includes("CHAR(92)")) return rows;
+  return rows.filter((row) => hasDiscussionBody(row.selftext));
 }
 
 /**
@@ -89,6 +100,50 @@ describe("archive page load", () => {
     ]);
     expect(data.seo.canonical).toBe("https://query.rs/posts/archive");
     expect(data.seo.ogType).toBe("website");
+  });
+
+  it("omits link-only posts and still links discussion titles to the detail page", async () => {
+    const mixed = [
+      {
+        postId: "disc",
+        title: "A real thread",
+        score: 20,
+        author: "ada",
+        createdAt: "2024-06-02T15:20:03",
+        url: "https://www.reddit.com/r/rust/comments/disc/a_real_thread/",
+        selftext: "Hello\\n\\nthere",
+      },
+      {
+        postId: "link",
+        title: "Just a link",
+        score: 10,
+        author: "bob",
+        createdAt: "2024-06-01T00:00:00",
+        url: "https://example.com/post",
+        selftext: "",
+      },
+      {
+        postId: "blank",
+        title: "Only newlines",
+        score: 5,
+        author: "",
+        createdAt: "2024-05-01T00:00:00",
+        url: "https://example.com/blank",
+        selftext: "\\n\\n",
+      },
+    ];
+    const data = await load({
+      ...request(undefined),
+      platform: mockPlatform(mixed),
+    });
+
+    expect(data.total).toBe(1);
+    expect(data.posts).toHaveLength(1);
+    expect(data.posts[0].title).toBe("A real thread");
+    expect(data.posts[0].href).toBe(postPath(mixed[0]));
+    expect(data.posts[0].href).toBe("/posts/2024-06-02/disc/a-real-thread");
+    expect(data.posts[0].href).not.toContain("example.com");
+    expect(data.posts.map((post) => post.title)).not.toContain("Just a link");
   });
 
   it("serves a later page and an empty first page", async () => {

@@ -1,5 +1,5 @@
 <script>
-  import { postPath } from "$lib/reddit-post.js";
+  import { hasDiscussionBody, postPath } from "$lib/reddit-post.js";
 
   /**
    * @type {object[]}
@@ -46,7 +46,7 @@
           >
             <span class="text-gray-400 w-6">{i + 1}.</span>
             <a
-              href={postPath(post)}
+              href={hasDiscussionBody(post.selftext) ? postPath(post) : undefined}
               class="text-[#121212] no-underline hover:no-underline visited:text-[#121212] visited:no-underline"
               on:click={(event) => openInReader(event, post)}
             >

@@ -27,6 +27,27 @@ describe("sitemap", () => {
     expect(xml).not.toContain("not-a-date");
   });
 
+  it("omits link-only posts when selftext is present and blank", () => {
+    const xml = renderSitemap([
+      {
+        postId: "1d6d0ng",
+        title: "The Borrow Checker Within",
+        createdAt: "2024-06-02T15:20:03",
+        selftext: "A real note.",
+      },
+      {
+        postId: "linkonly",
+        title: "Just a link",
+        createdAt: "2024-06-03T00:00:00",
+        selftext: "",
+      },
+    ]);
+
+    expect(xml).toContain("/posts/2024-06-02/1d6d0ng/the-borrow-checker-within");
+    expect(xml).not.toContain("linkonly");
+    expect(xml).not.toContain("just-a-link");
+  });
+
   it("lists later archive pages when the catalog spans them", () => {
     const xml = renderSitemap([], { totalPosts: 51 });
     expect(xml).toContain("https://query.rs/posts/archive</loc>");

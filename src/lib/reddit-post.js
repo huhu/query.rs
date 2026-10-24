@@ -164,6 +164,22 @@ export function decodeBody(text) {
 }
 
 /**
+ * True when stored selftext is a discussion, not a blank link-only post.
+ * The column uses literal "\\n" sequences. There is no is_self flag.
+ * @param {string | null | undefined} selftext
+ */
+export function hasDiscussionBody(selftext) {
+  return decodeBody(selftext).trim().length > 0;
+}
+
+/**
+ * SQLite form of hasDiscussionBody(selftext). TRIM() strips spaces only,
+ * so tabs, newlines, and the stored "\\n" sequence are normalized first.
+ */
+export const DISCUSSION_BODY_SQL =
+  "LENGTH(TRIM(REPLACE(REPLACE(REPLACE(REPLACE(IFNULL(selftext, ''), CHAR(92) || 'n', ' '), CHAR(10), ' '), CHAR(13), ' '), CHAR(9), ' '))) > 0";
+
+/**
  * @param {{ title?: string | null, url?: string | null }} post
  */
 export function formatTitle(post) {

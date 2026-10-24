@@ -4,6 +4,7 @@ import {
   archivePageCount,
   archivePageLinks,
   archivePath,
+  DISCUSSION_BODY_SQL,
   formatCreatedAt,
   formatTitle,
   postPath,
@@ -13,9 +14,10 @@ import {
 export const prerender = false;
 export const ssr = true;
 
-const COUNT_SQL = `SELECT COUNT(*) AS total FROM reddit_posts`;
+const COUNT_SQL = `SELECT COUNT(*) AS total FROM reddit_posts WHERE ${DISCUSSION_BODY_SQL}`;
 const LIST_SQL = `SELECT postId, title, score, author, createdAt, url
          FROM reddit_posts
+         WHERE ${DISCUSSION_BODY_SQL}
          ORDER BY createdAt DESC, postId DESC
          LIMIT ? OFFSET ?`;
 

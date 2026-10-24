@@ -5,6 +5,7 @@ import {
   archivePath,
   externalUrl,
   formatTitle,
+  hasDiscussionBody,
   isImageUrl,
   isMediaUrl,
   isPostId,
@@ -146,6 +147,15 @@ describe("reddit post helpers", () => {
     expect(isMediaUrl("https://evil.com/i.redd.it/x")).toBe(false);
     expect(isMediaUrl("https://i.redd.it.evil.com/a")).toBe(false);
     expect(isImageUrl("https://i.redd.it.evil.com/a.png")).toBe(true);
+  });
+
+  it("treats blank selftext as link-only", () => {
+    expect(hasDiscussionBody("")).toBe(false);
+    expect(hasDiscussionBody(null)).toBe(false);
+    expect(hasDiscussionBody("\\n\\n\\n")).toBe(false);
+    expect(hasDiscussionBody("   \\n  ")).toBe(false);
+    expect(hasDiscussionBody("Yay!")).toBe(true);
+    expect(hasDiscussionBody("See\\n\\nthe borrow checker.")).toBe(true);
   });
 
   it("rejects non-http external urls", () => {
