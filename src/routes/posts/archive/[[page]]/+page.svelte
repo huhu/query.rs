@@ -16,11 +16,6 @@
 
 <div class="archive">
   <header class="archive-header">
-    <nav class="crumbs" aria-label="Breadcrumb">
-      <a href="/">Home</a>
-      <span aria-hidden="true">·</span>
-      <a href="/reddit">Reader</a>
-    </nav>
     <h1>{heading}</h1>
     <p class="subtitle">r/rust discussions on Query.rs</p>
   </header>
@@ -93,27 +88,6 @@
   .archive-header {
     max-width: 46rem;
     margin: 0 auto 1.5rem;
-  }
-
-  .crumbs {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-    color: #6b645b;
-  }
-
-  .crumbs a {
-    padding: 0.2rem 0.45rem;
-    border-radius: 6px;
-    color: #3f3a34;
-    text-decoration: none;
-  }
-
-  .crumbs a:hover {
-    background: #f9bc2d46;
   }
 
   h1 {
