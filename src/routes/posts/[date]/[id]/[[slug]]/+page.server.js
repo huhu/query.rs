@@ -3,6 +3,7 @@ import {
   externalUrl,
   formatCreatedAt,
   formatTitle,
+  hasDiscussionBody,
   isImageUrl,
   isMediaUrl,
   isPostDate,
@@ -25,6 +26,8 @@ export async function load({ params, platform, setHeaders, url }) {
   if (!isPostDate(params.date)) error(404, "Post not found");
 
   const row = await fetchRedditPost(platform, params.id);
+  if (!hasDiscussionBody(row.selftext)) error(404, "Post not found");
+
   const canonicalPath = postPath(row);
   if (url.pathname !== canonicalPath) {
     redirect(301, canonicalPath);

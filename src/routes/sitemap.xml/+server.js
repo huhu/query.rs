@@ -1,3 +1,4 @@
+import { DISCUSSION_BODY_SQL } from "$lib/reddit-post.js";
 import { renderSitemap, sitemapBudgets } from "$lib/sitemap.js";
 
 export const prerender = false;
@@ -26,6 +27,7 @@ async function listPosts(db, maxUrls) {
       .prepare(
         `SELECT postId, title, createdAt
          FROM reddit_posts
+         WHERE ${DISCUSSION_BODY_SQL}
          ORDER BY createdAt DESC, postId DESC
          LIMIT ? OFFSET ?`
       )

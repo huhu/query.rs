@@ -117,7 +117,7 @@ describe("post page load", () => {
       ...row,
       postId: "img123",
       url: "https://i.redd.it/crab.png",
-      selftext: "",
+      selftext: "A crab, described in the post body.",
     };
     const data = await load({
       ...request(postPath(imagePost)),
@@ -128,14 +128,14 @@ describe("post page load", () => {
     expect(data.post.mediaUrl).toBe("https://i.redd.it/crab.png");
     expect(data.post.video).toBe(false);
     expect(data.seo.image).toBe("https://i.redd.it/crab.png");
-    expect(data.post.bodyHtml).toBe("");
+    expect(data.post.bodyHtml).toContain("described in the post body");
 
     const scriptUrl = {
       ...row,
       postId: "img124",
       url: "javascript:alert(1).jpg",
       permalink: "https://reddit.com.evil.com/phish",
-      selftext: "",
+      selftext: "Still a discussion, but the media url is unsafe.",
     };
     const unsafe = await load({
       ...request(postPath(scriptUrl)),
@@ -145,6 +145,35 @@ describe("post page load", () => {
     expect(unsafe.post.mediaUrl).toBe("");
     expect(unsafe.seo.image).toBe("https://query.rs/og.png");
     expect(unsafe.post.redditUrl).toBe("");
+  });
+
+  it("404s link-only posts instead of serving an empty article", async () => {
+    const linkOnly = {
+      ...row,
+      postId: "linkonly",
+      selftext: "",
+      url: "https://blog.rust-lang.org/release",
+    };
+    await expect(
+      load({
+        ...request(postPath(linkOnly)),
+        platform: mockPlatform(linkOnly),
+        setHeaders() {},
+      })
+    ).rejects.toMatchObject({ status: 404 });
+
+    const whitespace = {
+      ...row,
+      postId: "blankbody",
+      selftext: "\\n\\n\\n",
+    };
+    await expect(
+      load({
+        ...request(postPath(whitespace)),
+        platform: mockPlatform(whitespace),
+        setHeaders() {},
+      })
+    ).rejects.toMatchObject({ status: 404 });
   });
 
   it("404s for unknown ids, invalid ids, and invalid dates", async () => {

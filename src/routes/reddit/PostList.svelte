@@ -1,5 +1,5 @@
 <script>
-  import { postPath } from "$lib/reddit-post.js";
+  import { postTarget } from "$lib/reddit-post.js";
 
   /**
    * @type {object[]}
@@ -40,13 +40,16 @@
     {:else}
       <ol class="space-y-1">
         {#each posts as post, i}
+          {@const target = postTarget(post)}
           <li
             class="flex items-start px-4 py-2 hover:bg-gray-50"
             class:bg-blue-50={selectedPostId === post.postId}
           >
             <span class="text-gray-400 w-6">{i + 1}.</span>
             <a
-              href={postPath(post)}
+              href={target.href || undefined}
+              rel={target.external ? "ugc noopener noreferrer" : undefined}
+              target={target.external ? "_blank" : undefined}
               class="text-[#121212] no-underline hover:no-underline visited:text-[#121212] visited:no-underline"
               on:click={(event) => openInReader(event, post)}
             >

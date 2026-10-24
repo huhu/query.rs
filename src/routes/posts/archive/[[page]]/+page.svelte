@@ -26,20 +26,41 @@
     <ol class="posts">
       {#each data.posts as post}
         <li>
-          <a href={post.href}>
-            <span class="title">{post.title}</span>
-            <span class="meta">
-              <span>{post.score} points</span>
-              {#if post.createdAtLabel}
-                <span aria-hidden="true">·</span>
-                <time>{post.createdAtLabel}</time>
-              {/if}
-              {#if post.author}
-                <span aria-hidden="true">·</span>
-                <span>{post.author}</span>
-              {/if}
-            </span>
-          </a>
+          {#if post.href}
+            <a
+              href={post.href}
+              rel={post.external ? "ugc noopener noreferrer" : undefined}
+              target={post.external ? "_blank" : undefined}
+            >
+              <span class="title">{post.title}</span>
+              <span class="meta">
+                <span>{post.score} points</span>
+                {#if post.createdAtLabel}
+                  <span aria-hidden="true">·</span>
+                  <time>{post.createdAtLabel}</time>
+                {/if}
+                {#if post.author}
+                  <span aria-hidden="true">·</span>
+                  <span>{post.author}</span>
+                {/if}
+              </span>
+            </a>
+          {:else}
+            <div class="static">
+              <span class="title">{post.title}</span>
+              <span class="meta">
+                <span>{post.score} points</span>
+                {#if post.createdAtLabel}
+                  <span aria-hidden="true">·</span>
+                  <time>{post.createdAtLabel}</time>
+                {/if}
+                {#if post.author}
+                  <span aria-hidden="true">·</span>
+                  <span>{post.author}</span>
+                {/if}
+              </span>
+            </div>
+          {/if}
         </li>
       {/each}
     </ol>
@@ -121,7 +142,8 @@
   .posts a:link,
   .posts a:visited,
   .posts a:hover,
-  .posts a:active {
+  .posts a:active,
+  .posts .static {
     display: block;
     padding: 0.9rem 1rem;
     border-radius: 10px;

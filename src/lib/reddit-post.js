@@ -164,6 +164,41 @@ export function decodeBody(text) {
 }
 
 /**
+ * A discussion body worth an article page. Link-only posts store a blank
+ * selftext (sometimes only the literal "\\n" sequence). There is no is_self column.
+ * @param {string | null | undefined} selftext
+ */
+export function hasDiscussionBody(selftext) {
+  return decodeBody(selftext).trim().length > 0;
+}
+
+/**
+ * SQLite expression equivalent to hasDiscussionBody(selftext).
+ * TRIM() only strips spaces, so tabs, newlines, and the stored "\\n"
+ * sequence (CHAR(92) + "n") are normalized to spaces first.
+ */
+export const DISCUSSION_BODY_SQL =
+  "LENGTH(TRIM(REPLACE(REPLACE(REPLACE(REPLACE(IFNULL(selftext, ''), CHAR(92) || 'n', ' '), CHAR(10), ' '), CHAR(13), ' '), CHAR(9), ' '))) > 0";
+
+/**
+ * List, archive, and "Open page" target.
+ * Discussion posts use the article path. Link-only posts use the external
+ * URL, then the Reddit thread, and never the empty article page.
+ * @param {{ postId?: string | null, title?: string | null, createdAt?: string | null, selftext?: string | null, url?: string | null, permalink?: string | null }} post
+ * @returns {{ href: string, external: boolean }}
+ */
+export function postTarget(post) {
+  if (hasDiscussionBody(post?.selftext)) {
+    return { href: postPath(post), external: false };
+  }
+  const external = externalUrl(post?.url);
+  if (external) return { href: external, external: true };
+  const thread = redditUrl(post?.permalink);
+  if (thread) return { href: thread, external: true };
+  return { href: "", external: false };
+}
+
+/**
  * @param {{ title?: string | null, url?: string | null }} post
  */
 export function formatTitle(post) {

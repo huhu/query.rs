@@ -4,9 +4,11 @@ import {
   archivePageCount,
   archivePageLinks,
   archivePath,
+  DISCUSSION_BODY_SQL,
   formatCreatedAt,
   formatTitle,
   postPath,
+  postTarget,
   SITE_ORIGIN,
 } from "$lib/reddit-post.js";
 
@@ -14,7 +16,8 @@ export const prerender = false;
 export const ssr = true;
 
 const COUNT_SQL = `SELECT COUNT(*) AS total FROM reddit_posts`;
-const LIST_SQL = `SELECT postId, title, score, author, createdAt, url
+const LIST_SQL = `SELECT postId, title, score, author, createdAt, url, permalink,
+         CASE WHEN ${DISCUSSION_BODY_SQL} THEN 1 ELSE 0 END AS discussion
          FROM reddit_posts
          ORDER BY createdAt DESC, postId DESC
          LIMIT ? OFFSET ?`;
@@ -60,13 +63,17 @@ export async function load({ params, platform, setHeaders }) {
       page: n,
       href: archivePath(n),
     })),
-    posts: rows.map((row) => ({
-      href: postPath(row),
-      title: formatTitle(row) || "Reddit post",
-      score: row.score ?? 0,
-      author: row.author || "",
-      createdAtLabel: formatCreatedAt(row.createdAt),
-    })),
+    posts: rows.map((row) => {
+      const target = archiveTarget(row);
+      return {
+        href: target.href,
+        external: target.external,
+        title: formatTitle(row) || "Reddit post",
+        score: row.score ?? 0,
+        author: row.author || "",
+        createdAtLabel: formatCreatedAt(row.createdAt),
+      };
+    }),
     seo: {
       title: page === 1 ? "Reddit posts · Query.rs" : `Reddit posts, page ${page} · Query.rs`,
       description:
@@ -101,6 +108,18 @@ async function listPage(db, page) {
 }
 
 /**
+ * `discussion` is the SQL form of hasDiscussionBody. Link-only rows still
+ * need url and permalink so the list can point at the real destination.
+ * @param {ArchiveRow} row
+ */
+function archiveTarget(row) {
+  if (Number(row.discussion) === 1) {
+    return { href: postPath(row), external: false };
+  }
+  return postTarget({ ...row, selftext: "" });
+}
+
+/**
  * @typedef {Object} ArchiveRow
  * @property {string} postId
  * @property {string | null} title
@@ -108,4 +127,7 @@ async function listPage(db, page) {
  * @property {string | null} author
  * @property {string | null} createdAt
  * @property {string | null} url
+ * @property {string | null} [permalink]
+ * @property {string | null} [selftext]
+ * @property {number | null} [discussion]
  */
