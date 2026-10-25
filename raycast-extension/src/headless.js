@@ -5,6 +5,7 @@ import searchIndex from "../../lib/index/std-docs.js";
 import stdDescShards from "../../lib/index/desc-shards/std.js";
 import { searchCrates } from "./crates.ts";
 import { suggest } from "./suggest.js";
+import { formatErrorCode, searchErrorCodes } from "../../lib/search/error-code.js";
 
 export async function initHeadlessOmnibox() {
   let crateSearchCache = null;
@@ -110,20 +111,7 @@ export async function initHeadlessOmnibox() {
   headless.addRegexQueryEvent(/^`?e\d{2,4}`?$/i, {
     name: "Error code",
     onSearch: async (query) => {
-      query = query.replace("`", "");
-      let baseIndex = parseInt(query.slice(1).padEnd(4, "0"));
-      let result = [];
-      for (let i = 0; i < 10; i++) {
-        let errorIndex = "E" + String(baseIndex++).padStart(4, "0").toUpperCase();
-        result.push(errorIndex);
-      }
-
-      return result.map((errorCode) => {
-        return {
-          content: `https://doc.rust-lang.org/error_codes/${errorCode}.html`,
-          description: `Open error code <match>${errorCode}</match> on error codes index`,
-        };
-      });
+      return searchErrorCodes(query).map((entry) => formatErrorCode("https://doc.rust-lang.org/", entry));
     },
   });
   return headless;
