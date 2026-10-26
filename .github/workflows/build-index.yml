@@ -20,7 +20,9 @@ jobs:
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml labels -d /tmp/labels.js
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rustc -d /tmp/rustc.js
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml targets -d /tmp/targets.js
-          git clone --depth 1 https://github.com/jplatte/caniuse.rs.git /tmp/caniuse
+          # The GitHub repo is archived. Its default branch is only a move notice and
+          # has no data/, so the caniuse task exits with NotFound. The data files live on Codeberg.
+          git clone --depth 1 https://codeberg.org/jplatte/caniuse.rs.git /tmp/caniuse
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml caniuse -p /tmp/caniuse -d /tmp/caniuse.js
           git clone --depth 1 https://github.com/nrc/rfc-index.git /tmp/rfc-index
           RUST_BACKTRACE=full cargo run --target-dir /tmp --manifest-path=rust/Cargo.toml rfcs -p /tmp/rfc-index -d /tmp/rfcs.js
