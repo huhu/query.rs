@@ -4,7 +4,7 @@ export const THEME_STORAGE_KEY = "query-theme";
 /** Browser chrome color. Keep in sync with the blocking script in `src/app.html`. */
 export const THEME_META_COLOR = {
   light: "#fcfaf6",
-  dark: "#14120f",
+  dark: "#322e29",
 };
 
 /**

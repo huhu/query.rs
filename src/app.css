@@ -81,69 +81,71 @@
 
 html.dark {
   color-scheme: dark;
-  --bg: #14120f;
-  --surface: #221f1a;
-  --wash: #2c2822;
-  --sunken: #353028;
-  --hover: #322c24;
-  --ink: #f4efe6;
-  --prose: #e7e0d4;
-  --text-strong: #f4efe6;
-  --muted: #b7ad9e;
-  --soft: #a89886;
-  --secondary: #d5cbbd;
-  --label: #d5cbbd;
-  --desc: #c9bfb0;
-  --quiet: #c2b6a6;
-  --chip-ink: #e6dfd3;
-  --line: #7d6f5e;
-  --line-subtle: #655c50;
-  --line-strong: #8f806c;
-  --line-warm: #8a7b68;
+  /* Warm charcoal. Light enough that the page is not ink, dark enough for the cream type. */
+  --bg: #322e29;
+  --surface: #403a33;
+  --wash: #4c453c;
+  --sunken: #564e44;
+  --hover: #5a5248;
+  --ink: #f7f2ea;
+  --prose: #efe6da;
+  --text-strong: #f7f2ea;
+  --muted: #d4c8b8;
+  --soft: #c3b6a4;
+  --secondary: #e4d8c8;
+  --label: #e4d8c8;
+  --desc: #ddd0be;
+  --quiet: #d2c4b2;
+  --chip-ink: #f3ebdf;
+  --line: #a89886;
+  --line-subtle: #8f8274;
+  --line-strong: #b5a594;
+  --line-warm: #b5a28e;
   --primary: #f9bb2d;
   --primary-color: #f9bb2d;
-  --primary-text-color: #f4efe6;
+  --primary-text-color: #f7f2ea;
   --primary-ink: #1f1c19;
   --brand-soft: #f9bb2d38;
-  --link: #9eb6ff;
-  --accent: #8eabff;
-  --selected: #2a3144;
-  --danger: #ff8d78;
-  --danger-soft: #3c2420;
-  --band: #243352;
-  --band-ink: #d6e2ff;
+  --link: #b9c9ff;
+  --accent: #a9c0ff;
+  --selected: #3d465c;
+  --danger: #ffb0a0;
+  --danger-soft: #5a3330;
+  --band: #3a4a6e;
+  --band-ink: #e4ecff;
   --fab: #f9bb2d;
   --fab-ink: #1f1c19;
-  --remove: #ff8a5c;
-  --code-bg: #2a261f;
-  --input-bg: #1a1814;
-  --input-border: #7d6f5e;
+  --remove: #ffb08a;
+  --code-bg: #322e29;
+  --input-bg: #2c2824;
+  --input-border: #a89886;
+  --icon-plate: #f4efe6;
   --input-accent: #f9bb2d;
   --btn-primary: #f9bb2d;
   --btn-primary-hover: #ffcc4d;
   --btn-secondary: #efe8dc;
   --btn-secondary-hover: #ffffff;
   --btn-secondary-text: #1a160f;
-  --slider-off: #4a433a;
+  --slider-off: #6a5f54;
   --slider-on: #f9bb2d;
-  --slider-knob: #1c1916;
-  --icon: #f4efe6;
+  --slider-knob: #2c2824;
+  --icon: #f7f2ea;
   --scrim: rgba(0, 0, 0, 0.6);
   --menu-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-  --omnibox-bg: #1a1814;
-  --omnibox-border: #7d6f5e;
-  --omnibox-hover: #322c24;
-  --omnibox-dim: #c4baad;
-  --omnibox-hint: #9eb6ff;
-  --omnibox-hint-line: #7f96d6;
+  --omnibox-bg: #403a33;
+  --omnibox-border: #a89886;
+  --omnibox-hover: #564e44;
+  --omnibox-dim: #e0d4c4;
+  --omnibox-hint: #b9c9ff;
+  --omnibox-hint-line: #8aa0d8;
   --omnibox-indicator: #f9bb2d;
-  --omnibox-line: #655c50;
+  --omnibox-line: #8f8274;
   --omnibox-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
   --omnibox-shadow-drop: 0 10px 24px rgba(0, 0, 0, 0.5);
-  --chart-axis: #c4baad;
-  --chart-split: #655c50;
-  --chart-cell: #2a261f;
-  --chart-cell-border: #221f1a;
+  --chart-axis: #e0d4c4;
+  --chart-split: #8f8274;
+  --chart-cell: #322e29;
+  --chart-cell-border: #403a33;
   --bar-label: #1a160f;
   --stat-stable: #fec744;
   --stat-nightly: #f3efe6;
@@ -151,7 +153,7 @@ html.dark {
   --stat-crate: #7dbe78;
   --stat-attribute: #c4a6e8;
   --stat-error: #ff6b6b;
-  --stat-other: #8a8074;
+  --stat-other: #c4b6a4;
 }
 
 @layer base {
@@ -511,4 +513,11 @@ html.dark textarea::placeholder {
 
 .omn-dim {
   color: var(--omnibox-dim);
+}
+
+/* Result icons such as docs.png are black marks on transparency. A paper
+   plate keeps them visible on charcoal without recoloring the crate artwork. */
+html.dark .omn-dropdown-item img {
+  background-color: var(--icon-plate);
+  border-radius: 4px;
 }

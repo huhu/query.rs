@@ -10,10 +10,6 @@
       path: "/",
     },
     {
-      name: "Archive",
-      path: "/posts/archive",
-    },
-    {
       name: "Crates",
       path: "/crates",
     },

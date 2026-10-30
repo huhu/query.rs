@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#fcfaf6">
-    <!-- Keep in sync with src/lib/theme.js (query-theme, #fcfaf6, #14120f). -->
+    <!-- Keep in sync with src/lib/theme.js (query-theme, #fcfaf6, #322e29). -->
     <script>
         (function () {
             var key = "query-theme";
@@ -21,12 +21,12 @@
             root.classList.toggle("dark", dark);
             root.style.colorScheme = dark ? "dark" : "light";
             var meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) meta.setAttribute("content", dark ? "#14120f" : "#fcfaf6");
+            if (meta) meta.setAttribute("content", dark ? "#322e29" : "#fcfaf6");
         })();
     </script>
     <style>
         html { background-color: #fcfaf6; color: #121212; }
-        html.dark { background-color: #14120f; color: #f4efe6; }
+        html.dark { background-color: #322e29; color: #f7f2ea; }
     </style>
     <link rel="icon" type="image/png" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
