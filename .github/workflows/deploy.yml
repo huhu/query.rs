@@ -1,9 +1,10 @@
 name: Build and deploy query.rs
 
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Production publishes only from main. Pull requests get a Pages preview of the PR head.
   push:
     branches: [ "main" ]
+  pull_request:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,6 +16,8 @@ permissions:
 
 jobs:
   build:
+    # Never run the production publish for a pull request. Preview deploys are a separate job.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -39,3 +42,62 @@ jobs:
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # Stay on Wrangler 3, matching the previous pin and package.json ("wrangler": "^3.99.0").
           wranglerVersion: "3"
+
+  preview:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages-preview-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    steps:
+      - name: Refuse to preview the production branch
+        env:
+          PREVIEW_BRANCH: ${{ github.head_ref }}
+        run: |
+          if [ -z "$PREVIEW_BRANCH" ] || [ "$PREVIEW_BRANCH" = "main" ]; then
+            echo "Refusing to deploy branch '${PREVIEW_BRANCH}' as a preview."
+            exit 1
+          fi
+          echo "Preview branch: $PREVIEW_BRANCH"
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          submodules: recursive
+      - name: Build website
+        run: |
+          npm install && npm run build
+      - name: Publish preview to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # A non-production branch is a Pages preview. It does not update the
+          # production alias (query.rs) as long as the project's production branch is main.
+          command: pages deploy .svelte-kit/cloudflare --project-name=query-rs --branch=${{ github.head_ref }} --commit-hash=${{ github.event.pull_request.head.sha }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: "3"
+      - name: Require a preview deployment
+        env:
+          PAGES_ENVIRONMENT: ${{ steps.deploy.outputs.pages-environment }}
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+          ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+        run: |
+          echo "environment=$PAGES_ENVIRONMENT"
+          echo "deployment=$DEPLOYMENT_URL"
+          echo "alias=$ALIAS_URL"
+          if [ "$PAGES_ENVIRONMENT" != "preview" ]; then
+            echo "Expected Pages environment 'preview', got '${PAGES_ENVIRONMENT}'."
+            echo "This job must not alias production."
+            exit 1
+          fi
+          if [ -z "$DEPLOYMENT_URL" ]; then
+            echo "Wrangler did not report a deployment URL."
+            exit 1
+          fi
+          {
+            echo "### Pages preview"
+            echo ""
+            echo "- Deployment: ${DEPLOYMENT_URL}"
+            echo "- Branch alias: ${ALIAS_URL}"
+          } >> "$GITHUB_STEP_SUMMARY"
