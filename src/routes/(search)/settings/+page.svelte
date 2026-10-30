@@ -57,6 +57,7 @@
             style="vertical-align: middle"
           >
             <img
+              class="icon-muted"
               style="vertical-align: middle;width: 15px;margin-right: 5px;"
               src="../assets/info.svg"
               alt="info"

@@ -72,11 +72,16 @@
 <style>
   .archive {
     box-sizing: border-box;
-    background: white;
+    background: var(--surface);
+    border: 1px solid transparent;
     border-radius: 10px;
     margin-bottom: 50px;
     min-height: calc(100vh - 180px);
     padding: 1.75rem 1.25rem 2.5rem;
+  }
+
+  :global(html.dark) .archive {
+    border-color: var(--line-subtle);
   }
 
   @media (min-width: 768px) {
@@ -97,14 +102,14 @@
 
   .subtitle {
     margin-top: 0.75rem;
-    color: #6b645b;
+    color: var(--quiet);
     font-size: 1rem;
   }
 
   .empty {
     max-width: 46rem;
     margin: 0 auto;
-    color: #6b645b;
+    color: var(--quiet);
   }
 
   .posts {
@@ -125,15 +130,15 @@
     display: block;
     padding: 0.9rem 1rem;
     border-radius: 10px;
-    background: #fcfaf6;
+    background: var(--bg);
     border: 1px solid transparent;
     text-decoration: none;
-    color: #121212;
+    color: var(--ink);
   }
 
   .posts a:hover {
-    background: #fff;
-    border-color: #f9bc2d;
+    background: var(--surface);
+    border-color: var(--primary);
   }
 
   .title {
@@ -141,7 +146,7 @@
     font-size: 1.05rem;
     font-weight: 500;
     line-height: 1.4;
-    color: #121212;
+    color: var(--ink);
     text-decoration: none;
   }
 
@@ -151,7 +156,7 @@
     gap: 0.35rem 0.45rem;
     margin-top: 0.4rem;
     font-size: 0.85rem;
-    color: #6b645b;
+    color: var(--quiet);
   }
 
   .pager {
@@ -178,27 +183,28 @@
     min-width: 2.25rem;
     padding: 0.4rem 0.75rem;
     border-radius: 999px;
-    border: 1px solid #f0e4c4;
-    background: #fcfaf6;
-    color: #3f3a34;
+    border: 1px solid var(--line-warm);
+    background: var(--bg);
+    color: var(--chip-ink);
     text-decoration: none;
     font-size: 0.875rem;
   }
 
   .step:hover,
   a.page:hover {
-    background: #f9bc2d46;
-    border-color: #f9bc2d;
+    background: var(--brand-soft);
+    border-color: var(--primary);
   }
 
   .current {
-    background: #f9bc2d;
-    border-color: #f9bc2d;
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-ink);
     font-weight: 600;
   }
 
   .gap {
-    color: #6b645b;
+    color: var(--quiet);
     padding: 0 0.15rem;
   }
 </style>

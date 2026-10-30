@@ -1,5 +1,6 @@
 <script>
   import { page } from "$app/stores";
+  import ThemeToggle from "$lib/ThemeToggle.svelte";
   import "../app.css";
 
   $: seo = $page.data.seo ?? {};
@@ -60,19 +61,22 @@
         ><img
           src="/assets/logo.svg"
           alt="logo"
-          class="w-32 m-4"
+          class="logo-ink w-32 m-4"
           class:hidden={!showLogo}
         />
       </a>
-      <ul
-        class="flex list-none flex-row justify-center overflow-auto md:self-end py-5 text-base md:text-xl"
-      >
-        {#each menus as menu}
-          <li class="px-5 rounded-md hover:bg-[#f9bc2d46]">
-            <a href={menu.path}>{menu.name}</a>
-          </li>
-        {/each}
-      </ul>
+      <div class="flex w-full md:w-auto items-center md:self-end">
+        <ul
+          class="flex min-w-0 flex-1 flex-nowrap list-none flex-row justify-start overflow-x-auto md:flex-none md:justify-center py-5 text-base md:text-xl"
+        >
+          {#each menus as menu}
+            <li class="shrink-0 whitespace-nowrap px-2.5 md:px-5 rounded-md hover:bg-brand-soft">
+              <a href={menu.path}>{menu.name}</a>
+            </li>
+          {/each}
+        </ul>
+        <ThemeToggle />
+      </div>
     </div>
     <slot />
   </div>

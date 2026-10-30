@@ -44,7 +44,7 @@
   <h2 class="pb-6">About Logo</h2>
 
   <div class="text-center mb-6 flex flex-col md:flex-row md:justify-evenly">
-    <img class="w-full my-3 md:w-64" src="/assets/logo.svg" alt="logo" />
+    <img class="logo-ink w-full my-3 md:w-64" src="/assets/logo.svg" alt="logo" />
     <img class="w-full my-3 md:w-64" src="/assets/logo-red.svg" alt="logo" />
   </div>
   <p>

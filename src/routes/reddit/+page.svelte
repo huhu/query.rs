@@ -192,7 +192,7 @@
   <div
     class="relative {isMobile
       ? 'fixed inset-y-0 left-0 z-50'
-      : ''} w-52 bg-white border-r border-gray-200 transform transition-transform duration-300"
+      : ''} w-52 bg-surface border-r border-line transform transition-transform duration-300"
     class:translate-x-0={showMobileSidebar}
     class:-translate-x-full={isMobile && !showMobileSidebar}
     class:hidden={!showMobileSidebar && isMobile}
@@ -209,7 +209,7 @@
           placeholder="Search posts..."
           class="w-full p-1 px-2 border rounded-md"
         />
-        <Search class="w-4 h-4 absolute right-3 text-gray-400" />
+        <Search class="w-4 h-4 absolute right-3 text-soft" />
       </div>
       <RedditSidebar
         onDateSelect={handleDateSelect}
@@ -219,24 +219,24 @@
       />
     </div>
     <div
-      class="absolute bg-white bottom-0 left-0 right-0 p-2 text-xs text-gray-400 border-t"
+      class="absolute bg-surface bottom-0 left-0 right-0 p-2 text-xs text-soft border-t"
     >
       Only posts with score ≥ 50 are collected. Data cutoff: 2021-11-23
-      <a href="/posts/archive" class="block mt-1 text-blue-600 hover:underline">All posts</a>
+      <a href="/posts/archive" class="block mt-1 text-link hover:underline">All posts</a>
     </div>
   </div>
 
   <div
-    class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-gray-200"
+    class="flex-1 max-w-xl h-[80vh] overflow-y-auto border-r border-line"
   >
     {#if loading}
       <div class="flex justify-center items-center h-32">
         <div
-          class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"
         ></div>
       </div>
     {:else if error}
-      <div class="p-4 text-red-500 bg-red-50">
+      <div class="p-4 text-danger bg-danger-soft">
         Error loading posts: {error}
       </div>
     {:else}
@@ -252,7 +252,7 @@
   <!-- PostDetail - slide in from right, overlay on mobile -->
   <div
     class="flex-1 max-w-xl overflow-y-auto {isMobile
-      ? 'fixed left-0 right-0 bottom-0 top-[header-height] md:right-auto md:w-[32rem] z-30 bg-white shadow-lg'
+      ? 'fixed left-0 right-0 bottom-0 top-[header-height] md:right-auto md:w-[32rem] z-30 bg-surface shadow-lg'
       : ''}"
     class:translate-x-full={isMobile && !showDetail}
     class:translate-x-0={isMobile && showDetail}
@@ -261,11 +261,11 @@
   >
     {#if isMobile}
       <div
-        class="sticky top-0 bg-white border-b px-4 py-3 flex items-center gap-3"
+        class="sticky top-0 bg-surface border-b px-4 py-3 flex items-center gap-3"
       >
         <button
           on:click={closeDetail}
-          class="p-2 hover:bg-gray-100 rounded-full"
+          class="p-2 hover:bg-sunken rounded-full"
         >
           ← Back
         </button>
@@ -280,14 +280,14 @@
   <!-- Add semi-transparent overlay behind detail view -->
   {#if isMobile && showDetail}
     <div
-      class="fixed inset-0 bg-black bg-opacity-25 z-20"
+      class="fixed inset-0 bg-[var(--scrim)] z-20"
       on:click={closeDetail}
     />
   {/if}
   <!-- Mobile search/filter button -->
   {#if isMobile}
     <button
-      class="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg z-20"
+      class="fixed bottom-4 right-4 bg-fab text-fab-ink p-4 rounded-full shadow-lg z-20"
       on:click={toggleMobileSidebar}
     >
       <Search class="w-6 h-6" />

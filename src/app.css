@@ -4,14 +4,194 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light;
+  --bg: #fcfaf6;
+  --surface: #ffffff;
+  --wash: #f9fafb;
+  --sunken: #f3f4f6;
+  --hover: #f5f3f1;
+  --ink: #121212;
+  --prose: #1f2937;
+  --text-strong: #1f1c19;
+  --muted: #6b7280;
+  --soft: #9ca3af;
+  --secondary: #4b5563;
+  --label: #444444;
+  --desc: #565656;
+  --quiet: #6b645b;
+  --chip-ink: #3f3a34;
+  --line: #e5e7eb;
+  --line-subtle: #f3f4f6;
+  --line-strong: #d1d5db;
+  --line-warm: #f0e4c4;
+  --primary: #f9bb2d;
+  --primary-color: #f9bb2d;
+  --primary-text-color: #121212;
+  --primary-ink: #1f1c19;
+  --brand-soft: #f9bc2d46;
+  --link: #2563eb;
+  --accent: #3b82f6;
+  --selected: #eff6ff;
+  --danger: #ef4444;
+  --danger-soft: #fef2f2;
+  --band: #e6ecfd;
+  --band-ink: #2759e7;
+  --fab: #3b82f6;
+  --fab-ink: #ffffff;
+  --remove: #dd4814;
+  --code-bg: #fcfaf6;
+  --input-bg: #ffffff;
+  --input-border: #e5e7eb;
+  --input-accent: #f9bb2daa;
+  --btn-primary: #f9bb2daa;
+  --btn-primary-hover: #f9bb2d;
+  --btn-secondary: #121212bb;
+  --btn-secondary-hover: #121212;
+  --btn-secondary-text: #ffffff;
+  --slider-off: #cccccc;
+  --slider-on: #333333;
+  --slider-knob: #ffffff;
+  --icon: #000000;
+  --scrim: rgba(0, 0, 0, 0.25);
+  --menu-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --omnibox-bg: #ffffff;
+  --omnibox-border: #dfe1e5;
+  --omnibox-hover: #f2f2f2;
+  --omnibox-dim: #474747;
+  --omnibox-hint: #2559c9;
+  --omnibox-hint-line: #9cb5eb;
+  --omnibox-indicator: #3168cb;
+  --omnibox-line: #e8eaed;
+  --omnibox-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+  --omnibox-shadow-drop: 0 4px 6px rgba(32, 33, 36, 0.28);
+  --chart-axis: #6e7079;
+  --chart-split: #e0e6f1;
+  --chart-cell: #f4f7f7;
+  --chart-cell-border: #ffffff;
+  --bar-label: #000000;
+  --stat-stable: #fec744;
+  --stat-nightly: #030303;
+  --stat-docs: #dd6b33;
+  --stat-crate: #3d6739;
+  --stat-attribute: #9e78c6;
+  --stat-error: #f50707;
+  --stat-other: #ededed;
+}
+
+html.dark {
+  color-scheme: dark;
+  --bg: #14120f;
+  --surface: #221f1a;
+  --wash: #2c2822;
+  --sunken: #353028;
+  --hover: #322c24;
+  --ink: #f4efe6;
+  --prose: #e7e0d4;
+  --text-strong: #f4efe6;
+  --muted: #b7ad9e;
+  --soft: #a89886;
+  --secondary: #d5cbbd;
+  --label: #d5cbbd;
+  --desc: #c9bfb0;
+  --quiet: #c2b6a6;
+  --chip-ink: #e6dfd3;
+  --line: #7d6f5e;
+  --line-subtle: #655c50;
+  --line-strong: #8f806c;
+  --line-warm: #8a7b68;
+  --primary: #f9bb2d;
+  --primary-color: #f9bb2d;
+  --primary-text-color: #f4efe6;
+  --primary-ink: #1f1c19;
+  --brand-soft: #f9bb2d38;
+  --link: #9eb6ff;
+  --accent: #8eabff;
+  --selected: #2a3144;
+  --danger: #ff8d78;
+  --danger-soft: #3c2420;
+  --band: #243352;
+  --band-ink: #d6e2ff;
+  --fab: #f9bb2d;
+  --fab-ink: #1f1c19;
+  --remove: #ff8a5c;
+  --code-bg: #2a261f;
+  --input-bg: #1a1814;
+  --input-border: #7d6f5e;
+  --input-accent: #f9bb2d;
+  --btn-primary: #f9bb2d;
+  --btn-primary-hover: #ffcc4d;
+  --btn-secondary: #efe8dc;
+  --btn-secondary-hover: #ffffff;
+  --btn-secondary-text: #1a160f;
+  --slider-off: #4a433a;
+  --slider-on: #f9bb2d;
+  --slider-knob: #1c1916;
+  --icon: #f4efe6;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --menu-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --omnibox-bg: #1a1814;
+  --omnibox-border: #7d6f5e;
+  --omnibox-hover: #322c24;
+  --omnibox-dim: #c4baad;
+  --omnibox-hint: #9eb6ff;
+  --omnibox-hint-line: #7f96d6;
+  --omnibox-indicator: #f9bb2d;
+  --omnibox-line: #655c50;
+  --omnibox-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+  --omnibox-shadow-drop: 0 10px 24px rgba(0, 0, 0, 0.5);
+  --chart-axis: #c4baad;
+  --chart-split: #655c50;
+  --chart-cell: #2a261f;
+  --chart-cell-border: #221f1a;
+  --bar-label: #1a160f;
+  --stat-stable: #fec744;
+  --stat-nightly: #f3efe6;
+  --stat-docs: #ff8a4c;
+  --stat-crate: #7dbe78;
+  --stat-attribute: #c4a6e8;
+  --stat-error: #ff6b6b;
+  --stat-other: #8a8074;
+}
+
+@layer base {
+  html,
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+  }
+
+  input,
+  select,
+  textarea {
+    background-color: var(--input-bg);
+    color: var(--ink);
+    border-color: var(--input-border);
+  }
+
+  option {
+    background-color: var(--surface);
+    color: var(--ink);
+  }
+}
+
+html.dark ::selection {
+  background: rgba(249, 187, 45, 0.35);
+  color: var(--ink);
+}
+
+html.dark .logo-ink {
+  filter: invert(1);
+}
+
+html.dark .icon-muted {
+  filter: brightness(0) invert(0.88);
+}
+
 * {
   margin: 0;
   padding: 0;
   font-family: "Roboto", sans-serif;
-}
-
-html {
-  background-color: #fcfaf6;
 }
 
 img {
@@ -69,23 +249,23 @@ h2,
   border-bottom: var(--primary-color) 1px dashed;
 }
 .crate-list-item:hover {
-  background-color: #f5f3f1;
+  background-color: var(--hover);
 }
 .crate-list-item .crate-attr {
   margin: 0 8px;
   font-size: 16px;
 }
 .crate-list-item .crate-desc {
-  color: #565656;
+  color: var(--desc);
   padding: 10px 0;
   font-size: 16px;
 }
 .crate-list-item .crate-extra {
-  color: #565656;
+  color: var(--desc);
   font-size: 15px;
 }
 .btn-remove {
-  color: #dd4814;
+  color: var(--remove);
   font-size: 14px;
   padding: 15px;
 }
@@ -111,7 +291,7 @@ h2,
 }
 .setting-subitem {
   font-size: 15px;
-  color: #444;
+  color: var(--label);
   margin: 10px;
 }
 .offline-doc-path {
@@ -135,7 +315,7 @@ h2,
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: var(--slider-off);
   -webkit-transition: 0.3s;
   transition: 0.3s;
 }
@@ -146,15 +326,15 @@ h2,
   width: 11px;
   left: 3px;
   bottom: 2px;
-  background-color: white;
+  background-color: var(--slider-knob);
   -webkit-transition: 0.3s;
   transition: 0.3s;
 }
 input:checked + .slider {
-  background-color: #333;
+  background-color: var(--slider-on);
 }
 input:focus + .slider {
-  box-shadow: 0 0 1px #333;
+  box-shadow: 0 0 1px var(--slider-on);
 }
 input:checked + .slider:before {
   -webkit-transform: translateX(10px);
@@ -171,25 +351,27 @@ input:checked + .slider:before {
   width: 120px;
 }
 .btn-primary {
-  background-color: #f9bb2daa;
+  background-color: var(--btn-primary);
+  color: var(--primary-ink);
 }
 .btn-primary:hover {
-  background-color: #f9bb2d;
+  background-color: var(--btn-primary-hover);
 }
 .btn-secondary {
-  background-color: #121212bb;
-  color: white;
+  background-color: var(--btn-secondary);
+  color: var(--btn-secondary-text);
 }
 .btn-secondary:hover {
-  background-color: #121212;
+  background-color: var(--btn-secondary-hover);
 }
 .file-selector {
   margin-bottom: 30px;
-  border: 1px dashed;
+  border: 1px dashed var(--ink);
   padding: 10px;
+  color: var(--ink);
 }
 .file-selector.required {
-  border: 1px dashed red;
+  border: 1px dashed var(--danger);
   animation: shake 0.5s;
 }
 @keyframes shake {
@@ -228,11 +410,11 @@ input:checked + .slider:before {
   }
 }
 a {
-  color: initial;
+  color: var(--ink);
   text-decoration: underline;
 }
 a:visited {
-  color: initial;
+  color: var(--ink);
 }
 ul {
   list-style: none;
@@ -244,7 +426,7 @@ h3 {
 }
 .container {
   padding: 30px 40px 80px;
-  background-color: white;
+  background-color: var(--surface);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -265,8 +447,68 @@ h3 {
   padding: 5px 15px;
   cursor: pointer;
   border-radius: 4px;
+  color: var(--ink);
+  background: transparent;
 }
 
 .selected {
-  background-color: var(--primary-color);
+  background-color: var(--primary);
+  color: var(--primary-ink);
+}
+
+.omn-container {
+  background: var(--omnibox-bg);
+  border-color: var(--omnibox-border);
+  color: var(--ink);
+}
+
+.omn-filled {
+  border-color: transparent;
+  box-shadow: var(--omnibox-shadow);
+}
+
+.omn-input {
+  background: transparent;
+  color: var(--ink);
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--soft);
+}
+
+.omn-search-icon svg,
+.omn-clear svg {
+  fill: var(--icon);
+}
+
+.omn-hint {
+  color: var(--omnibox-hint);
+}
+
+.omn-hint-gapline {
+  background: var(--omnibox-hint-line);
+}
+
+.omn-dropdown {
+  background: var(--omnibox-bg);
+  color: var(--ink);
+  box-shadow: var(--omnibox-shadow-drop);
+}
+
+.omn-gapline {
+  border-top-color: var(--omnibox-line);
+}
+
+.omn-dropdown-indicator {
+  border-color: var(--omnibox-indicator);
+}
+
+.omn-selected,
+.omn-dropdown-item:hover {
+  background-color: var(--omnibox-hover);
+}
+
+.omn-dim {
+  color: var(--omnibox-dim);
 }

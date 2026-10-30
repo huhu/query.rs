@@ -100,11 +100,16 @@
 <style>
   .article-page {
     box-sizing: border-box;
-    background: white;
+    background: var(--surface);
+    border: 1px solid transparent;
     border-radius: 10px;
     margin-bottom: 50px;
     min-height: calc(100vh - 180px);
     padding: 1.75rem 1.25rem 3rem;
+  }
+
+  :global(html.dark) .article-page {
+    border-color: var(--line-subtle);
   }
 
   @media (min-width: 768px) {
@@ -126,7 +131,7 @@
 
   .actions a:hover,
   .meta a:hover {
-    background: #f9bc2d46;
+    background: var(--brand-soft);
   }
 
   h1 {
@@ -156,9 +161,9 @@
     align-items: center;
     padding: 0.28rem 0.7rem;
     border-radius: 999px;
-    background: #fcfaf6;
-    border: 1px solid #f0e4c4;
-    color: #3f3a34;
+    background: var(--bg);
+    border: 1px solid var(--line-warm);
+    color: var(--chip-ink);
     font-size: 0.85rem;
   }
 
@@ -172,8 +177,8 @@
   .actions a {
     padding: 0.4rem 0.8rem;
     border-radius: 999px;
-    background: #f9bc2d;
-    color: #1f1c19;
+    background: var(--primary);
+    color: var(--primary-ink);
     font-size: 0.875rem;
     font-weight: 500;
   }
@@ -182,8 +187,8 @@
     margin: 0 0 1.75rem;
     padding: 0.5rem;
     border-radius: 12px;
-    background: #fcfaf6;
-    border: 1px solid #f0e4c4;
+    background: var(--bg);
+    border: 1px solid var(--line-warm);
     overflow: hidden;
   }
 
@@ -196,17 +201,17 @@
   }
 
   .fallback {
-    color: #3f3a34;
+    color: var(--chip-ink);
     line-height: 1.6;
   }
 
   .fallback a {
-    color: #1f1c19;
-    border-bottom: 1px solid #f9bc2d;
+    color: var(--text-strong);
+    border-bottom: 1px solid var(--primary);
   }
 
   :global(.article-page .prose) {
-    color: #1f2937;
+    color: var(--prose);
     font-size: 1.05rem;
     line-height: 1.7;
   }
@@ -240,13 +245,13 @@
   }
 
   :global(.article-page .prose a) {
-    color: #1f1c19;
+    color: var(--text-strong);
     text-decoration: none;
-    border-bottom: 1px solid #f9bc2d;
+    border-bottom: 1px solid var(--primary);
   }
 
   :global(.article-page .prose a:hover) {
-    background: #f9bc2d46;
+    background: var(--brand-soft);
   }
 
   :global(.article-page .prose ul) {
@@ -264,7 +269,7 @@
   }
 
   :global(.article-page .prose code) {
-    background: #fcfaf6;
+    background: var(--code-bg);
     padding: 0.125rem 0.3rem;
     border-radius: 0.25rem;
     font-size: 0.9em;
@@ -272,8 +277,8 @@
   }
 
   :global(.article-page .prose pre) {
-    background: #fcfaf6;
-    border: 1px solid #f0e4c4;
+    background: var(--code-bg);
+    border: 1px solid var(--line-warm);
     padding: 0.9rem 1rem;
     border-radius: 10px;
     margin-top: 1rem;
@@ -287,12 +292,12 @@
   }
 
   :global(.article-page .prose blockquote) {
-    border-left: 4px solid #f9bc2d;
-    background: #fcfaf6;
+    border-left: 4px solid var(--primary);
+    background: var(--bg);
     padding: 0.35rem 0 0.35rem 1rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    color: #4b5563;
+    color: var(--secondary);
   }
 
   :global(.article-page .prose img) {
@@ -306,6 +311,6 @@
   :global(.article-page .prose hr) {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
-    border-color: #f0e4c4;
+    border-color: var(--line-warm);
   }
 </style>

@@ -247,13 +247,14 @@
 </script>
 
 <div class="py-3">
-  <div class="flex w-full bg-gray-100 p-1 rounded-lg mb-4">
+  <div class="flex w-full bg-sunken p-1 rounded-lg mb-4">
     {#each viewOptions as option}
       <button
         class="flex-1 px-2 py-1.5 text-xs font-medium rounded-md transition-colors"
-        class:bg-white={selectedView === option.id}
+        class:bg-surface={selectedView === option.id}
         class:shadow-sm={selectedView === option.id}
-        class:text-gray-600={selectedView !== option.id}
+        class:text-ink={selectedView === option.id}
+        class:text-secondary={selectedView !== option.id}
         on:click={() => {
           selectedView = option.id;
           handleViewChange({ target: { value: option.id } });
@@ -266,10 +267,10 @@
 
   <div class="space-y-2">
     {#each years as { year, months }}
-      <div class="border-b border-gray-100 last:border-0">
+      <div class="border-b border-line-subtle last:border-0">
         <button
-          class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
-          class:bg-blue-50={selectedView === "year" &&
+          class="flex items-center space-x-2 w-full p-2 hover:bg-wash rounded-md"
+          class:bg-selected={selectedView === "year" &&
             selectedId === year.toString()}
           on:click={() => {
             if (selectedView === "year") {
@@ -295,8 +296,8 @@
             {#each months as { month, monthName, dates }}
               <div class="ml-4">
                 <button
-                  class="flex items-center space-x-2 w-full p-2 hover:bg-gray-50 rounded-md"
-                  class:bg-blue-50={selectedView === "month" &&
+                  class="flex items-center space-x-2 w-full p-2 hover:bg-wash rounded-md"
+                  class:bg-selected={selectedView === "month" &&
                     selectedId === `${year}-${month}`}
                   on:click={() => {
                     if (selectedView === "month") {
@@ -327,8 +328,8 @@
                   <div class="ml-6 space-y-1">
                     {#each dates as date}
                       <button
-                        class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm"
-                        class:bg-blue-50={selectedView === "day" &&
+                        class="w-full text-left p-2 hover:bg-wash rounded-md text-sm"
+                        class:bg-selected={selectedView === "day" &&
                           selectedId === date}
                         on:click={() => {
                           selectedId = date;
@@ -347,8 +348,8 @@
               <div class="ml-6">
                 <button
                   bind:this={currentWeekElement}
-                  class="w-full text-left p-2 hover:bg-gray-50 rounded-md text-sm flex items-center justify-between"
-                  class:bg-blue-50={selectedView === "week" &&
+                  class="w-full text-left p-2 hover:bg-wash rounded-md text-sm flex items-center justify-between"
+                  class:bg-selected={selectedView === "week" &&
                     selectedId === `${year}-${week}`}
                   on:click={() => {
                     selectedId = `${year}-${week}`;
@@ -356,7 +357,7 @@
                   }}
                 >
                   <span>Week {week}</span>
-                  <span class="text-xs text-gray-500">
+                  <span class="text-xs text-muted">
                     {weekDates.start.split("-").slice(1).join("-")} to {weekDates.end
                       .split("-")
                       .slice(1)

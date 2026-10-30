@@ -2,6 +2,7 @@
   import {onMount} from 'svelte';
   import { init } from "echarts";
   import dayjs from 'dayjs';
+  import { paintChart, watchTheme } from "$lib/chart-chrome.js";
   /**
    * @type {number[]}
   */
@@ -72,6 +73,10 @@
     ]
   };
 
+  function paint() {
+    if (elementChart) paintChart(elementChart, "calendar");
+  }
+
   $: {
     if(elementChart) {
       elementChart.setOption({
@@ -84,12 +89,15 @@
           }
         ]
       })
+      paint();
     }
   }
 
   onMount(() => {
     elementChart = init(chartElement);
     elementChart.setOption(option);
+    paint();
+    return watchTheme(paint);
   })
 
 </script>

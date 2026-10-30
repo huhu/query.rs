@@ -41,7 +41,7 @@
   <ul class="list-decimal px-6">
     <li class="py-1">Navigate to <a href="about:config">about:config</a></li>
     <li class="py-1">
-      Find <code class="text-[#f9bb2d]">browser.search.suggest.timeout</code>
+      Find <code class="text-brand">browser.search.suggest.timeout</code>
     </li>
     <li class="py-1">
       Set the value to 2000 (milliseconds). (The default is 500ms and looks like

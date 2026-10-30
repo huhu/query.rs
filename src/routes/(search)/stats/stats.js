@@ -6,31 +6,31 @@ const TYPE_OTHER = "other";
 export const CHART_COLOR = "rgba(249, 188, 45, 0.5)";
 const STATS_MAP = {
     "stable": {
-        color: "#FEC744",
+        color: "var(--stat-stable)",
         description: "Std stable docs searches."
     },
     "nightly": {
-        color: "#030303",
+        color: "var(--stat-nightly)",
         description: "Std nightly docs searches."
     },
     "docs.rs": {
-        color: "#dd6b33",
+        color: "var(--stat-docs)",
         description: "Docs.rs docs search.",
     },
     "crate": {
-        color: "#3D6739",
+        color: "var(--stat-crate)",
         description: "crates.io or lib.rs searches."
     },
     "attribute": {
-        color: "#9e78c6",
+        color: "var(--stat-attribute)",
         description: "Built-in attributes searches."
     },
     "error code": {
-        color: "#f50707",
+        color: "var(--stat-error)",
         description: "Compile error index searches."
     },
     [TYPE_OTHER]: {
-        color: "#ededed",
+        color: "var(--stat-other)",
         description: "Others including any Rust version, Clippy lint (>), book (%), and caniuse/rfc (?) searches."
     }
 };
