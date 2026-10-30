@@ -10,10 +10,6 @@
       path: "/",
     },
     {
-      name: "Archive",
-      path: "/posts/archive",
-    },
-    {
       name: "Crates",
       path: "/crates",
     },
@@ -55,13 +51,13 @@
 </script>
 
 <div
-  class="box-border px-4 py-12 md:px-12 md:py-24 bg-[white] relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_180px)]"
+  class="page-shell box-border px-4 py-12 md:px-12 md:py-24 bg-surface relative rounded-[10px] mb-[50px] min-h-[calc(100vh_-_180px)] dark:border dark:border-line-subtle"
 >
   <a href="/" class="no-underline hover:no-underline">
     <img
       src="/assets/logo.svg"
+      class="logo-ink block mx-auto w-60 md:w-80 mt-8 mb-12"
       alt="logo"
-      class="block mx-auto w-60 md:w-80 mt-8 mb-12"
     />
   </a>
   <div class="absolute top-2 right-2">
@@ -87,12 +83,12 @@
       </svg>
     </button>
     <div
-      class="absolute top-12 right-4 z-50 bg-[#fcfaf6] rounded-md shadow-md"
+      class="absolute top-12 right-4 z-50 bg-canvas rounded-md shadow-md dark:border dark:border-line dark:shadow-menu"
       on:click={() => (hiddenMenu = true)}
       class:hidden={hiddenMenu}
     >
       {#each searchMenus as menu}
-        <a class="p-3 px-6 block hover:bg-[#f9bc2d46]" href={menu.path}
+        <a class="p-3 px-6 block hover:bg-brand-soft" href={menu.path}
           >{menu.name}</a
         >
       {/each}

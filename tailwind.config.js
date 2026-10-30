@@ -1,9 +1,46 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ['./src/**/*.{html,js,svelte,ts}'],
+    darkMode: 'class',
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                canvas: 'var(--bg)',
+                surface: 'var(--surface)',
+                wash: 'var(--wash)',
+                sunken: 'var(--sunken)',
+                hover: 'var(--hover)',
+                ink: 'var(--ink)',
+                prose: 'var(--prose)',
+                strong: 'var(--text-strong)',
+                muted: 'var(--muted)',
+                soft: 'var(--soft)',
+                secondary: 'var(--secondary)',
+                line: 'var(--line)',
+                'line-subtle': 'var(--line-subtle)',
+                'line-strong': 'var(--line-strong)',
+                'line-warm': 'var(--line-warm)',
+                brand: 'var(--primary)',
+                'brand-soft': 'var(--brand-soft)',
+                'brand-ink': 'var(--primary-ink)',
+                link: 'var(--link)',
+                accent: 'var(--accent)',
+                selected: 'var(--selected)',
+                danger: 'var(--danger)',
+                'danger-soft': 'var(--danger-soft)',
+                band: 'var(--band)',
+                'band-ink': 'var(--band-ink)',
+                fab: 'var(--fab)',
+                'fab-ink': 'var(--fab-ink)',
+                code: 'var(--code-bg)',
+            },
+            borderColor: {
+                DEFAULT: 'var(--line)',
+            },
+            boxShadow: {
+                menu: 'var(--menu-shadow)',
+            },
+        },
     },
     plugins: [],
 }
-

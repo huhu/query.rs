@@ -37,7 +37,7 @@ svg:not(:root) {
   overflow: initial;
 }
 .percent-bar:not(:first-child) {
-  border-left: 1px solid #ffffff;
+  border-left: 1px solid var(--surface);
 }
 .percent-bar:first-child {
   border-bottom-left-radius: 3px;

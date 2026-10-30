@@ -27,31 +27,31 @@
 <div class="relative">
   {#if headerTitle}
     <h2
-      class=" font-semibold text-[#2759e7] p-3 bg-[#e6ecfd] sticky top-0 z-10"
+      class="font-semibold text-band-ink p-3 bg-band sticky top-0 z-10"
     >
       {headerTitle}
     </h2>
   {/if}
   <div class="overflow-y-scroll">
     {#if posts.length === 0}
-      <div class="text-center text-gray-500 py-4">
+      <div class="text-center text-muted py-4">
         No posts found for this period
       </div>
     {:else}
       <ol class="space-y-1">
         {#each posts as post, i}
           <li
-            class="flex items-start px-4 py-2 hover:bg-gray-50"
-            class:bg-blue-50={selectedPostId === post.postId}
+            class="flex items-start px-4 py-2 hover:bg-wash"
+            class:bg-selected={selectedPostId === post.postId}
           >
-            <span class="text-gray-400 w-6">{i + 1}.</span>
+            <span class="text-soft w-6">{i + 1}.</span>
             <a
               href={hasDiscussionBody(post.selftext) ? postPath(post) : undefined}
-              class="text-[#121212] no-underline hover:no-underline visited:text-[#121212] visited:no-underline"
+              class="text-ink no-underline hover:no-underline visited:text-ink visited:no-underline"
               on:click={(event) => openInReader(event, post)}
             >
               {post.title}
-              <span class="text-gray-500">🔥{post.score}</span>
+              <span class="text-muted">🔥{post.score}</span>
             </a>
           </li>
         {/each}

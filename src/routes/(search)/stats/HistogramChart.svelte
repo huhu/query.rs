@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { init } from "echarts";
+  import { paintChart, watchTheme } from "$lib/chart-chrome.js";
   import { CHART_COLOR } from "./stats";
 
   /**
@@ -43,8 +44,12 @@
     },
   };
 
+  function paint() {
+    if (elementChart) paintChart(elementChart, "cartesian");
+  }
+
   $: {
-    elementChart &&
+    if (elementChart) {
       elementChart.setOption({
         xAxis: {
           type: "category",
@@ -60,11 +65,15 @@
           },
         ],
       });
+      paint();
+    }
   }
 
   onMount(() => {
     elementChart = init(echartElement);
     elementChart.setOption(option);
+    paint();
+    return watchTheme(paint);
   });
 </script>
 

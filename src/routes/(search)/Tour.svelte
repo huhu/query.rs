@@ -139,7 +139,11 @@
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 md:mt-16">
   {#each helpTips as { type, color, tips }}
     <div class="rounded border m-2">
-      <div class="px-4 text-base font-bold" style:background-color={color}>
+      <div
+        class="tip-swatch px-4 text-base font-bold text-brand-ink"
+        style:background-color={color}
+        style:--tip={color}
+      >
         {type}
       </div>
       <ul class="px-5 p-2 text-sm list-disc list-outside">
@@ -149,8 +153,9 @@
             <div>
               {#each tip.queries as q}
                 <button
-                  class="rounded hover:!bg-[#f9bc2d59] px-1 text-xs mr-1"
+                  class="tip-swatch rounded hover:!bg-brand-soft px-1 text-xs mr-1 text-brand-ink"
                   style:background-color={color}
+                  style:--tip={color}
                   on:click={() => pushState("", { q })}
                 >
                   <code>{q}</code>
@@ -159,10 +164,10 @@
               {#if index === 0}
                 <span class="relative inline-flex h-3 w-3">
                   <span
-                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f9bb2d] opacity-75"
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"
                   ></span>
                   <span
-                    class="relative inline-flex rounded-full h-3 w-3 bg-[#f9bc2d46]"
+                    class="relative inline-flex rounded-full h-3 w-3 bg-brand-soft"
                   ></span>
                 </span>
               {/if}
@@ -173,3 +178,11 @@
     </div>
   {/each}
 </div>
+
+<style>
+  /* Translucent pastels turn muddy on the dark card. Keep the hue and mix
+     toward paper so the dark label text stays readable. */
+  :global(html.dark) .tip-swatch {
+    background-color: color-mix(in srgb, var(--tip) 58%, #fff) !important;
+  }
+</style>

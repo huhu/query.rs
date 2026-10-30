@@ -16,18 +16,18 @@
   }
 </script>
 
-<div class="flex flex-row items-center bg-[#fcfaf6] py-2 px-4 text-[15px]">
+<div class="flex flex-row items-center bg-canvas py-2 px-4 text-[15px] text-ink">
   <button
-    class="px-4 rounded-md hover:bg-[#f9bc2d46]"
-    class:text-gray-400={pagination.curr === 1}
+    class="px-4 rounded-md hover:bg-brand-soft"
+    class:text-soft={pagination.curr === 1}
     disabled={pagination.curr === 1}
     on:click={pageUp}
   >
     Prev
   </button>
   <button
-    class="px-4 rounded-md hover:bg-[#f9bc2d46]"
-    class:text-gray-400={pagination.curr === pagination.total}
+    class="px-4 rounded-md hover:bg-brand-soft"
+    class:text-soft={pagination.curr === pagination.total}
     disabled={pagination.curr === pagination.total}
     on:click={pageDown}
   >

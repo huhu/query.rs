@@ -190,7 +190,7 @@
 <Toaster />
 <div class="text-center text-sm max-w-screen-md mx-auto px-4">
   You can add the crate you search most to local, this allows you to search that
-  crate's docs via <code class="text-[#f9bb2d]">@crate-name keyword</code>, for
+  crate's docs via <code class="text-brand">@crate-name keyword</code>, for
   example: <a href="https://query.rs/?q=@tokio%20spawn">@tokio spawn</a>
 </div>
 <div
@@ -203,16 +203,16 @@
       on:keydown={handleKeydown}
       autofocus
       type="text"
-      class="w-full h-8 px-2 py-0 rounded border border-solid border-[#f9bb2daa] focus:outline-none"
+      class="w-full h-8 px-2 py-0 rounded border border-solid border-[var(--input-accent)] focus:outline-none"
     />
     {#if searchResults.length > 0}
       <ul
-        class="absolute z-10 w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg"
+        class="absolute z-10 w-full bg-surface border border-line-strong mt-1 rounded-md shadow-lg dark:shadow-menu"
       >
         {#each searchResults as crate, index}
           <li
-            class="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-            class:bg-gray-100={index === selectedIndex}
+            class="px-4 py-2 text-sm hover:bg-sunken cursor-pointer"
+            class:bg-sunken={index === selectedIndex}
           >
             <button
               on:click={async () => await selectCrate(crate)}

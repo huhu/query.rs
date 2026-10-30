@@ -158,7 +158,7 @@
       style="vertical-align: middle"
       class="tooltip-color"
     >
-      <img src="../assets/info.svg" alt="info" />
+      <img class="icon-muted" src="../assets/info.svg" alt="info" />
     </b>
   </div>
   <div id="chart" class="w-full">
